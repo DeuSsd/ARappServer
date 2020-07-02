@@ -253,5 +253,5 @@ paket-files/
 *.TXT
 *.txt/
 
-
+__pycache__/
 
