@@ -1,7 +1,7 @@
 # Тут будут храниться методы для работы с БД
 from pymongo import MongoClient, collection
 import pymongo
-from Cryptodome.Cipher import DES
+from ForAuthen import coding
 
 from datetime import datetime
 
@@ -65,28 +65,6 @@ def getNamefromlogin(login, password):
     else:
         print("Incorrect login or password")
     return a
-def pad(text):
-    while len(text) % 8 != 0:
-           text += b' '
-    return text
-#coding password
-#key=b'12345678'
-file = open("Key.txt", "rb")
-key = file.read()
-def coding(password):
-    des = DES.new(key, DES.MODE_ECB)
-    test_string = password
-    text = bytes(test_string, 'utf-8')
-    padded_text = pad(text)
-    encrypted_text = des.encrypt(padded_text)
-    print(encrypted_text)
-    return encrypted_text
 
-#дешифровка
-def decoding(name):
-    des = DES.new(key, DES.MODE_ECB)
-    data = des.decrypt(name)
-    print(data)
-    return data
 # testing
 # writeOne("radiator",{"Name": "sds","DatTime":datetime.now()})
