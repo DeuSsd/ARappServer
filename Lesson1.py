@@ -1,11 +1,9 @@
+import DB
 #login=input("Enter login: ")
 #password=input("Enter password: ")
 #a=DB.getNamefromlogin(login, password)
-#
-#if a=="true":
-#    print("Successful login and password")
-#else:
-#    print("Incorrect login or password")
+DB.writeOnewithshifr(6, "Vova", "putin123", 9468751236, 4)
+DB.decoding(DB.getPasswordOfCollection(6))
 
 
 

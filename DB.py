@@ -1,9 +1,7 @@
 # Тут будут храниться методы для работы с БД
 from pymongo import MongoClient, collection
 import pymongo
-
-#для того, чтобы перевести строку в
-import cPython
+from Cryptodome.Cipher import DES
 
 from datetime import datetime
 
@@ -38,43 +36,57 @@ def getIdOfCollection(objectName):
 def getNameOfCollection(objectId):
     return db.listOfObjects.find({"id": objectId})[0]["Name"]
 
+# метод возвращает password коллекции физического объекта на вход его id
+def getPasswordOfCollection(objectId):
+    return db.users.find({"id": objectId})[0]["password"]
 
 # метод добавляет одну запись в коллекцию objectName
 def writeOne(objectName, data):
     object = db.get_collection(objectName)
     object.insert_one(data)
 
+# метод добавляет одну запись в коллекцию objectName
+def writeOnewithshifr(id, name, password, ph_num, code):
+    sh_password=coding(password)
+    db.users.insert_one({"id":id, "name":name, "password":sh_password, "ph_num":ph_num, "code":code})
+
 # проверка логина и пароля пользователя
 def getNamefromlogin(login, password):
     try:
-        a= db.users.find({"name": login, "password": password})[0]["name"]
+        a= db.users.find({"name": login, "password": coding(password)})[0]["name"]
     except IndexError:
         a="a"
     if a==login:
         a="true"
     else:
         a="false"
+    if a == "true":
+        print("Successful login and password")
+    else:
+        print("Incorrect login or password")
     return a
-
-#decode password
-def decoding(password):
-    from Cryptodome.Cipher import DES
-    key = b'12345678'
-
-    def pad(text):
-        while len(text) % 8 != 0:
-            text += b' '
-        return text
-
+def pad(text):
+    while len(text) % 8 != 0:
+           text += b' '
+    return text
+#coding password
+#key=b'12345678'
+file = open("Key.txt", "rb")
+key = file.read()
+def coding(password):
     des = DES.new(key, DES.MODE_ECB)
     test_string = password
     text = bytes(test_string, 'utf-8')
     padded_text = pad(text)
     encrypted_text = des.encrypt(padded_text)
     print(encrypted_text)
-    data = des.decrypt(encrypted_text)
-    print(data)
     return encrypted_text
 
+#дешифровка
+def decoding(name):
+    des = DES.new(key, DES.MODE_ECB)
+    data = des.decrypt(name)
+    print(data)
+    return data
 # testing
 # writeOne("radiator",{"Name": "sds","DatTime":datetime.now()})
