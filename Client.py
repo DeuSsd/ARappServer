@@ -31,6 +31,10 @@ msg3 = {
     }
 }
 
+msg5 = {
+    "method": "put"
+}
+
 msg4 = {
     "method": "get",
     "parametrs": {
@@ -40,6 +44,8 @@ msg4 = {
         }
     }
 }
+
+
 def getLength(Socket):
     length = 0
     while not length:
@@ -54,7 +60,7 @@ def setLength(Socket,msg):
         length = int(Socket.recv(1024).decode())
 
     return length
-msg = [msg1,msg2,msg3,msg4]
+msg = [msg1,msg2,msg3,msg4,msg5]
 
 HOST, PORT = "localhost", 50000
 
