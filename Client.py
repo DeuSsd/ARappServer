@@ -1,5 +1,5 @@
 import socket
-
+import time
 
 msg1 = {
     "method": "get",
@@ -54,25 +54,30 @@ def setLength(Socket,msg):
         length = int(Socket.recv(1024).decode())
 
     return length
-
+msg = [msg1,msg2,msg3,msg4]
 
 HOST, PORT = "localhost", 50000
-data = str(msg1).encode()
-# Create a socket (SOCK_STREAM means a TCP socket)
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as socket:
-    # Connect to server and send data
-    socket.connect((HOST, PORT))
-    # socket.sendall(data)
-    # Receive data from the server and shut down
-    # length = int(sock.recv(1024).decode())
-    # setLength(socket,data)
-    socket.sendall(data)
-    # lenght = getLength()
-    lenght = 10240
-    received = socket.recv(lenght).decode()
 
-print("Sent:     {}".format(data))
-print("Received: {}".format(received))
+# Create a socket (SOCK_STREAM means a TCP socket)
+for dataMsg in msg:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        # Connect to server and send data
+        sock.connect((HOST, PORT))
+        # socket.sendall(data)
+        # Receive data from the server and shut down
+        # length = int(sock.recv(1024).decode())
+        # setLength(socket,data)
+        data = str(dataMsg).encode()
+        sock.sendall(data)
+        # lenght = getLength()
+        lenght = 10240
+        received = sock.recv(lenght).decode()
+        # time.sleep(1)
+        print("Sent:     {}".format(data))
+        print("Received: {}".format(received))
+        print("------")
+
+
 
 
 
