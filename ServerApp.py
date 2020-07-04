@@ -40,7 +40,7 @@ if __name__ == "__main__":
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect(("8.8.8.8", 80))
     # print(s.getsockname()[0])
-    HOST, PORT = "25.79.246.93", 50000
+    HOST, PORT = "25.79.246.93", 9090
     # HOST, PORT = s.getsockname()[0], 50000
     s.close()
     print(HOST)
