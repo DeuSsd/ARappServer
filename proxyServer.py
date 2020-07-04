@@ -5,14 +5,12 @@ import re
 hamachiIP = ""
 hamachiPORT = 9090
 
-
-# checking the ip address format
+#checking the ip address format
 def is_ok(text):
     match = re.match(
         """^(25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[0-9]{2}|[0-9])(\.(25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[0-9]{2}|[0-9])){3}$""",
         text)
     return bool(match)
-
 
 def pause():
     programPause = input("\nPress the <ENTER> key to continue...")
@@ -21,22 +19,20 @@ def pause():
 class MyTCPHandler(socketserver.BaseRequestHandler):
 
     def handle(self):
-        print("--------- Start of transmission ----------")
+        print("----- Start of transmission -----")
         lenght = 10240
         self.data = self.request.recv(lenght)
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.connect((hamachiIP, hamachiPORT))
             sock.sendall(self.data)
-            print("\033[35m[----- C -> S -----] "
-                  "Data transmission from client to server:\033[34m \n{}\033[0m".format(self.data))
+            print("[----- C -> S -----] "
+                  "Data from client to server:\n{}".format(self.data))
             lenght = 10240
             received = sock.recv(lenght)
         self.request.sendall(received)
-        print("\033[35m[----- C <- S -----] "
-              "Data transmission from server to client:\033[34m \n{}\033[0m\n"
-              "---------- End of transmission -----------\n".format(received))
-
-
+        print("[----- C <- S -----] "
+              "Data from server to client:\n{}\n"
+              "------ End of transmission ------\n".format(received))
 if __name__ == "__main__":
     try:
         # gethamachi ip
@@ -55,10 +51,10 @@ if __name__ == "__main__":
         s.connect(("8.8.8.8", 80))
         HOST, PORT = s.getsockname()[0], 50000
         s.close()
-        print("------ Loading the IP configuration ------\n"
-              "\033[33mServer ip: {}\033[0m\n"  # Hamachi IP
-              "\033[33mLockal ip: {}\033[0m\n"
-              "------------ Connection start ------------\033[0m\n".format(hamachiIP, HOST))
+        print("------ Load ip in programm ------\n"
+              "Server ip: {}\n" #Hamachi IP
+              "Lockal ip: {}\n"
+              "------- Connection start --------".format(hamachiIP, HOST))
 
         # Create the server, binding to localhost on port 9999
         with socketserver.TCPServer((HOST, PORT), MyTCPHandler) as server:
@@ -66,11 +62,11 @@ if __name__ == "__main__":
             server.serve_forever()
             server.server_close()
     except TypeError:
-        print("\n\033[33mУзнайте IPv4 тонельного соединения в hamachi;\n"
+        print("Узнайте IPv4 тонельного соединения в hamachi;\n"
               "Запишите его в hamachiIP.txt в виде \"xxx.xxx.xxx.xxx\" (без кавычек и других символов)\n"
-              "И перезапустите \"proxyServer.exe\".\n\033[0m")
+              "И перезапустите \"proxyServer.exe\".\n")
     except OSError:
-        print("\n\n\033Убедитесь, что запущена одна версия программы\"proxyServer.exe\".\n"
-              "Проверьте интернет соединение и перезапустите \"proxyServer.exe\".\n\033[0m")
+        print("Убедитесь, что запущена одна версия программы\"proxyServer.exe\".\n"
+              "Проверьте интернет соединение и перезапустите \"proxyServer.exe\".\n")
     f.close()
     pause()
