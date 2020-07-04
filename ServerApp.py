@@ -39,8 +39,8 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
     #         return length
 
 if __name__ == "__main__":
-    HOST, PORT = "192.168.1.105", 9090  #for localtest
-    # HOST, PORT = "25.79.246.93", 9090 #for works
+    # HOST, PORT = "192.168.1.105", 9090  #for localtest
+    HOST, PORT = "25.79.246.93", 9090 #for works
     # Create the server, binding to localhost on port 9999
     with socketserver.TCPServer((HOST, PORT), MyTCPHandler) as server:
         # Activate the server; this will keep running until you

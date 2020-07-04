@@ -46,10 +46,14 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
 if __name__ == "__main__":
     try:
         # gethamachi ip
-        with open("hamachiIP.txt", "r") as f:
-            hamachiIP = f.read()
-            if not is_ok(hamachiIP):
-                raise TypeError
+        try:
+            f = open("hamachiIP.txt", "r")
+        except:
+            f = open("hamachiIP.txt", "w")
+            raise TypeError
+        hamachiIP = f.read()
+        if not is_ok(hamachiIP):
+            raise TypeError
 
         # getlockal ip
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -58,7 +62,7 @@ if __name__ == "__main__":
         HOST, PORT = s.getsockname()[0], 50000
         s.close()
         print("------ Load ip in programm ------\n"
-              "Hamachi ip: {}\n"
+              "Server ip: {}\n" #Hamachi IP
               "Lockal ip: {}\n"
               "------- Connection start --------".format(hamachiIP, HOST))
         # HOST, PORT = "25.79.246.93", 50000
@@ -71,7 +75,7 @@ if __name__ == "__main__":
             server.serve_forever()
             server.server_close()
     except TypeError:
-        print("Узнайте ваш IPv4 тонельного соединения в hamachi;\n"
+        print("Узнайте IPv4 тонельного соединения в hamachi;\n"
               "Запишите его в hamachiIP.txt в виде \"xxx.xxx.xxx.xxx\" (без кавычек и других символов)\n"
               "И перезапустите proxyServer")
     except OSError:
