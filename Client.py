@@ -62,7 +62,7 @@ def setLength(Socket,msg):
     return length
 msg = [msg1,msg2,msg3,msg4,msg5]
 
-HOST, PORT = "localhost", 50000
+HOST, PORT = "25.79.246.93", 9090
 
 # Create a socket (SOCK_STREAM means a TCP socket)
 for dataMsg in msg:
