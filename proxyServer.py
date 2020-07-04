@@ -68,5 +68,5 @@ if __name__ == "__main__":
     except OSError:
         print("Убедитесь, что запущена одна версия программы\"proxyServer.exe\".\n"
               "Проверьте интернет соединение и перезапустите \"proxyServer.exe\".\n")
-
+    f.close()
     pause()
