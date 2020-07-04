@@ -12,14 +12,14 @@ def loadMessage(msg):
             collectionName = parametrsMsg["collectionName"]
             filterJSON = parametrsMsg["filter"]
             result = iDB.getMany(collectionName, filterJSON)
-            print(result)
+            # print(result)
             resultData = result
         elif methodJSON == "delete":
             parametrsMsg = msg["parametrs"]
             collectionName = parametrsMsg["collectionName"]
             filterJSON = parametrsMsg["filter"]
             result = iDB.deleteMany(collectionName, filterJSON)
-            print(result)
+            # print(result)
             resultData = result["n"]
         elif methodJSON == "put":
             parametrsMsg = msg["parametrs"]
@@ -28,14 +28,21 @@ def loadMessage(msg):
             dataJSON["id"] = iDB.getLastId(collectionName) + 1
             dataJSON["Date"] = datetime.datetime.now(timezone.utc).isoformat(sep=" ")
             result = iDB.writeOne(collectionName, dataJSON).inserted_id
-            print(result)
+            # print(result)
             resultData = "ОК"
         return responseJSON(resultData)
     except:
         resultData = "Wrong Request"
         return responseJSON(resultData)
 
+# ответ на запрос
+def responseJSON(data):
+    msg = {}
+    msg["method"] = "response"
+    msg["data"] = data
+    return msg
 
+#/////////////////test/////////////////
 # msg1 = {
 #     "method": "get",
 #     "parametrs": {
@@ -80,10 +87,3 @@ def loadMessage(msg):
 # loadMessage(msg2)
 # loadMessage(msg3)
 # loadMessage(msg4)
-
-
-def responseJSON(data):
-    msg = {}
-    msg["method"] = "response"
-    msg["data"] = data
-    return msg

@@ -6,7 +6,7 @@ msg1 = {
     "parametrs": {
         "collectionName": "radiator",
         "filter": {
-            "Temperature": {'$gt': 90}
+            "Temperature": {'$gt': 95}
         }
     }
 }
@@ -16,7 +16,7 @@ msg2 = {
     "parametrs": {
         "collectionName": "radiator",
         "filter": {
-            "Temperature": {'$lt': 0}
+            "Temperature": {'$lt': 10}
         }
     }
 }
@@ -62,8 +62,8 @@ def setLength(Socket,msg):
     return length
 msg = [msg1,msg2,msg3,msg4,msg5]
 
-HOST, PORT = "localhost", 50000
-
+HOST, PORT = "25.79.246.93", 50000
+# HOST, PORT = "192.168.1.105", 50000
 # Create a socket (SOCK_STREAM means a TCP socket)
 for dataMsg in msg:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:

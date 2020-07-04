@@ -63,13 +63,14 @@ def getMany(collectionName, query=None):
 # метод возвращает последний объект коллекции collectionName
 def getLastOne(collectionName):
     thisCollection = db.get_collection(collectionName)
-    return thisCollection.find(projection={'_id': False}).sort('_id', pymongo.DESCENDING).limit(1)[0]
+    # return thisCollection.find(projection={'_id': False}).sort('_id', pymongo.DESCENDING).limit(1)[0]
+    return thisCollection.find(projection={'_id': False}).sort('$natural',-1).limit(1)[0]
 
 
 # метод возвращает объект коллекции collectionName по фильтру filter
 def getOne(collectionName, query=None):
     '''
-    метод возвращает объект коллекции collectionName по фильтру filter
+    метод возвращает объект коллекции collectionName по запросу query(фильтру filter)
     :param collectionName:
     :param query:
     :return:
@@ -77,6 +78,7 @@ def getOne(collectionName, query=None):
     '''
     thisCollection = db.get_collection(collectionName)
     return thisCollection.find_one(query, projection={'_id': False})[0]
+
 
 
 # метод возвращает все объекты коллекции collectionName по фильтру filter
@@ -110,7 +112,6 @@ def deleteMany(collectionName, query):
     thisCollection = db.get_collection(collectionName)
     return thisCollection.delete_many(query).raw_result
 
-
 # ////////////////////////////testing///////////////////////////////
 # # writeOne("radiator",{"Name": "sds","DatTime":datetime.now()})
 #
@@ -121,33 +122,5 @@ def deleteMany(collectionName, query):
 # aa = getMany(collectionNames, {}, 110)
 # print(aa)
 # #     if not aa['n']: break
-
+# print(getLastOne("radiator"))
 # print(help(deleteOne(collectionNames,{"id":4})))
-
-
-# class MyTCPHandler(socketserver.BaseRequestHandler):
-#     """
-#     The request handler class for our server.
-#
-#     It is instantiated once per connection to the server, and must
-#     override the handle() method to implement communication to the
-#     client.
-#     """
-#
-#     def handle(self):
-#         # self.request is the TCP socket connected to the client
-#         self.data = self.request.recv(1024).strip()
-#         print("{} wrote:".format(self.client_address[0]))
-#         print(self.data)
-#         # just send back the same data, but upper-cased
-#         self.request.sendall(self.data.upper())
-#
-#
-# if __name__ == "__main__":
-#     HOST, PORT = "localhost", 9999
-#
-#     # Create the server, binding to localhost on port 9999
-#     with socketserver.TCPServer((HOST, PORT), MyTCPHandler) as server:
-#         # Activate the server; this will keep running until you
-#         # interrupt the program with Ctrl-C
-#         server.serve_forever()
