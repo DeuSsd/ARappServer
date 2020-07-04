@@ -1,20 +1,12 @@
 import socketserver
 from server import handlerJSON
-# import pickle
-
-    # else
-    #     return 0
-
 
 class MyTCPHandler(socketserver.BaseRequestHandler):
-
-
 
     def handle(self):
         # lenght = self.getLength(self.request)
         lenght = 10240
         self.data = self.request.recv(lenght).decode()  # .strip()
-
         # print("Address: {}".format(self.client_address[0]))
         # print("{} wrote:".format(self.client_address[0]))
         # print(pickle.loads(self.data))
