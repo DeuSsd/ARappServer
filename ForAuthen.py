@@ -2,6 +2,7 @@ from Cryptodome.Cipher import DES
 
 file = open("Key.txt", "rb")
 key = (file.read())
+file.close()
 def pad(text):
     while len(text) % 8 != 0:
            text += b' '
