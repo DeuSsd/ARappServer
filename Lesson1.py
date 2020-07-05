@@ -1,4 +1,4 @@
-import DB
+import DBinterface as DB
 import ForAuthen
 #login=input("Enter login: ")
 #password=input("Enter password: ")
