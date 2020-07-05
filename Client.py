@@ -1,6 +1,7 @@
 import socket
 import time
 
+# для тестов
 msg1 = {
     "method": "get",
     "parametrs": {
@@ -10,7 +11,6 @@ msg1 = {
         }
     }
 }
-
 msg2 = {
     "method": "delete",
     "parametrs": {
@@ -20,7 +20,6 @@ msg2 = {
         }
     }
 }
-
 msg3 = {
     "method": "put",
     "parametrs": {
@@ -30,11 +29,9 @@ msg3 = {
         }
     }
 }
-
 msg5 = {
     "method": "put"
 }
-
 msg4 = {
     "method": "get",
     "parametrs": {
@@ -45,24 +42,25 @@ msg4 = {
     }
 }
 
-msg = [msg1, msg2, msg3, msg4, msg5]
+def getLocalExternalIP():
+    # getlockal ip
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as temp_socket:
+        temp_socket.connect(("8.8.8.8", 80))
+        HOST = str(temp_socket.getsockname()[0])
+        print("Lockal ip: {}".format(HOST))
+    return HOST
 
-HOST, PORT = "192.168.1.105", 50000
+msg = [msg1, msg2, msg3, msg4, msg5]
+HOST, PORT = getLocalExternalIP(), 50000
 # Create a socket (SOCK_STREAM means a TCP socket)
 for dataMsg in msg:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         # Connect to server and send data
         sock.connect((HOST, PORT))
-        # socket.sendall(data)
-        # Receive data from the server and shut down
-        # length = int(sock.recv(1024).decode())
-        # setLength(socket,data)
         data = str(dataMsg).encode()
         sock.sendall(data)
-        # lenght = getLength()
         lenght = 10240
         received = sock.recv(lenght).decode()
-        # time.sleep(1)
         print("Sent:     {}".format(data))
         print("Received: {}".format(received))
         print("------")
