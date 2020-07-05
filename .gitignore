@@ -251,7 +251,8 @@ paket-files/
 *.png
 *.jpeg
 *.TXT
-*.txt/
+*.txt
+*.ico
 
 __pycache__/
 
