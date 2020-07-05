@@ -31,7 +31,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
             received = sock.recv(lenght)
         self.request.sendall(received)
         print("[----- C <- S -----] "
-              "Data transmission from server to client:\n"
+              "Data transmission from server to client:\n{}"
               "---------- End of transmission -----------\n".format(received))
 if __name__ == "__main__":
     try:
@@ -54,7 +54,7 @@ if __name__ == "__main__":
         print("------ Loading the IP configuration ------\n"
               "Server ip: {}\n"  # Hamachi IP
               "Lockal ip: {}\n"
-              "------------ Connection start ------------".format(hamachiIP, HOST))
+              "------------ Connection start ------------\n".format(hamachiIP, HOST))
 
         # Create the server, binding to localhost on port 9999
         with socketserver.TCPServer((HOST, PORT), MyTCPHandler) as server:
@@ -62,11 +62,13 @@ if __name__ == "__main__":
             server.serve_forever()
             server.server_close()
     except TypeError:
-        print("Узнайте IPv4 тонельного соединения в hamachi;\n"
-              "Запишите его в hamachiIP.txt в виде \"xxx.xxx.xxx.xxx\" (без кавычек и других символов)\n"
-              "И перезапустите \"ProxyServer.exe\".\n")
+        print("\nДля запуска прокси-сервера выполните следующие действия:\n"
+              "--> Узнайте IPv4 тонельного соединения в hamachi.\n"
+              "--> Запишите его в hamachiIP.txt в виде \"xxx.xxx.xxx.xxx\" (без кавычек и других символов).\n"
+              "--> И перезапустите \"ProxyServer.exe\".")
     except OSError:
-        print("Убедитесь, что запущена одна версия программы\"ProxyServer.exe\".\n"
-              "Проверьте интернет соединение и перезапустите \"ProxyServer.exe\".\n")
+        print("\nДля запуска прокси-сервера выполните следующие действия:\n"
+              "--> Убедитесь, что запущена одна версия программы\"ProxyServer.exe\".\n"
+              "--> Проверьте интернет соединение и перезапустите \"ProxyServer.exe\".")
     f.close()
     pause()
