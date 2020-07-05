@@ -1,6 +1,7 @@
 import socketserver
 import socket
 import re
+import datetime
 
 hamachiIP = ""
 hamachiPORT = 9090
@@ -25,14 +26,14 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.connect((hamachiIP, hamachiPORT))
             sock.sendall(self.data)
-            print("[----- C -> S -----] "
-                  "Data transmission from client to server:\n{}".format(self.data))
+            print("[----- C -> S -----] {}\n"
+                  "Data transmission from client to server: \n{}".format(datetime.datetime.now().isoformat("|","microseconds"),self.data))
             lenght = 10240
             received = sock.recv(lenght)
         self.request.sendall(received)
-        print("[----- C <- S -----] "
-              "Data transmission from server to client:\n{}"
-              "---------- End of transmission -----------\n".format(received))
+        print("[----- C <- S -----] {}\n"
+              "Data transmission from server to client: \n{}\n"
+              "---------- End of transmission -----------\n".format(datetime.datetime.now().isoformat("|","microseconds"),received))
 if __name__ == "__main__":
     try:
         # gethamachi ip
