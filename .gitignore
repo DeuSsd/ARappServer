@@ -255,8 +255,6 @@ paket-files/
 *.py
 *.ico
 
-/*
-!proxyServer.py
 
 __pycache__/
 
