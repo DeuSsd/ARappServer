@@ -52,9 +52,9 @@ if __name__ == "__main__":
         HOST, PORT = s.getsockname()[0], 50000
         s.close()
         print("------ Loading the IP configuration ------\n"
-              "\033[33mServer ip: {}\033[0m\n"  # Hamachi IP
-              "\033[33mLockal ip: {}\033[0m\n"
-              "------------ Connection start ------------\033[0m\n".format(hamachiIP, HOST))
+              "Server ip: {}\n"  # Hamachi IP
+              "Lockal ip: {}\n"
+              "------------ Connection start ------------".format(hamachiIP, HOST))
 
         # Create the server, binding to localhost on port 9999
         with socketserver.TCPServer((HOST, PORT), MyTCPHandler) as server:
