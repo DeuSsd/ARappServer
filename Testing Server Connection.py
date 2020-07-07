@@ -11,8 +11,8 @@ def is_ok(text):
     return bool(match)
 
 def pause():
-    programPause = input("\n--> При необходимости измените текст запроса в файле JSON_REQUEST.txt.\n"
-                         "--> Сохраните файл JSON_REQUEST.txt.\n"
+    programPause = input("\n--> При необходимости измените текст запроса в файле JSON_REQUEST.tx.\n"
+                         "--> Сохраните файл JSON_REQUEST.tx.\n"
                          "--> Нажмите Enter для повторной отпраки запроса.\n")
 
 
@@ -20,9 +20,12 @@ def load():
     try:
         f = open("JSON_REQUEST.txt", "r")
     except:
-        f = open("JSON_REQUEST.txt", "w")
+        f = open("JSON_REQUEST.txt", "w+")
+        f.write("{}")
     # JSON_REQUEST = f.read().replace("\n","")
     JSON_REQUEST = f.read().replace(" ","").replace("\n","")
+    if JSON_REQUEST == '':
+        JSON_REQUEST = "{}"
     # print(ast.literal_eval(JSON_REQUEST))
     # print(JSON_REQUEST)
     f.close()
