@@ -3,7 +3,47 @@ import datetime
 from datetime import timezone
 import ast
 
+
 def loadMessage(msg):
+    """
+    Данный метод принимает на вход сообщение (msg) типа str, которое
+    является запросом, содержит JSON файл,
+    в случае языка Python не работаем с типом JSON  непосредственно,
+    т.к. имеется встроенный тип dict отлично подходит для его замены.
+    (Далее JSON == dict)
+    После процедуры парсинга, извлкекаем хранящяяся параметры
+    и вызываем нужный обработчик в зависимоти от параметра 'method'
+
+    Вид JSON запроса:
+    {
+        "method": "вид метода",
+        "parametrs": {
+            "collectionName": "Имя необходимой коллекции",
+            "filter": {}
+        }
+    }
+
+    Вид JSON ответа:
+    {
+        "method": "response",
+        "data": {}
+        }
+    }
+    Доступные методы:
+        'get':
+            запрос на получение данных из коллекции "collectionName",
+            удовлетворяющих фильтру "filter";
+        put:
+            запрос на добавление данных "data"
+            в коллекцию "collectionName";
+        delete:
+            запрос на удаление данных из коллекции "collectionName",
+            удовлетворяющих фильтру "filter";
+
+    :param msg: запрос от клиента, который нужно обработать - тип str
+    :return: ответ с сервера в виде сообщения типа str, которое содержит JSON объект
+            на результат выполнения запроса.
+    """
     try:
         msg = ast.literal_eval(msg)
         methodJSON = msg["method"]
@@ -35,13 +75,20 @@ def loadMessage(msg):
         resultData = "Wrong Request"
         return responseJSON(resultData)
 
+
 # ответ на запрос
 def responseJSON(data):
+    """
+    Формирует из данных "data" ответ клиенту
+    :param data: принимает на вхлд двнные, которые нужно передать тип str с JSON объектом внутри
+    :return: сформированное сообщение, готовое к отправке клиенту
+    """
     msg = {}
     msg["method"] = "response"
     msg["data"] = data
     return msg
-#/////////////////test/////////////////
+
+# /////////////////test/////////////////
 # msg1 = {
 #     "method": "get",
 #     "parametrs": {

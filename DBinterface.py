@@ -63,19 +63,11 @@ def getMany(collectionName, query=None):
 # метод возвращает последний объект коллекции collectionName
 def getLastOne(collectionName):
     thisCollection = db.get_collection(collectionName)
-    # return thisCollection.find(projection={'_id': False}).sort('_id', pymongo.DESCENDING).limit(1)[0]
-    return thisCollection.find(projection={'_id': False}).sort('$natural',-1).limit(1)[0]
+    return thisCollection.find(projection={'_id': False}).sort('$natural', -1).limit(1)[0]
 
 
 # метод возвращает объект коллекции collectionName по фильтру filter
 def getOne(collectionName, query=None):
-    '''
-    метод возвращает объект коллекции collectionName по запросу query(фильтру filter)
-    :param collectionName:
-    :param query:
-    :return:
-
-    '''
     thisCollection = db.get_collection(collectionName)
     return thisCollection.find_one(query, projection={'_id': False})[0]
 
