@@ -45,6 +45,10 @@ msg4 = {
     }
 }
 
+msg6 = {
+    "method" : "getLastData",
+    "ObjectID": 1
+}
 
 def getLength(Socket):
     length = 0
@@ -60,10 +64,12 @@ def setLength(Socket,msg):
         length = int(Socket.recv(1024).decode())
 
     return length
-msg = [msg1,msg2,msg3,msg4,msg5]
+msg = [
+    # msg1,msg2,msg3,msg4,msg5,
+       msg6]
 
-HOST, PORT = "25.79.246.93", 50000
-# HOST, PORT = "192.168.1.105", 50000
+# HOST, PORT = "25.79.246.93", 50000
+HOST, PORT = "192.168.1.100", 50000
 
 # Create a socket (SOCK_STREAM means a TCP socket)
 for dataMsg in msg:

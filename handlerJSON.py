@@ -39,6 +39,8 @@ def loadMessage(msg):
         delete:
             запрос на удаление данных из коллекции "collectionName",
             удовлетворяющих фильтру "filter";
+        getLastData:
+            запрос почледней строки данных из коллекции (дан id физического объекта)
 
     :param msg: запрос от клиента, который нужно обработать - тип str
     :return: ответ с сервера в виде сообщения типа str, которое содержит JSON объект
@@ -61,6 +63,7 @@ def loadMessage(msg):
             result = iDB.deleteMany(collectionName, filterJSON)
             # print(result)
             resultData = result["n"]
+
         elif methodJSON == "put":
             parametrsMsg = msg["parametrs"]
             collectionName = parametrsMsg["collectionName"]
@@ -70,6 +73,19 @@ def loadMessage(msg):
             result = iDB.writeOne(collectionName, dataJSON).inserted_id
             # print(result)
             resultData = "ОК"
+
+        # elif methodJSON == "getLastData":
+        #     parametrsMsg = msg["parametrs"]
+        #     collectionId = int(parametrsMsg["ObjectID"])
+        #     result = iDB.getLastOne(iDB.getNameOfCollection(collectionId))
+        #     resultData = result
+        #
+
+        elif methodJSON == "getLastData":
+            collectionId = int(msg["ObjectID"])
+            result = iDB.getLastOne(iDB.getNameOfCollection(collectionId))
+            resultData = result
+
         return responseJSON(resultData)
     except:
         resultData = "Wrong Request"
@@ -128,8 +144,13 @@ def responseJSON(data):
 #         }
 #     }
 # }
-
+#
+# msg5 = {
+#     "method" : "getLastData",
+#     "ObjectID": 1
+# }
 # loadMessage(msg1)
 # loadMessage(msg2)
 # loadMessage(msg3)
-# loadMessage(msg4)
+# print(loadMessage(str(msg5)))
+

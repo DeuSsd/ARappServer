@@ -61,9 +61,10 @@ def getMany(collectionName, query=None):
 
 
 # метод возвращает последний объект коллекции collectionName
+#TODO может быть стоит везде добавить возможность через атрибуты отключать ненужные поля
 def getLastOne(collectionName):
     thisCollection = db.get_collection(collectionName)
-    return thisCollection.find(projection={'_id': False}).sort('$natural', -1).limit(1)[0]
+    return thisCollection.find(projection={'_id': False,'id':False}).sort('$natural', -1).limit(1)[0]
 
 
 # метод возвращает объект коллекции collectionName по фильтру filter
