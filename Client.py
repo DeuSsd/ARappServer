@@ -61,9 +61,15 @@ def setLength(Socket,msg):
 
     return length
 msg = [msg1,msg2,msg3,msg4,msg5]
-
-HOST, PORT = "25.79.246.93", 50000
-# HOST, PORT = "192.168.1.105", 50000
+#getlockal ip
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.connect(("8.8.8.8", 80))
+# print(s.getsockname()[0])
+# HOST, PORT = "25.79.246.93", 9090
+HOST, PORT = s.getsockname()[0], 40000
+s.close()
+# HOST, PORT = "25.79.246.93", 50000
+# HOST, PORT = "localhost", 40000
 # Create a socket (SOCK_STREAM means a TCP socket)
 for dataMsg in msg:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
@@ -73,15 +79,18 @@ for dataMsg in msg:
         # Receive data from the server and shut down
         # length = int(sock.recv(1024).decode())
         # setLength(socket,data)
-        data = str(dataMsg).encode()
-        sock.sendall(data)
-        # lenght = getLength()
-        lenght = 10240
-        received = sock.recv(lenght).decode()
-        # time.sleep(1)
-        print("Sent:     {}".format(data))
-        print("Received: {}".format(received))
-        print("------")
+        while True:
+            dataMsg = 2
+            time.sleep(1)
+            data = str(dataMsg).encode()
+            sock.sendall(data)
+            # lenght = getLength()
+            # lenght = 10240
+            # received = sock.recv(lenght).decode()
+            # time.sleep(1)
+            print("Sent:     {}".format(data))
+            # print("Received: {}".format(received))
+            # print("------")
 
 
 
