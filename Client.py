@@ -45,7 +45,6 @@ msg4 = {
     }
 }
 
-
 def getLength(Socket):
     length = 0
     while not length:

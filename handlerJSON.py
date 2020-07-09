@@ -41,7 +41,6 @@ def responseJSON(data):
     msg["method"] = "response"
     msg["data"] = data
     return msg
-
 #/////////////////test/////////////////
 # msg1 = {
 #     "method": "get",

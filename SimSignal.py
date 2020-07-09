@@ -3,6 +3,7 @@ import time
 
 f = open('data.txt', 'w')
 
+
 # function of simulate signal
 def signal(x):
     y = (10 * (sin(3 * x) * cos(1.4 * x) + cos(x)) + 8 * sin(x) - 9 * cos(2 * x)) + 70
@@ -23,4 +24,3 @@ while True:
     # print(i,y)
     x += 0.01
     # i+=1
-

@@ -80,7 +80,6 @@ def getOne(collectionName, query=None):
     return thisCollection.find_one(query, projection={'_id': False})[0]
 
 
-
 # метод возвращает все объекты коллекции collectionName по фильтру filter
 def getMany(collectionName, query=None, limit=0):
     thisCollection = db.get_collection(collectionName)

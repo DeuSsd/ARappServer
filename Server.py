@@ -9,7 +9,6 @@ msg = Socket.recv(length)
 print(msg)
 Socket.close()
 
-
 def getLength(Socket,msg):
     length = 0
     while not length:

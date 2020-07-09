@@ -6,7 +6,6 @@ from server import DBinterface as iDB
 
 client = MongoClient(port=27017)
 db = client.ARdb
-
 collectionName = "radiator"
 f = open("data.txt", "r")
 objectId = iDB.getLastId(collectionName)
