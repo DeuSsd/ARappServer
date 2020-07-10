@@ -74,17 +74,17 @@ def loadMessage(msg):
             # print(result)
             resultData = "ОК"
 
-        # elif methodJSON == "getLastData":
-        #     parametrsMsg = msg["parametrs"]
-        #     collectionId = int(parametrsMsg["ObjectID"])
-        #     result = iDB.getLastOne(iDB.getNameOfCollection(collectionId))
-        #     resultData = result
-        #
-
         elif methodJSON == "getLastData":
-            collectionId = int(msg["ObjectID"])
+            parametrsMsg = msg["parametrs"]
+            collectionId = int(parametrsMsg["ObjectID"])
             result = iDB.getLastOne(iDB.getNameOfCollection(collectionId))
             resultData = result
+
+
+        # elif methodJSON == "getLastData":
+        #     collectionId = int(msg["ObjectID"])
+        #     result = iDB.getLastOne(iDB.getNameOfCollection(collectionId))
+        #     resultData = result
 
         return responseJSON(resultData)
     except:
