@@ -1,43 +1,209 @@
-import socketserver
 import socket
 import threading
-from server import handlerJSON
+import socketserver
 
 
-class ThreadedRequestHandler(socketserver.BaseRequestHandler):
+class TCPRequestHandler(socketserver.BaseRequestHandler):
+
     def handle(self):
-        length = 1024
-        data = self.request.recv(length)
-        current_thread = threading.current_thread()
-        response = b'%s:%s' % (current_thread.getName().encode(), data)
-        self.request.send(response)
+        data = self.request.recv(1024)
+        cur_thread = threading.current_thread()
+        response = "{}: {}".format(cur_thread.name, data)
+        self.request.sendall(response.encode())
+        print(threading.current_thread().getName())
+        print(server.server_address)
 
 
-# class ThreadedServer(socketserver.Threa)
+def sadasd():
+    print(threading.current_thread().getName())
 
 
 if __name__ == "__main__":
-    HOST,PORT = "localhost",0
-    server = socketserver.ThreadingTCPServer((HOST,PORT),ThreadedRequestHandler)
+    # Port 0 means to select an arbitrary unused port
+    HOST, PORT = "localhost", 9999
+    with socketserver.ThreadingTCPServer((HOST,PORT), TCPRequestHandler) as server:
+        server_threading = threading.Thread(target=server.serve_forever())
+        server_threading.setDaemon(False)
+        server_threading.start()
+#
+#
+# if __name__ == "__main__":
+#     HOST,PORT = "localhost",0
+#     server = socketserver.ThreadingTCPServer((HOST,PORT),ThreadedRequestHandler)
+#
+#     ip,port = server.server_address
+#     t = threading.Thread(target=server.serve_forever)
+#     t.setDaemon(True)
+#     t.start()
+#     print('Server loop running is thread:',t.getName())
+#
+#     with socket.socket(socket.AF_INET,socket.SOCK_STREAM) as s:
+#         s.connect((ip,port))
+#
+#          # Send the data
+#         message = b'Hello, world'
+#         print('Sending : {!r}'.format(message))
+#         len_sent = s.send(message)
+#
+#         # Receive a response
+#         response = s.recv(1024)
+#         print('Received: {!r}'.format(response))
 
-    ip,port = server.server_address
-    t = threading.Thread(target=server.serve_forever)
-    t.setDaemon(True)
-    t.start()
-    print('Server loop running is thread:',t.getName())
 
-    with socket.socket(socket.AF_INET,socket.SOCK_STREAM) as s:
-        s.connect((ip,port))
 
-         # Send the data
-        message = b'Hello, world'
-        print('Sending : {!r}'.format(message))
-        len_sent = s.send(message)
 
-        # Receive a response
-        response = s.recv(1024)
-        print('Received: {!r}'.format(response))
 
+
+
+
+
+# class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
+#
+#     def handle(self):
+#         data = self.request.recv(1024)
+#         cur_thread = threading.current_thread()
+#         response = "{}: {}".format(cur_thread.name, data)
+#         self.request.sendall(response)
+#
+# class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
+#     pass
+#
+# if __name__ == "__main__":
+#     # # Port 0 means to select an arbitrary unused port
+    # HOST, PORT = "localhost", 0
+    #
+    # server = ThreadedTCPServer((HOST, PORT), ThreadedTCPRequestHandler)
+    # ip, port = server.server_address
+    # print((ip, port))
+    #
+    # # Start a thread with the server -- that thread will then start one
+    # # more thread for each request
+    # server_thread = threading.Thread(target=server.serve_forever)
+    # # Exit the server thread when the main thread terminates
+    # server_thread.daemon = False
+    # server_thread.start()
+    # print("Server loop running in thread:", server_thread.name)
+    #
+    #
+    #
+    # # server.shutdown()
+    # # server.server_close()
+
+
+
+
+
+
+# # import socket programming library
+# import socket
+#
+# # import thread module
+# from _thread import *
+# import threading
+#
+# print_lock = threading.Lock()
+#
+#
+# # thread function
+# def threaded(c):
+#     while True:
+#
+#         # data received from client
+#         data = c.recv(1024)
+#         if not data:
+#             print('Bye')
+#
+#             # lock released on exit
+#             print_lock.release()
+#             break
+#
+#         # reverse the given string from client
+#         data = data[::-1]
+#
+#         # send back reversed string to client
+#         c.send(data)
+#
+#     # connection closed
+#     c.close()
+#
+#
+# def Main():
+#     host = ""
+#
+#     # reverse a port on your computer
+#     # in our case it is 12345 but it
+#     # can be anything
+#     port = 12345
+#     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+#     s.bind((host, port))
+#     print("socket binded to port", port)
+#
+#     # put the socket into listening mode
+#     s.listen(5)
+#     print("socket is listening")
+#
+#     # a forever loop until client wants to exit
+#     while True:
+#         # establish connection with client
+#         c, addr = s.accept()
+#
+#         # lock acquired by client
+#         print_lock.acquire()
+#         print('Connected to :', addr[0], ':', addr[1])
+#
+#         # Start a new thread and return its identifier
+#         start_new_thread(threaded, (c,))
+#     s.close()
+#
+#
+# if __name__ == '__main__':
+#     Main()
+#
+# import socketserver
+# import socket
+# import threading
+# from server import handlerJSON
+#
+
+
+
+
+
+#
+# class ThreadedRequestHandler(socketserver.BaseRequestHandler):
+#     def handle(self):
+#         length = 1024
+#         data = self.request.recv(length)
+#         current_thread = threading.current_thread()
+#         response = b'%s:%s' % (current_thread.getName().encode(), data)
+#         self.request.send(response)
+#
+#
+# # class ThreadedServer(socketserver.Threa)
+#
+#
+# if __name__ == "__main__":
+#     HOST,PORT = "localhost",0
+#     server = socketserver.ThreadingTCPServer((HOST,PORT),ThreadedRequestHandler)
+#
+#     ip,port = server.server_address
+#     t = threading.Thread(target=server.serve_forever)
+#     t.setDaemon(True)
+#     t.start()
+#     print('Server loop running is thread:',t.getName())
+#
+#     with socket.socket(socket.AF_INET,socket.SOCK_STREAM) as s:
+#         s.connect((ip,port))
+#
+#          # Send the data
+#         message = b'Hello, world'
+#         print('Sending : {!r}'.format(message))
+#         len_sent = s.send(message)
+#
+#         # Receive a response
+#         response = s.recv(1024)
+#         print('Received: {!r}'.format(response))
+#
 
 
 
