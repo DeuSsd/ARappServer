@@ -138,21 +138,24 @@ s.close()
 while True:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         # Connect to server and send data
+        # while True:
         sock.connect((HOST, PORT))
         # socket.sendall(data)
         # Receive data from the server and shut down
         # length = int(sock.recv(1024).decode())
         # setLength(socket,data)
+
         dataMsg = 2
-        time.sleep(1)
+        # time.sleep()
         data = str(dataMsg).encode()
         sock.sendall(data)
         # lenght = getLength()
         lenght = 10240
         received = sock.recv(lenght)
-        # time.sleep(1)
-        print("Sent:     {}".format(data))
-        print("Received: {}".format(received))
+        # time.sleep(0.0001)
+        sock.close()
+        # print("Sent:     {}".format(data))
+        # print("Received: {}".format(received))
         # print("------")
 # #
 # #

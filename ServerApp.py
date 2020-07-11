@@ -10,21 +10,43 @@ class TCPRequestHandler(socketserver.BaseRequestHandler):
         cur_thread = threading.current_thread()
         response = "{}: {}".format(cur_thread.name, data)
         self.request.sendall(response.encode())
-        print(threading.current_thread().getName())
-        print(server.server_address)
+        # print(threading.current_thread().getName())
+        # print(server.server_address)
+
+    def finish(self):
+        # cur_thread = threading.active_count()
+        cur_thread = threading.enumerate()
+
+        print(cur_thread)
+    # def finish(self):
+    #     threading.current_thread().s
+        # threading._active
+
+# def sadasd():
+    # print(threading.current_thread().getName())
+#
+# C:\Users\User\AppData\Local\Programs\Python\Python38-32\python.exe C:/AR-Project/AR-Server/server/ServerApp.py
+# Exception ignored in thread started by: <bound method Thread._bootstrap of <Thread(Thread-1 258 290, initial 12256)>>
+# Traceback (most recent call last):
+#   File "C:\Users\User\AppData\Local\Programs\Python\Python38-32\lib\threading.py", line 890, in _bootstrap
+#     self._bootstrap_inner()
+#   File "C:\Users\User\AppData\Local\Programs\Python\Python38-32\lib\threading.py", line 918, in _bootstrap_inner
+#     self._set_tstate_lock()
+#   File "C:\Users\User\AppData\Local\Programs\Python\Python38-32\lib\threading.py", line 913, in _set_tstate_lock
+#     _shutdown_locks.add(self._tstate_lock)
+# MemoryError:
 
 
-def sadasd():
-    print(threading.current_thread().getName())
 
 
 if __name__ == "__main__":
     # Port 0 means to select an arbitrary unused port
     HOST, PORT = "localhost", 9999
     with socketserver.ThreadingTCPServer((HOST,PORT), TCPRequestHandler) as server:
-        server_threading = threading.Thread(target=server.serve_forever())
-        server_threading.setDaemon(False)
-        server_threading.start()
+        # server_threading = threading.Thread(target=server.serve_forever())
+        # server_threading.setDaemon(False)
+        # server_threading.start()
+        server.serve_forever()
 #
 #
 # if __name__ == "__main__":
