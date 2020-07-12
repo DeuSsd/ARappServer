@@ -6,7 +6,7 @@ msg1 = {
     "parametrs": {
         "collectionName": "radiator",
         "filter": {
-            "Temperature": {'$gt': 95}
+            "Temperature": {'$lt': 50}
         }
     }
 }
@@ -50,43 +50,32 @@ msg6 = {
     "ObjectID": 1
 }
 
-def getLength(Socket):
-    length = 0
-    while not length:
-        length = int(Socket.recv(1024).decode())
-    Socket.sendall(bytes(length))
-    return length
-
-def setLength(Socket,msg):
-    Socket.sendall(bytes(len(msg)))
-    length = int(Socket.recv(1024).decode())
-    while not len(msg) == length:
-        length = int(Socket.recv(1024).decode())
-
-    return length
-msg = [
-    # msg1,msg2,msg3,msg4,msg5,
-       msg6]
-
-# HOST, PORT = "25.79.246.93", 50000
-HOST, PORT = "192.168.1.100", 50000
-
+msg = [msg1,msg2,msg3]#,msg4#,msg5]
+#getlockal ip
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.connect(("8.8.8.8", 80))
+# print(s.getsockname()[0])
+# HOST, PORT = "25.79.246.93", 9090
+# HOST, PORT = "localhost", 9999
+# s.close()
+HOST, PORT = s.getsockname()[0], 50000
+# HOST, PORT = "localhost", 40000
 # Create a socket (SOCK_STREAM means a TCP socket)
-for dataMsg in msg:
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-        # Connect to server and send data
-        sock.connect((HOST, PORT))
-        # socket.sendall(data)
-        # Receive data from the server and shut down
-        # length = int(sock.recv(1024).decode())
-        # setLength(socket,data)
-        data = str(dataMsg).encode()
-        sock.sendall(data)
-        # lenght = getLength()
-        lenght = 10240
-        received = sock.recv(lenght).decode()
-        # time.sleep(1)
-        print("Sent:     {}".format(data))
-        print("Received: {}".format(received))
-        print("------")
-
+# msg = ["sd"]
+while True:
+    for dataMsg in msg:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            # Connect to server and send data
+            # while True:
+            sock.connect((HOST, PORT))
+            # socket.sendall(data)
+            # Receive data from the server and shut down
+            data = str(dataMsg).encode()
+            sock.sendall(data)
+            lenght = 20480
+            received = sock.recv(lenght)
+            # print("Sent:     {}".format(data))
+            # print("Received: {}".format(received))
+            # print("------")
+            time.sleep(0.01)
+            sock.close()
