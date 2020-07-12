@@ -1,29 +1,79 @@
 import socket
-import threading
-import socketserver
+import selectors
+
+HOST, PORT = 'localhost', 12050
+
+selector = selectors.DefaultSelector()
 
 
-class TCPRequestHandler(socketserver.BaseRequestHandler):
+def server():
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server_socket.bind((HOST, PORT))
+    server_socket.listen()
+    selector.register(fileobj=server_socket, events=selectors.EVENT_READ, data=accept_connection)
 
-    def handle(self):
-        data = self.request.recv(1024)
-        cur_thread = threading.current_thread()
-        response = "{}: {}".format(cur_thread.name, data)
-        self.request.sendall(response.encode())
-        # print(threading.current_thread().getName())
-        # print(server.server_address)
 
-    def finish(self):
-        # cur_thread = threading.active_count()
-        cur_thread = threading.enumerate()
+def accept_connection(server_socket):
+    client_socket, addr = server_socket.accept()
+    print('Connection from ', addr)
+    selector.register(fileobj=client_socket, events=selectors.EVENT_READ, data=send_message)
 
-        print(cur_thread)
-    # def finish(self):
-    #     threading.current_thread().s
-        # threading._active
+
+def send_message(client_socket):
+    request = client_socket.recv(4096)
+
+    if request:
+        response = "hi".encode()
+        client_socket.send(response)
+    else:
+        selector.unregister(client_socket)
+        client_socket.close()
+
+
+def event_loop():
+    while True:
+        events = selector.select()
+        for key,_ in events:
+            callback = key.data
+            callback(key.fileobj)
+
+if __name__ == '__main__':
+    server()
+
+    event_loop()
+
+#   генератор
+#   карусель(событийный список) очередь
+#
+#
+
+# import socket
+# import threading
+# import socketserver
+
+
+# class TCPRequestHandler(socketserver.BaseRequestHandler):
+#
+# def handle(self):
+# data = self.request.recv(1024)
+# cur_thread = threading.current_thread()
+# response = "{}: {}".format(cur_thread.name, data)
+# self.request.sendall(response.encode())
+# print(threading.current_thread().getName())
+# print(server.server_address)
+
+# def finish(self):
+# cur_thread = threading.active_count()
+# cur_thread = threading.enumerate()
+
+# print(cur_thread)
+# def finish(self):
+#     threading.current_thread().s
+# threading._active
 
 # def sadasd():
-    # print(threading.current_thread().getName())
+# print(threading.current_thread().getName())
 #
 # C:\Users\User\AppData\Local\Programs\Python\Python38-32\python.exe C:/AR-Project/AR-Server/server/ServerApp.py
 # Exception ignored in thread started by: <bound method Thread._bootstrap of <Thread(Thread-1 258 290, initial 12256)>>
@@ -37,17 +87,15 @@ class TCPRequestHandler(socketserver.BaseRequestHandler):
 # MemoryError:
 
 
+# if __name__ == "__main__":
+# Port 0 means to select an arbitrary unused port
+# HOST, PORT = "localhost", 9999
+# with socketserver.ThreadingTCPServer((HOST,PORT), TCPRequestHandler) as server:
+# server_threading = threading.Thread(target=server.serve_forever())
+# server_threading.setDaemon(False)
+# server_threading.start()
+# server.serve_forever()
 
-
-if __name__ == "__main__":
-    # Port 0 means to select an arbitrary unused port
-    HOST, PORT = "localhost", 9999
-    with socketserver.ThreadingTCPServer((HOST,PORT), TCPRequestHandler) as server:
-        # server_threading = threading.Thread(target=server.serve_forever())
-        # server_threading.setDaemon(False)
-        # server_threading.start()
-        server.serve_forever()
-#
 #
 # if __name__ == "__main__":
 #     HOST,PORT = "localhost",0
@@ -72,13 +120,6 @@ if __name__ == "__main__":
 #         print('Received: {!r}'.format(response))
 
 
-
-
-
-
-
-
-
 # class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
 #
 #     def handle(self):
@@ -92,28 +133,24 @@ if __name__ == "__main__":
 #
 # if __name__ == "__main__":
 #     # # Port 0 means to select an arbitrary unused port
-    # HOST, PORT = "localhost", 0
-    #
-    # server = ThreadedTCPServer((HOST, PORT), ThreadedTCPRequestHandler)
-    # ip, port = server.server_address
-    # print((ip, port))
-    #
-    # # Start a thread with the server -- that thread will then start one
-    # # more thread for each request
-    # server_thread = threading.Thread(target=server.serve_forever)
-    # # Exit the server thread when the main thread terminates
-    # server_thread.daemon = False
-    # server_thread.start()
-    # print("Server loop running in thread:", server_thread.name)
-    #
-    #
-    #
-    # # server.shutdown()
-    # # server.server_close()
-
-
-
-
+# HOST, PORT = "localhost", 0
+#
+# server = ThreadedTCPServer((HOST, PORT), ThreadedTCPRequestHandler)
+# ip, port = server.server_address
+# print((ip, port))
+#
+# # Start a thread with the server -- that thread will then start one
+# # more thread for each request
+# server_thread = threading.Thread(target=server.serve_forever)
+# # Exit the server thread when the main thread terminates
+# server_thread.daemon = False
+# server_thread.start()
+# print("Server loop running in thread:", server_thread.name)
+#
+#
+#
+# # server.shutdown()
+# # server.server_close()
 
 
 # # import socket programming library
@@ -188,9 +225,6 @@ if __name__ == "__main__":
 #
 
 
-
-
-
 #
 # class ThreadedRequestHandler(socketserver.BaseRequestHandler):
 #     def handle(self):
@@ -226,20 +260,6 @@ if __name__ == "__main__":
 #         response = s.recv(1024)
 #         print('Received: {!r}'.format(response))
 #
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # class TCPHandler(socketserver.BaseRequestHandler):

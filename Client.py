@@ -125,12 +125,12 @@ import time
 # #     return length
 # # msg = [msg1,msg2,msg3,msg4,msg5]
 # # #getlockal ip
-s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-s.connect(("8.8.8.8", 80))
+# s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+# s.connect(("8.8.8.8", 80))
 # print(s.getsockname()[0])
 # HOST, PORT = "25.79.246.93", 9090
-HOST, PORT = "localhost", 9999
-s.close()
+HOST, PORT = "localhost", 12050
+# s.close()
 # HOST, PORT = "25.79.246.93", 50000
 # HOST, PORT = "localhost", 40000
 # Create a socket (SOCK_STREAM means a TCP socket)
@@ -150,7 +150,7 @@ while True:
         data = str(dataMsg).encode()
         sock.sendall(data)
         # lenght = getLength()
-        lenght = 10240
+        lenght = 4096
         received = sock.recv(lenght)
         # time.sleep(0.0001)
         sock.close()
