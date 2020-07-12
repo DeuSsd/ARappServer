@@ -129,7 +129,7 @@ import time
 # s.connect(("8.8.8.8", 80))
 # print(s.getsockname()[0])
 # HOST, PORT = "25.79.246.93", 9090
-HOST, PORT = "localhost", 12050
+HOST, PORT = "localhost", 9999
 # s.close()
 # HOST, PORT = "25.79.246.93", 50000
 # HOST, PORT = "localhost", 40000
@@ -152,10 +152,10 @@ while True:
         # lenght = getLength()
         lenght = 4096
         received = sock.recv(lenght)
-        print("Sent:     {}".format(data))
-        print("Received: {}".format(received))
-        print("------")
-        time.sleep(1)
+        # print("Sent:     {}".format(data))
+        # print("Received: {}".format(received))
+        # print("------")
+        time.sleep(0.1)
         sock.close()
 # #
 # #
