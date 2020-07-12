@@ -152,10 +152,10 @@ while True:
         # lenght = getLength()
         lenght = 4096
         received = sock.recv(lenght)
-        # print("Sent:     {}".format(data))
-        # print("Received: {}".format(received))
-        # print("------")
-        time.sleep(0.1)
+        print("Sent:     {}".format(data))
+        print("Received: {}".format(received))
+        print("------")
+        time.sleep(1)
         sock.close()
 # #
 # #
