@@ -145,18 +145,18 @@ while True:
         # length = int(sock.recv(1024).decode())
         # setLength(socket,data)
 
-        dataMsg = 2
-        # time.sleep()
+        dataMsg = "asda"
+        # time.sleep(0.001)
         data = str(dataMsg).encode()
         sock.sendall(data)
         # lenght = getLength()
         lenght = 4096
         received = sock.recv(lenght)
-        # time.sleep(0.0001)
+        print("Sent:     {}".format(data))
+        print("Received: {}".format(received))
+        print("------")
+        time.sleep(1)
         sock.close()
-        # print("Sent:     {}".format(data))
-        # print("Received: {}".format(received))
-        # print("------")
 # #
 # #
 # #

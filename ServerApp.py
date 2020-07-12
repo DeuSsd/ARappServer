@@ -1,9 +1,12 @@
 import socket
-import selectors
+from select import select
 
 HOST, PORT = 'localhost', 12050
 
-selector = selectors.DefaultSelector()
+tasks = [] #тут используется модуль
+
+to_read = {}
+to_write = {}
 
 
 def server():
@@ -11,41 +14,60 @@ def server():
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server_socket.bind((HOST, PORT))
     server_socket.listen()
-    selector.register(fileobj=server_socket, events=selectors.EVENT_READ, data=accept_connection)
+    while True:
+        yield ('read', server_socket)
+        client_socket, addr = server_socket.accept()
+        print('Connection from ', addr)
+        tasks.append(client(client_socket))
 
+def client(client_socket):
+    while True:
+        yield ('read', client_socket)
+        request = client_socket.recv(4096)
 
-def accept_connection(server_socket):
-    client_socket, addr = server_socket.accept()
-    print('Connection from ', addr)
-    selector.register(fileobj=client_socket, events=selectors.EVENT_READ, data=send_message)
-
-
-def send_message(client_socket):
-    request = client_socket.recv(4096)
-
-    if request:
-        response = "hi".encode()
-        client_socket.send(response)
-    else:
-        selector.unregister(client_socket)
-        client_socket.close()
+        # print(request)
+        if not request:
+            break
+        else:
+            response = "hi".encode()
+            yield ('write',client_socket)
+            client_socket.send(response)
+    client_socket.close()
 
 
 def event_loop():
-    while True:
-        events = selector.select()
-        for key,_ in events:
-            callback = key.data
-            callback(key.fileobj)
+    while any([tasks,to_read,to_write]):
+        while not tasks:
+            print(len(tasks),len(to_read),len(to_write))
+            ready_to_read,ready_to_write,_= select(to_read,to_write,[])
+            # print(ready_to_read,ready_to_write)
+            for sock in ready_to_read:
+                tasks.append(to_read.pop(sock))
+                # print(tasks)
+
+            for sock in ready_to_write:
+                tasks.append(to_write.pop(sock))
+
+        try:
+            task = tasks.pop(0)
+            reason,sock = next(task)
+
+            if reason == 'read':
+                to_read[sock] = task
+            if reason == 'write':
+                to_write[sock] = task
+        except StopIteration:
+            print('Done!')
+
 
 if __name__ == '__main__':
-    server()
+   tasks.append(server())
+   event_loop()
 
-    event_loop()
 
 #   генератор
 #   карусель(событийный список) очередь
-#
+# блокирующие методы
 #
 
 # import socket
