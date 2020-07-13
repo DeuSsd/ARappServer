@@ -2,6 +2,7 @@ from server import DBinterface as iDB
 import datetime
 from datetime import timezone
 import ast
+from server import ForAuthen as FA
 
 
 def loadMessage(msg):
@@ -39,6 +40,11 @@ def loadMessage(msg):
         delete:
             запрос на удаление данных из коллекции "collectionName",
             удовлетворяющих фильтру "filter";
+        authen:
+            запрос на уйтентификацию пользователя
+            (проверка логина и пароля на соответствие);
+
+
 
     :param msg: запрос от клиента, который нужно обработать - тип str
     :return: ответ с сервера в виде сообщения типа str, которое содержит JSON объект
@@ -70,10 +76,20 @@ def loadMessage(msg):
             result = iDB.writeOne(collectionName, dataJSON).inserted_id
             # print(result)
             resultData = "ОК"
+        elif methodJSON == "logIn":
+            print(msg)
+            parametrsMsg = msg["parametrs"]
+            collectionName = parametrsMsg["collectionName"]
+            login = parametrsMsg["name"]
+            password = parametrsMsg["password"]
+            result = FA.authen(login, password)
+            print(result)
+            resultData = result
         return responseJSON(resultData)
-    except:
+    except IndexError:
         resultData = "Wrong Request"
         return responseJSON(resultData)
+
 
 
 # ответ на запрос
