@@ -16,13 +16,13 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
 
     def handle(self):
         lenght = 10240
-        self.data = self.request.recv(lenght).decode()
+        self.data = self.request.recv(lenght).decode('utf8')
         print("------------\n"
               "Client address: {}:{}\n"
               "Request: {}".format(*self.client_address, self.data))
         responseMsg = handlerJSON.loadMessage(self.data)
         print("Responce: {}".format(responseMsg))
-        msg = str(responseMsg).encode()
+        msg = str(responseMsg).encode('utf8')
         self.request.sendall(msg)
 
 if __name__ == "__main__":

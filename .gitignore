@@ -253,7 +253,8 @@ paket-files/
 *.TXT
 *.txt
 *.ico
-
+*.pem
+Test.py
 __pycache__/
 
 

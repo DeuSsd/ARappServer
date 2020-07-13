@@ -1,7 +1,7 @@
 # Тут будут храниться методы для работы с БД
 from pymongo import MongoClient, results, cursor
 import pymongo
-from ForAuthen import coding
+from server.ForAuthen import coding
 # подключаемся к базе данных MongoDB
 client = MongoClient(port=27017)
 
@@ -120,13 +120,13 @@ def getNamefromlogin(login, password):
     except IndexError:
         a="a"
     if a==login:
-        a="true"
+        a="Successful login and password"
     else:
-        a="false"
-    if a == "true":
-        print("Successful login and password")
-    else:
-        print("Incorrect login or password")
+        a="Incorrect login or password"
+#    if a == "true":
+#       print("Successful login and password")
+#    else:
+#        print("Incorrect login or password")
     return a
 # метод возвращает password коллекции физического объекта на вход его id
 def getPasswordOfCollection(objectId):
