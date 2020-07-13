@@ -3,8 +3,8 @@ from select import select
 from server import handlerJSON
 
 
-# HOST, PORT = 'localhost', 9999
-HOST, PORT = "25.79.246.93", 9090
+HOST, PORT = 'localhost', 9999
+# HOST, PORT = "25.79.246.93", 9090
 
 tasks = [] #тут используется модуль
 
@@ -71,3 +71,39 @@ if __name__ == '__main__':
     tasks.append(server())
     event_loop()
 
+# =======
+# import socketserver
+# import socket
+# from server import handlerJSON
+#
+#
+# def getLocalExternalIP():
+#     # getlockal ip
+#     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as temp_socket:
+#         temp_socket.connect(("8.8.8.8", 80))
+#         HOST = str(temp_socket.getsockname()[0])
+#         print("Lockal ip: {}".format(HOST))
+#     return HOST
+#
+#
+# class MyTCPHandler(socketserver.BaseRequestHandler):
+#
+#     def handle(self):
+#         lenght = 10240
+#         self.data = self.request.recv(lenght).decode('utf8')
+#         print("------------\n"
+#               "Client address: {}:{}\n"
+#               "Request: {}".format(*self.client_address, self.data))
+#         responseMsg = handlerJSON.loadMessage(self.data)
+#         print("Responce: {}".format(responseMsg))
+#         msg = str(responseMsg).encode('utf8')
+#         self.request.sendall(msg)
+#
+# if __name__ == "__main__":
+#     HOST, PORT = getLocalExternalIP(), 50000
+#     # Create the server, binding to localhost on port 9999
+#     with socketserver.TCPServer((HOST, PORT), MyTCPHandler) as server:
+#         # Activate the server; this will keep running
+#         server.serve_forever()
+#         server.server_close()
+# >>>>>>> dev

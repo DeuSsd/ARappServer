@@ -1,12 +1,14 @@
 # Тут будут храниться методы для работы с БД
 from pymongo import MongoClient, results, cursor
 import pymongo
+from server.ForAuthen import coding
 
 # подключаемся к базе данных MongoDB
 client = MongoClient(port=27017)
 
 # используем БД: ARdb
-db = client.ARdb
+# db_data = client.ARdb
+db = client.UserDB
 
 
 # создание новой коллекции (добавление объекта )
@@ -22,6 +24,11 @@ def createNewObject(objectName):
 
 # метод возвращает новый ID физического объекта
 def getLastId(collectionName):
+    """
+    вместо getNewId()
+    :param collectionName:
+    :return:
+    """
     try:
         # вытаскивает все объекты из коллекции, забирает последнюю запись и вытаскивает из неё значение id
         thisCollection = db.get_collection(collectionName)
@@ -61,10 +68,10 @@ def getMany(collectionName, query=None):
 
 
 # метод возвращает последний объект коллекции collectionName
-#TODO может быть стоит везде добавить возможность через атрибуты отключать ненужные поля
+# TODO может быть стоит везде добавить возможность через атрибуты отключать ненужные поля
 def getLastOne(collectionName):
     thisCollection = db.get_collection(collectionName)
-    return thisCollection.find(projection={'_id': False,'id':False}).sort('$natural', -1).limit(1)[0]
+    return thisCollection.find(projection={'_id': False, 'id': False}).sort('$natural', -1).limit(1)[0]
 
 
 # метод возвращает объект коллекции collectionName по фильтру filter
@@ -103,6 +110,36 @@ def deleteOne(collectionName, query):
 def deleteMany(collectionName, query):
     thisCollection = db.get_collection(collectionName)
     return thisCollection.delete_many(query).raw_result
+
+
+# метод добавляет одну запись в коллекцию objectName
+def writeOnewithshifr(id, name, password, code):
+    sh_password = coding(password)
+    db.users.insert_one({"id": id, "name": name, "password": sh_password, "code": code})
+
+
+# проверка логина и пароля пользователя
+def getNamefromlogin(login, password):
+    #print('login:', login,
+    #      '\npassword: ', password)
+    try:
+        a = db.users.find({"name": login, "password": coding(password)})[0]["name"]
+    except IndexError:
+        a = "a"
+    if a == login:
+        a = "Successful login and password"
+    else:
+        a = "Incorrect login or password"
+    #    if a == "true":
+    #       print("Successful login and password")
+    #    else:
+    #        print("Incorrect login or password")
+    return a
+
+
+# метод возвращает password коллекции физического объекта на вход его id
+def getPasswordOfCollection(objectId):
+    return db.users.find({"id": objectId})[0]["password"]
 
 # ////////////////////////////testing///////////////////////////////
 # # writeOne("radiator",{"Name": "sds","DatTime":datetime.now()})
