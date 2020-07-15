@@ -254,6 +254,7 @@ paket-files/
 *.txt
 *.ico
 *.pem
+*.bin
 Test.py
 __pycache__/
 

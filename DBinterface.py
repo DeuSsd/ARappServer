@@ -125,7 +125,10 @@ def getNamefromlogin(login, password):
     try:
         a = db.users.find({"name": login, "password": coding(password)})[0]["name"]
     except IndexError:
-        a = "a"
+        a = "None"
+    # except:
+    #     print("Error")
+    #TODO handle another except
     if a == login:
         a = "Successful login and password"
     else:

@@ -3,7 +3,7 @@ import datetime
 from datetime import timezone
 import ast
 from server import ForAuthen as FA
-
+import base64
 
 def loadMessage(msg):
     """
@@ -94,9 +94,13 @@ def loadMessage(msg):
         elif methodJSON == "logIn":
             print(msg)
             parametrsMsg = msg["parametrs"]
-            collectionName = parametrsMsg["collectionName"]
+            # collectionName = parametrsMsg["collectionName"]
+            collectionName = "users"
             login = parametrsMsg["name"]
-            password = parametrsMsg["password"]
+            password_b64 = parametrsMsg["password"]
+            # password = password_b64
+            print("password_b64",password_b64)
+            password = base64.b64decode(password_b64)
             print("passss/; ",password)
             result = FA.authen(login, password)
             print(result)
