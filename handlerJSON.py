@@ -4,6 +4,7 @@ from datetime import timezone
 import ast
 from server import ForAuthen as FA
 import base64
+from Crypto.PublicKey import RSA
 
 def loadMessage(msg):
     """
@@ -105,6 +106,12 @@ def loadMessage(msg):
             result = FA.authen(login, password)
             print(result)
             resultData = result
+
+
+        elif methodJSON == "getPublicKey":
+            key = RSA.importKey(open('publickey.pem').read())
+            key.export_key()
+            resultData= str(key.export_key())
 
         return responseJSON(resultData)
     except StopIteration:

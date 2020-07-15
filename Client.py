@@ -64,10 +64,13 @@ msg6 = {
     "parametrs": {
         "collectionName": "users",
         "name": "Denis",
-        # "password": base64.b64encode(ciphertext).decode()
+        "password": base64.b64encode(ciphertext).decode()
         # "password": ciphertext
-        "password": "BKxpVOz40cf+AvStNcgNEmpBUCq2NGBMYtHvI+W8h6QJ3KDy4WryD+/c8pouLikq3Qa3CNPlrMPIGxK+o4uO6O8kqFN/LARoNVDMRamG+JI1bdnZ0fUsCaNQZ4tlBxY21u0tL+K9ImQuN1t4GMd0hFb2NyTE2s1Ki2Sh9lHCFEwMl6MtiswOLt2mqLnqrQLJvBfIghRd+5WZc5Du9t8VDiRtHC4hjcHjnrz3shRkjj6NhFyURGyZ7uR/M/S0V3fnw5XLXCdELUv25+fs4jUI1NkidjJalOUdUMB1OijGfMjO0m0LH4HoOu+ZDAMgxjP+1KVCOVU2YhdI7gg4QknpRq3adaU4JE/VQd+QZBqShb6/t7An8JpzHo/9UY/8pBmkI2XrMAeW"
+        # "password": "BKxpVOz40cf+AvStNcgNEmpBUCq2NGBMYtHvI+W8h6QJ3KDy4WryD+/c8pouLikq3Qa3CNPlrMPIGxK+o4uO6O8kqFN/LARoNVDMRamG+JI1bdnZ0fUsCaNQZ4tlBxY21u0tL+K9ImQuN1t4GMd0hFb2NyTE2s1Ki2Sh9lHCFEwMl6MtiswOLt2mqLnqrQLJvBfIghRd+5WZc5Du9t8VDiRtHC4hjcHjnrz3shRkjj6NhFyURGyZ7uR/M/S0V3fnw5XLXCdELUv25+fs4jUI1NkidjJalOUdUMB1OijGfMjO0m0LH4HoOu+ZDAMgxjP+1KVCOVU2YhdI7gg4QknpRq3adaU4JE/VQd+QZBqShb6/t7An8JpzHo/9UY/8pBmkI2XrMAeW"
     }
+}
+msg8 = {
+    "method": "getPublicKey"
 }
 
 
@@ -92,10 +95,11 @@ def setLength(Socket,msg):
 
     return length
 msg = [
-    msg1,
+    # msg1,
     # ,msg2,msg3,msg4,msg5,
     msg6
     # msg7
+    # msg8
 ]
 
 # HOST, PORT = "25.79.246.93", 50000

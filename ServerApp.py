@@ -3,8 +3,8 @@ from select import select
 from server import handlerJSON
 
 
-HOST, PORT = 'localhost', 9999
-# HOST, PORT = "25.79.246.93", 9090
+# HOST, PORT = 'localhost', 9999
+HOST, PORT = "25.79.246.93", 9090
 
 tasks = [] #тут используется модуль
 
