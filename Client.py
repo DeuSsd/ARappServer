@@ -116,8 +116,8 @@ def getLocalExternalIP():
     return HOST
 
 
-# HOST, PORT = getLocalExternalIP(), 50000
-HOST, PORT = "localhost", 9999
+HOST, PORT = getLocalExternalIP(), 50000
+# HOST, PORT = "localhost", 9999
 # Create a socket (SOCK_STREAM means a TCP socket)
 for dataMsg in msg:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:

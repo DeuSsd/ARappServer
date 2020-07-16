@@ -1,7 +1,7 @@
 # Тут будут храниться методы для работы с БД
 from pymongo import MongoClient, results, cursor
 import pymongo
-from server.ForAuthen import coding
+from server.Authentification import coding
 
 # подключаемся к базе данных MongoDB
 client = MongoClient(port=27017)

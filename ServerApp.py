@@ -1,7 +1,7 @@
 import socket
 from select import select
 from server import handlerJSON
-from server.ForAuthen import checkKeys, WrongDES_Key, WrongRSA_Key
+from server.Authentification import checkKeys, WrongDES_Key, WrongRSA_Key
 
 HOST, PORT = 'localhost', 9999
 # HOST, PORT = "25.79.246.93", 9090
