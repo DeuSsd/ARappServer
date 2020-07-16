@@ -254,6 +254,12 @@ paket-files/
 *.txt
 *.ico
 *.pem
+*.bin
+*.cs
+
+/CS
+/CS_test
+/Prefubs
 Test.py
 __pycache__/
 
