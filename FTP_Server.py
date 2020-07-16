@@ -37,8 +37,8 @@ def main():
     # handler.passive_ports = range(60000, 65535)
 
     # Instantiate FTP server class and listen on 0.0.0.0:2121
-    address = (getLocalExternalIP(), 1026)
-    # address = ('25.79.246.93', 9090)
+    # address = (getLocalExternalIP(), 15000)
+    address = ('25.79.246.93', 15000)
     print(address)
     server = FTPServer(address, handler)
 

@@ -10,25 +10,28 @@ def getLocalExternalIP():
 
 ftp = FTP('')
 # ftp.connect('localhost',1026)
-ftp.connect(getLocalExternalIP(),1026)
+ftp.connect(getLocalExternalIP(),12000)
 ftp.login()
-ftp.cwd('') #replace with your directory
-# ftp.retrlines('LIST')
-
+ftp.cwd('/CS_test') #replace with your directory
+# l = list(ftp.retrlines('NLST'))
+# l = ftp.nlst()
+# print(l)
 # def uploadFile():
 #  filename = 'testfile.txt' #replace with your file in your home folder
 #  ftp.storbinary('STOR '+filename, open(filename, 'rb'))
 #  ftp.quit()
 
-def downloadFile():
- filename = 'Client.cs' #replace with your file in the directory ('directory_name')
+def downloadFile(filename):
+ # filename = 'Client.cs' #replace with your file in the directory ('directory_name')
  localfile = open(filename, 'wb')
  ftp.retrbinary('RETR ' + filename, localfile.write, 1024)
- ftp.quit()
+ # ftp.quit()
  localfile.close()
 
-# uploadFile()
-downloadFile()
+# for item in l:
+# # uploadFile()
+#     print(item)
+downloadFile('FindObjScript.cs')
 
 
 
