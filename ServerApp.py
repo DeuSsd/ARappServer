@@ -1,10 +1,11 @@
 import socket
 from select import select
 from server import handlerJSON
+from server.ForAuthen import checkKeys,WrongDES_Key,WrongRSA_Key
 
 
-# HOST, PORT = 'localhost', 9999
-HOST, PORT = "25.79.246.93", 9090
+HOST, PORT = 'localhost', 9999
+# HOST, PORT = "25.79.246.93", 9090
 
 tasks = [] #тут используется модуль
 
@@ -65,12 +66,21 @@ def event_loop():
             # print("I'm died again!")
             pass
 
+def pause():
+    programPause = input("\nPress the <ENTER> key to continue...")
 
 if __name__ == '__main__':
-    print(HOST)
-    tasks.append(server())
-    event_loop()
-
+    try:
+        print(HOST)
+        checkKeys()
+        tasks.append(server())
+        event_loop()
+    except WrongDES_Key as exDES:
+        print(exDES.message)
+        pause()
+    except WrongRSA_Key as exRSA:
+        print(exRSA.message)
+        pause()
 # =======
 # import socketserver
 # import socket

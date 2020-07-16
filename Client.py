@@ -53,7 +53,7 @@ from Crypto.PublicKey import RSA
 
 import base64
 
-messages = b'adfgnheutjvrtyhn895'
+messages = b'qwerty12'
 key = RSA.importKey(open('publickey.pem').read())
 print()
 cipher = PKCS1_OAEP.new(key)
@@ -115,8 +115,8 @@ def getLocalExternalIP():
     return HOST
 
 
-HOST, PORT = getLocalExternalIP(), 50000
-# HOST, PORT = "localhost", 9999
+# HOST, PORT = getLocalExternalIP(), 50000
+HOST, PORT = "localhost", 9999
 # Create a socket (SOCK_STREAM means a TCP socket)
 for dataMsg in msg:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:

@@ -6,6 +6,7 @@ from server import ForAuthen as FA
 import base64
 from Crypto.PublicKey import RSA
 
+
 def loadMessage(msg):
     """
     Данный метод принимает на вход сообщение (msg) типа str, которое

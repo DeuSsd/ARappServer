@@ -5,11 +5,16 @@ from Crypto.PublicKey import RSA
 from server import DBinterface as iDB
 
 BLOCK_SIZE = 16
+DES_KEY_FILE = 'key.txt'
+RSA_PRIVATE_KEY = 'privatekey.pem'
+TEST_LOGIN = "TEST"
+TEST_PASSWORD = "TEST0912375981237059812730"
 
 
+# Обработка ошибки отсутствия файла с DES KEY
 class FileEmpty(Exception):
-    def __init__(self, *args):
-        self.message = "There is not DSA-encryption key in the file 'Key.txt'"
+    def __init__(self, arg):
+        self.message = f"There is not DSA-encryption key in the file '{arg}'"
 
     def __str__(self):
         if self.message:
@@ -17,31 +22,68 @@ class FileEmpty(Exception):
         else:
             return 'FileEmpty has been raised'
 
-class WrongKey(Exception):
-    def __init__(self, *args):
-        self.message = "There is changed DSA-encryption key in the file 'Key.txt'" \
+
+# Обработка ошибки неправильного ключа DES KEY
+class WrongDES_Key(Exception):
+    def __init__(self, arg):
+        self.message = f"There is changed DSA-encryption key in the file '{arg}'" \
                        "\nChange DSA-encryption key or rewrite all users (including the base user) in database."
 
     def __str__(self):
         if self.message:
-            return 'WrongKey, {0} '.format(self.message)
+            return 'WrongDES_Key, {0} '.format(self.message)
         else:
-            return 'WrongKey has been raised'
+            return 'WrongDES_Key has been raised'
+
+# Обработка ошибки неправильного ключа DES KEY
+class WrongRSA_Key(Exception):
+    def __init__(self, arg):
+        self.message = f"The file '{arg}' with the private encryption key was not found" \
+                       "\nPrivate encryption key not found."
+
+    def __str__(self):
+        if self.message:
+            return 'WrongRSA_Key, {0} '.format(self.message)
+        else:
+            return 'WrongRSA_Key has been raised'
+
+def checkDES_Key():
+    '''
+    Проверка на наличие ключа DES KEY
+    :return:
+    '''
+    if "Incorrect login or password" == iDB.getNamefromlogin(TEST_LOGIN, TEST_PASSWORD):
+        raise WrongDES_Key(DES_KEY_FILE)
+
+def checkRSA_PrivateKey():
+    '''
+    Проверка на наличие ключа DES KEY
+    :return:
+    '''
+    try:
+        if not open(RSA_PRIVATE_KEY).read():
+            raise WrongRSA_Key(RSA_PRIVATE_KEY) #TODO обработать отсутствие данных в ключе
+    except:
+        raise WrongRSA_Key(RSA_PRIVATE_KEY)
+
+
+def checkKeys():
+    checkDES_Key()
+    checkRSA_PrivateKey()
 
 try:
-    file = open("Key.txt", "rb")
-    if not open("Key.txt", "rb").read():
-        raise FileEmpty
+    file = open(DES_KEY_FILE, "rb")
+    if not open(DES_KEY_FILE, "rb").read():
+        raise FileEmpty(DES_KEY_FILE)
     key = (file.read())
     file.close()
 except FileNotFoundError:
-    file = open("Key.txt", "wb")
-    print("No such file: 'Key.txt'")
-    raise FileEmpty
+    file = open(DES_KEY_FILE, "wb")
+    print(f"No such file: '{DES_KEY_FILE}'")
+    raise FileEmpty(DES_KEY_FILE)
 
-result = iDB.getNamefromlogin("TEST", "TEST0912375981237059812730")
-if result == "Incorrect login or password":
-    raise WrongKey
+
+##########################################################
 
 def coding(password):
     '''
@@ -71,7 +113,6 @@ def coding(password):
 #     print("data", data)
 #     return data
 
-
 def authen(login, password):
     '''
     Производится аутентификация пользователя по логину и паролю.
@@ -83,7 +124,7 @@ def authen(login, password):
     :return: <class 'str'> Возвращается резщультат аутентификации:
             "Successful authentication." or "Incorrect login or password."
     '''
-    key = RSA.importKey(open('privatekey.pem').read())
+    key = RSA.importKey(open(RSA_PRIVATE_KEY).read())
     cipher = PKCS1_OAEP.new(key)
     password_decrypt = cipher.decrypt(password)
     password_decode = password_decrypt.decode()
