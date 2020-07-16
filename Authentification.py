@@ -2,14 +2,14 @@ from Cryptodome.Cipher import DES
 from Crypto.Util.Padding import pad, unpad
 from Crypto.Cipher import PKCS1_OAEP
 from Crypto.PublicKey import RSA
-from server import DBinterface as iDB
+from server.DBinterface import User_DB
 
 BLOCK_SIZE = 16
 DES_KEY_FILE = 'key.txt'
 RSA_PRIVATE_KEY = 'privatekey.pem'
 TEST_LOGIN = "TEST"
 TEST_PASSWORD = "TEST0912375981237059812730"
-
+DB = User_DB()
 
 # Обработка ошибки отсутствия файла с DES KEY
 class FileEmpty(Exception):
@@ -35,6 +35,7 @@ class WrongDES_Key(Exception):
         else:
             return 'WrongDES_Key has been raised'
 
+
 # Обработка ошибки неправильного ключа DES KEY
 class WrongRSA_Key(Exception):
     def __init__(self, arg):
@@ -47,13 +48,15 @@ class WrongRSA_Key(Exception):
         else:
             return 'WrongRSA_Key has been raised'
 
+
 def checkDES_Key():
     '''
     Проверка на наличие ключа DES KEY
     :return:
     '''
-    if "Incorrect login or password" == iDB.getNamefromlogin(TEST_LOGIN, TEST_PASSWORD):
+    if "Incorrect login or password" == getNamefromlogin(TEST_LOGIN, TEST_PASSWORD):
         raise WrongDES_Key(DES_KEY_FILE)
+
 
 def checkRSA_PrivateKey():
     '''
@@ -62,7 +65,7 @@ def checkRSA_PrivateKey():
     '''
     try:
         if not open(RSA_PRIVATE_KEY).read():
-            raise WrongRSA_Key(RSA_PRIVATE_KEY) #TODO обработать отсутствие данных в ключе
+            raise WrongRSA_Key(RSA_PRIVATE_KEY)  # TODO обработать отсутствие данных в ключе
     except:
         raise WrongRSA_Key(RSA_PRIVATE_KEY)
 
@@ -70,6 +73,7 @@ def checkRSA_PrivateKey():
 def checkKeys():
     checkDES_Key()
     checkRSA_PrivateKey()
+
 
 try:
     file = open(DES_KEY_FILE, "rb")
@@ -128,5 +132,19 @@ def authen(login, password):
     cipher = PKCS1_OAEP.new(key)
     password_decrypt = cipher.decrypt(password)
     password_decode = password_decrypt.decode()
-    result = iDB.getNamefromlogin(login, password_decode)
+    result = getNamefromlogin(login, password_decode)
     return result
+
+if __name__ == '__main__':
+    # collection_names = "radiator"
+    # # while True:
+    # aa = getMany(collection_names, {}, 110)
+    # print(aa)
+    # #     if not aa['n']: break
+    # print(getLastOne("radiator"))
+    # print(help(deleteOne(collection_names,{"id":4})))
+
+    # DB = BaseDBinterface(client.ARdb)
+    DB1 = User_DB(client.UserDB)
+    print(DB.getLastOne("radiator"))
+    print(DB1.getLastId('users'))

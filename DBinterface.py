@@ -1,158 +1,191 @@
 # Тут будут храниться методы для работы с БД
 from pymongo import MongoClient, results, cursor
 import pymongo
-from server.Authentification import coding
+
+# from server.Authentification import coding
 
 # подключаемся к базе данных MongoDB
 client = MongoClient(port=27017)
 
-# используем БД: ARdb
-# db_data = client.ARdb
-db = client.UserDB
+# используем БД: ARdb, UserDB
+# db_data = MongoClient.ARdb
+# db = MongoClient.UserDB
 
 
-# создание новой коллекции (добавление объекта )
-def createNewObject(objectName):
-    if not objectName in db.list_collection_names():
-        db.create_collection(objectName)
-        db.listOfObjects.insert_one({
-            "id": getLastId("listOfObjects") + 1,
-            "Name": objectName
-        })
-        return 'OK'
+
+class BaseDBinterface:
+    def __init__(self, DBname):
+        """Constructor"""
+        self.__db = self._get_db(DBname)
+
+    def __get_db(self):
+        return self.__db
+
+    def _get_list_db_names(self):
+        # TODO modify
+        result = []
+        temporary_result = []
+        for item in MongoClient().list_database_names():
+            temporary_result.append(item)
+        for i in enumerate(temporary_result):
+            result.append(temporary_result[-1 - i[0]])
+        return result
+
+    def _get_db(self,database_name):
+        # TODO modify
+        if database_name in self.get_list_db_names():
+            return MongoClient().get_database(database_name)
+        else:
+            return None
+
+    # метод добавляет одну запись в коллекцию collection_name
+    def writeOne(self, collection_name, data):
+        this_collection = self.__db.get_collection(collection_name)
+        return this_collection.insert_one(data)
+
+    # метод возвращает объект коллекции collection_name по фильтру filter
+    def getOne(self, collection_name, query=None):
+        this_collection = self.__db.get_collection(collection_name)
+        return this_collection.find_one(query, projection={'_id': False})[0]
+
+    # метод возвращает все объекты коллекции collection_name по фильтру filter
+    def getMany(self, collection_name, query=None, limit=0):
+        this_collection = self.__db.get_collection(collection_name)
+        result = []
+        if limit:
+            # limit is not good atribut
+            # if limit > count(cursor)
+            temporary_result = []
+            for item in this_collection.find(query, projection={'_id': False}).sort('id', pymongo.DESCENDING).limit(
+                    limit):
+                temporary_result.append(item)
+            # i = 0
+            for i in enumerate(temporary_result):
+                result.append(temporary_result[-1 - i[0]])
+                # i += 1
+        else:
+            for item in this_collection.find(query, projection={'_id': False}):
+                result.append(item)
+        return result
+
+    # # метод возвращает  объект коллекции collection_name по фильтру filter
+    # def getOne(self, collection_name, query=None):
+    #     this_collection = self.__db.get_collection(collection_name)
+    #     return this_collection.find(query, projection={'_id': False}).limit(1)
+    #
+    # # метод возвращает  объект коллекции collection_name по фильтру filter
+    # def getMany(self, collection_name, query=None):
+    #     this_collection = self.__db.get_collection(collection_name)
+    #     return this_collection.find(query, projection={'_id': False})
+
+    # метод возвращает последний объект коллекции collection_name
+    # TODO может быть стоит везде добавить возможность через атрибуты отключать ненужные поля
+    def getLastOne(self, collection_name):
+        this_collection = self.__db.get_collection(collection_name)
+        return this_collection.find(projection={'_id': False, 'id': False}).sort('$natural', -1).limit(1)[0]
+
+    # метод удаляет один объект коллекции collection_name по фильтру filter
+    def deleteOne(self, collection_name, query):
+        this_collection = self.__db.get_collection(collection_name)
+        return this_collection.delete_one(query).raw_result
+
+    # метод удаляет все объекты коллекции collection_name по фильтру filter
+    def deleteMany(self, collection_name, query):
+        this_collection = self.__db.get_collection(collection_name)
+        return this_collection.delete_many(query).raw_result
+
+    # создаёт новую коллекцию, если таковой ещё нет в БД
+    def create_new_collection(self, object_name):
+        if not object_name in self.__db.list_collection_names():
+            return self.__db.create_collection(object_name)
+
+    # метод возвращает новый ID физического объекта
+    def getLastId(self, collection_name):
+        """
+        вместо getNewId()
+        :param collection_name:
+        :return:
+        """
+        try:
+            # вытаскивает все объекты из коллекции, забирает последнюю запись и вытаскивает из неё значение id
+            this_collection = self.__db.get_collection(collection_name)
+            return this_collection.find(projection={'_id': False}).sort('id', pymongo.DESCENDING).limit(1)[0]["id"]
+        except KeyError:
+            return 0
+        except IndexError:
+            return 0
 
 
-# метод возвращает новый ID физического объекта
-def getLastId(collectionName):
-    """
-    вместо getNewId()
-    :param collectionName:
-    :return:
-    """
-    try:
-        # вытаскивает все объекты из коллекции, забирает последнюю запись и вытаскивает из неё значение id
-        thisCollection = db.get_collection(collectionName)
-        return thisCollection.find(projection={'_id': False}).sort('id', pymongo.DESCENDING).limit(1)[0]["id"] + 1
-    except KeyError:
-        return 0
-    except IndexError:
-        return 0
+class AR_DB(BaseDBinterface):
+
+    # создание новой коллекции (добавление объекта )
+    def createNewObject(self, object_name):
+        if self.create_new_collection(object_name):
+            self.__db.listOfObjects.insert_one({
+                "id": self.getLastId("listOfObjects") + 1,
+                "Name": object_name
+            })
+            return 'OK'
+
+    # метод возвращает id коллекции физического объекта на вход его Name
+    def getIdOfCollection(self, objectName):
+        return self.__db.listOfObjects.find({"Name": objectName}, projection={'_id': False})[0]["id"]
+
+    # метод возвращает Name коллекции физического объекта на вход его id
+    def getNameOfCollection(self, objectId):
+        return self.__db.listOfObjects.find({"id": objectId}, projection={'_id': False})[0]["Name"]
 
 
-# метод возвращает id коллекции физического объекта на вход его Name
-def getIdOfCollection(objectName):
-    return db.listOfObjects.find({"Name": objectName}, projection={'_id': False})[0]["id"]
+class User_DB(BaseDBinterface):
+    # super().__init__(client.UserDB)
+
+    # метод добавляет одну запись в коллекцию objectName
+    def writeOnewithshifr(self, id, name, password, code):
+        sh_password = coding(password)
+        self.__db.users.insert_one({"id": id, "name": name, "password": sh_password, "code": code})
+
+    # проверка логина и пароля пользователя
+    def getNamefromlogin(self, login, password):
+        # print('login:', login,
+        #      '\npassword: ', password)
+        try:
+            if login == self.__db.users.find({"name": login, "password": coding(password)})[0]["name"]:
+                result_message = "Successful authentification"
+            else:
+                result_message = "Incorrect login or password"
+        except IndexError:
+            result_message = "None"
+        # except:
+        #     print("Error")
+        # TODO handle another except
+        return result_message
+
+    # метод возвращает password коллекции физического объекта на вход его id
+    def getPasswordOfCollection(self, objectId):
+        return self.__db.users.find({"id": objectId})[0]["password"]
 
 
-# метод возвращает Name коллекции физического объекта на вход его id
-def getNameOfCollection(objectId):
-    return db.listOfObjects.find({"id": objectId}, projection={'_id': False})[0]["Name"]
 
-
-# метод добавляет одну запись в коллекцию objectName
-def writeOne(collectionName, data):
-    thisCollection = db.get_collection(collectionName)
-    return thisCollection.insert_one(data)
-
-
-# метод возвращает  объект коллекции collectionName по фильтру filter
-def getOne(collectionName, query=None):
-    thisCollection = db.get_collection(collectionName)
-    return thisCollection.find(query, projection={'_id': False}).limit(1)
-
-
-# метод возвращает  объект коллекции collectionName по фильтру filter
-def getMany(collectionName, query=None):
-    thisCollection = db.get_collection(collectionName)
-    return thisCollection.find(query, projection={'_id': False})
-
-
-# метод возвращает последний объект коллекции collectionName
-# TODO может быть стоит везде добавить возможность через атрибуты отключать ненужные поля
-def getLastOne(collectionName):
-    thisCollection = db.get_collection(collectionName)
-    return thisCollection.find(projection={'_id': False, 'id': False}).sort('$natural', -1).limit(1)[0]
-
-
-# метод возвращает объект коллекции collectionName по фильтру filter
-def getOne(collectionName, query=None):
-    thisCollection = db.get_collection(collectionName)
-    return thisCollection.find_one(query, projection={'_id': False})[0]
-
-
-# метод возвращает все объекты коллекции collectionName по фильтру filter
-def getMany(collectionName, query=None, limit=0):
-    thisCollection = db.get_collection(collectionName)
-    result = []
-    if limit:
-        # limit is not good atribut
-        # if limit > count(cursor)
-        temporaryResult = []
-        for object in thisCollection.find(query, projection={'_id': False}).sort('id', pymongo.DESCENDING).limit(limit):
-            temporaryResult.append(object)
-            i = 0
-        for object in temporaryResult:
-            result.append(temporaryResult[-1 - i])
-            i += 1
-    else:
-        for object in thisCollection.find(query, projection={'_id': False}):
-            result.append(object)
-    return result
-
-
-# метод удаляет один объект коллекции collectionName по фильтру filter
-def deleteOne(collectionName, query):
-    thisCollection = db.get_collection(collectionName)
-    return thisCollection.delete_one(query).raw_result
-
-
-# метод удаляет все объекты коллекции collectionName по фильтру filter
-def deleteMany(collectionName, query):
-    thisCollection = db.get_collection(collectionName)
-    return thisCollection.delete_many(query).raw_result
-
-
-# метод добавляет одну запись в коллекцию objectName
-def writeOnewithshifr(id, name, password, code):
-    sh_password = coding(password)
-    db.users.insert_one({"id": id, "name": name, "password": sh_password, "code": code})
-
-
-# проверка логина и пароля пользователя
-def getNamefromlogin(login, password):
-    # print('login:', login,
-    #      '\npassword: ', password)
-    try:
-        a = db.users.find({"name": login, "password": coding(password)})[0]["name"]
-    except IndexError:
-        a = "None"
-    # except:
-    #     print("Error")
-    #TODO handle another except
-    if a == login:
-        a = "Successful authentification"
-    else:
-        a = "Incorrect login or password"
-    #    if a == "true":
-    #       print("Successful login and password")
-    #    else:
-    #        print("Incorrect login or password")
-    return a
-
-
-# метод возвращает password коллекции физического объекта на вход его id
-def getPasswordOfCollection(objectId):
-    return db.users.find({"id": objectId})[0]["password"]
 
 # ////////////////////////////testing///////////////////////////////
-# # writeOne("radiator",{"Name": "sds","DatTime":datetime.now()})
-#
-# # print(getOne("radiator",{"Temperature": {'$gt':80}}))
-#
-# collectionNames = "radiator"
-# # while True:
-# aa = getMany(collectionNames, {}, 110)
-# print(aa)
-# #     if not aa['n']: break
-# print(getLastOne("radiator"))
-# print(help(deleteOne(collectionNames,{"id":4})))
+# writeOne("radiator",{"Name": "sds","DatTime":datetime.now()})
+
+# print(getOne("radiator",{"Temperature": {'$gt':80}}))
+
+if __name__ == '__main__':
+    # collection_names = "radiator"
+    # # while True:
+    # aa = getMany(collection_names, {}, 110)
+    # print(aa)
+    # #     if not aa['n']: break
+    # print(getLastOne("radiator"))
+    # print(help(deleteOne(collection_names,{"id":4})))
+
+    # DB = BaseDBinterface(client.ARdb)
+    # DB1 = User_DB(client.UserDB)
+    # print(DB.getLastOne("radiator"))
+    # print(DB1.getLastId('users'))
+    # print(bool(get_db("ARdb")))
+
+
+    print(get_db("ARdb"))
