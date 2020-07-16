@@ -53,7 +53,7 @@ from Crypto.PublicKey import RSA
 
 import base64
 
-messages = b'123'
+messages = b'adfgnheutjvrtyhn895'
 key = RSA.importKey(open('publickey.pem').read())
 print()
 cipher = PKCS1_OAEP.new(key)
@@ -63,7 +63,7 @@ msg6 = {
     "method": "logIn",
     "parametrs": {
         "collectionName": "users",
-        "name": "Denis",
+        "name": "Roman",
         "password": base64.b64encode(ciphertext).decode()
         # "password": ciphertext
         # "password": "BKxpVOz40cf+AvStNcgNEmpBUCq2NGBMYtHvI+W8h6QJ3KDy4WryD+/c8pouLikq3Qa3CNPlrMPIGxK+o4uO6O8kqFN/LARoNVDMRamG+JI1bdnZ0fUsCaNQZ4tlBxY21u0tL+K9ImQuN1t4GMd0hFb2NyTE2s1Ki2Sh9lHCFEwMl6MtiswOLt2mqLnqrQLJvBfIghRd+5WZc5Du9t8VDiRtHC4hjcHjnrz3shRkjj6NhFyURGyZ7uR/M/S0V3fnw5XLXCdELUv25+fs4jUI1NkidjJalOUdUMB1OijGfMjO0m0LH4HoOu+ZDAMgxjP+1KVCOVU2YhdI7gg4QknpRq3adaU4JE/VQd+QZBqShb6/t7An8JpzHo/9UY/8pBmkI2XrMAeW"
@@ -115,8 +115,8 @@ def getLocalExternalIP():
     return HOST
 
 
-# HOST, PORT = getLocalExternalIP(), 9999
-HOST, PORT = "localhost", 9999
+HOST, PORT = getLocalExternalIP(), 50000
+# HOST, PORT = "localhost", 9999
 # Create a socket (SOCK_STREAM means a TCP socket)
 for dataMsg in msg:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
