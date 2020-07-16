@@ -7,12 +7,12 @@ def getLocalExternalIP():
         HOST = str(temp_socket.getsockname()[0])
         print("Lockal ip: {}".format(HOST))
     return HOST
-
+# DIRECTORY_SCRIPTS = '/Prefubs'
 ftp = FTP('')
 # ftp.connect('localhost',1026)
 ftp.connect(getLocalExternalIP(),12000)
 ftp.login()
-ftp.cwd('/CS_test') #replace with your directory
+ftp.cwd('') #replace with your directory
 # l = list(ftp.retrlines('NLST'))
 # l = ftp.nlst()
 # print(l)
@@ -23,7 +23,7 @@ ftp.cwd('/CS_test') #replace with your directory
 
 def downloadFile(filename):
  # filename = 'Client.cs' #replace with your file in the directory ('directory_name')
- localfile = open(filename, 'wb')
+ localfile = open('CS_test/'+filename, 'wb')
  ftp.retrbinary('RETR ' + filename, localfile.write, 1024)
  # ftp.quit()
  localfile.close()

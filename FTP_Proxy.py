@@ -1,78 +1,10 @@
-# import socketserver
-# import socket
-# import re
-# import datetime
-#
-#
-#
-#
-# class MyTCPHandler(socketserver.BaseRequestHandler):
-#
-#     def handle(self):
-#         print("--------- Start of transmission ----------")
-#         lenght = 10240
-#         self.data = self.request.recv(lenght)
-#         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-#             sock.connect((hamachiIP, hamachiPORT))
-#             sock.sendall(self.data)
-#             print("[----- C -> S -----] {}\n"
-#                   "Data transmission from client to server: \n{}".format(datetime.datetime.now().isoformat("|","microseconds"),self.data))
-#             lenght = 10240
-#             received = sock.recv(lenght)
-#         self.request.sendall(received)
-#         print("[----- C <- S -----] {}\n"
-#               "Data transmission from server to client: \n{}\n"
-#               "---------- End of transmission -----------\n".format(datetime.datetime.now().isoformat("|","microseconds"),received))
-# if __name__ == "__main__":
-#     try:
-#         # gethamachi ip
-#         try:
-#             f = open("hamachiIP.txt", "r")
-#         except:
-#             f = open("hamachiIP.txt", "w")
-#             raise TypeError
-#         hamachiIP = f.read()
-#         f.close()
-#         if not is_ok(hamachiIP):
-#             raise TypeError
-#
-#         # getlockal ip
-#         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-#         s.connect(("8.8.8.8", 80))
-#         HOST, PORT = s.getsockname()[0], 50000
-#         s.close()
-#         print("------ Loading the IP configuration ------\n"
-#               "Server ip: {}\n"  # Hamachi IP
-#               "Lockal ip: {}\n"
-#               "------------ Connection start ------------\n".format(hamachiIP, HOST))
-#
-#         # Create the server, binding to localhost on port 9999
-#         with socketserver.TCPServer((HOST, PORT), MyTCPHandler) as server:
-#             # Activate the server; this will keep running
-#             server.serve_forever()
-#             server.server_close()
-#     except TypeError:
-#         print("\nДля запуска прокси-сервера выполните следующие действия:\n"
-#               "--> Узнайте IPv4 тонельного соединения в hamachi.\n"
-#               "--> Запишите его в hamachiIP.txt в виде \"xxx.xxx.xxx.xxx\" (без кавычек и других символов).\n"
-#               "--> И перезапустите \"ProxyServer.exe\".")
-#     except OSError:
-#         print("\nДля запуска прокси-сервера выполните следующие действия:\n"
-#               "--> Убедитесь, что запущена одна версия программы\"ProxyServer.exe\".\n"
-#               "--> Проверьте интернет соединение и перезапустите \"ProxyServer.exe\".")
-#     f.close()
-#     pause()
-
-
 from ftplib import FTP
 import socket
 import re
-import datetime
-import os
 from pyftpdlib.authorizers import DummyAuthorizer
 from pyftpdlib.handlers import FTPHandler
 from pyftpdlib.servers import FTPServer
-
+import os
 
 def getLocalExternalIP():
     # getlockal ip
@@ -149,7 +81,7 @@ import time
 
 
 def fileUpdate(dir):
-    print(dir)
+    # print(dir)
     ftp = FTP('')
     ftp.connect(HOST, PORT_server)
     ftp.login()
@@ -158,7 +90,7 @@ def fileUpdate(dir):
     def downloadFile(filename):
         # filename = 'Client.cs' #replace with your file in the directory ('directory_name')
         # localfile = open('CS_test/' + filename, 'wb')
-        localfile = open(dir+'/' + filename, 'wb')
+        localfile = open(dir + '/' + filename, 'wb')
         ftp.retrbinary('RETR ' + filename, localfile.write, 1024)
         localfile.close()
 
@@ -209,35 +141,47 @@ def startFTP():
     server.serve_forever()
 
 
-    
 
 
-import tempfile
+def createDir():
+    # определяем текущий каталог и печатаем
+    dirName = "Prefubs"
+    path = os.getcwd()
+    try:
+        if not os.path.isdir(dirName):
+            os.mkdir(dirName)
+        os.chdir(dirName)
+        path = os.getcwd()
+    except OSError:
+        pass
+    return path
+
+
+
 
 if __name__ == "__main__":
     try:
-        with tempfile.TemporaryDirectory() as directory:
-            # gethamachi ip
-            try:
-                f = open("hamachiIP.txt", "r")
-            except:
-                f = open("hamachiIP.txt", "w")
-                raise TypeError
-            HOST = f.read()
-            f.close()
-            if not is_ok(HOST):
-                raise TypeError
-
-            print("------ Loading the IP configuration ------\n"
-                  "FTP-Server ip:   {}\n"  # Hamachi IP
-                  "Lockal ip:       {}\n"
-                  "------------ Connection start ------------\n".format(HOST, LocalIP))
-            print("-------- Start to update scripts ---------")
-            fileUpdate(directory.title())
-            print("----- All scripts have been updated ------")
-            print("------------ Start FTP-Server ------------")
-            startFTP()
-
+        # with tempfile.TemporaryDirectory() as directory:
+        # gethamachi ip
+        try:
+            f = open("hamachiIP.txt", "r")
+        except:
+            f = open("hamachiIP.txt", "w")
+            raise TypeError
+        HOST = f.read()
+        f.close()
+        if not is_ok(HOST):
+            raise TypeError
+        path = createDir()
+        print("------ Loading the IP configuration ------\n"
+              "FTP-Server ip:   {}\n"  # Hamachi IP
+              "Lockal ip:       {}\n"
+              "------------ Connection start ------------\n".format(HOST, LocalIP))
+        print("-------- Start to update scripts ---------")
+        fileUpdate(path)
+        print("----- All scripts have been updated ------")
+        print("------------ Start FTP-Server ------------")
+        startFTP()
     except TypeError:
         print("\nДля запуска прокси-сервера выполните следующие действия:\n"
               "--> Узнайте IPv4 тонельного соединения в hamachi.\n"
