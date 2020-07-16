@@ -120,14 +120,17 @@ def writeOnewithshifr(id, name, password, code):
 
 # проверка логина и пароля пользователя
 def getNamefromlogin(login, password):
-    #print('login:', login,
+    # print('login:', login,
     #      '\npassword: ', password)
     try:
         a = db.users.find({"name": login, "password": coding(password)})[0]["name"]
     except IndexError:
-        a = "a"
+        a = "None"
+    # except:
+    #     print("Error")
+    #TODO handle another except
     if a == login:
-        a = "Successful login and password"
+        a = "Successful authentification"
     else:
         a = "Incorrect login or password"
     #    if a == "true":

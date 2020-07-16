@@ -3,6 +3,8 @@ import datetime
 from datetime import timezone
 import ast
 from server import ForAuthen as FA
+import base64
+from Crypto.PublicKey import RSA
 
 
 def loadMessage(msg):
@@ -94,13 +96,19 @@ def loadMessage(msg):
         elif methodJSON == "logIn":
             print(msg)
             parametrsMsg = msg["parametrs"]
-            collectionName = parametrsMsg["collectionName"]
+            # collectionName = parametrsMsg["collectionName"]
+            collectionName = "users"
             login = parametrsMsg["name"]
-            password = parametrsMsg["password"]
-            print("passss/; ",password)
+            password_b64 = parametrsMsg["password"]
+            password = base64.b64decode(password_b64)
             result = FA.authen(login, password)
-            print(result)
             resultData = result
+
+
+        elif methodJSON == "getPublicKey":
+            key = RSA.importKey(open('publickey.pem').read())
+            key.export_key()
+            resultData= str(key.export_key())
 
         return responseJSON(resultData)
     except StopIteration:
