@@ -100,12 +100,8 @@ def loadMessage(msg):
             collectionName = "users"
             login = parametrsMsg["name"]
             password_b64 = parametrsMsg["password"]
-            # password = password_b64
-            print("password_b64",password_b64)
             password = base64.b64decode(password_b64)
-            print("passss/; ",password)
             result = FA.authen(login, password)
-            print(result)
             resultData = result
 
 
