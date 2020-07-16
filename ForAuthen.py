@@ -5,10 +5,43 @@ from Crypto.PublicKey import RSA
 from server import DBinterface as iDB
 
 BLOCK_SIZE = 16
-file = open("Key.txt", "rb")
-key = (file.read())
-file.close()
 
+
+class FileEmpty(Exception):
+    def __init__(self, *args):
+        self.message = "There is not DSA-encryption key in the file 'Key.txt'"
+
+    def __str__(self):
+        if self.message:
+            return 'FileEmpty, {0} '.format(self.message)
+        else:
+            return 'FileEmpty has been raised'
+
+class WrongKey(Exception):
+    def __init__(self, *args):
+        self.message = "There is changed DSA-encryption key in the file 'Key.txt'" \
+                       "\nChange DSA-encryption key or rewrite all users (including the base user) in database."
+
+    def __str__(self):
+        if self.message:
+            return 'WrongKey, {0} '.format(self.message)
+        else:
+            return 'WrongKey has been raised'
+
+try:
+    file = open("Key.txt", "rb")
+    if not open("Key.txt", "rb").read():
+        raise FileEmpty
+    key = (file.read())
+    file.close()
+except FileNotFoundError:
+    file = open("Key.txt", "wb")
+    print("No such file: 'Key.txt'")
+    raise FileEmpty
+
+result = iDB.getNamefromlogin("TEST", "TEST0912375981237059812730")
+if result == "Incorrect login or password":
+    raise WrongKey
 
 def coding(password):
     '''
