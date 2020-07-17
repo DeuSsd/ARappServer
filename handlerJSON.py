@@ -95,7 +95,7 @@ def loadMessage(msg):
         #     resultData = result
 
         elif methodJSON == "logIn":
-            print(msg)
+            # print(msg)
             parametrsMsg = msg["parametrs"]
             # collectionName = parametrsMsg["collectionName"]
             collectionName = "users"

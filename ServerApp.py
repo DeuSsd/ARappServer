@@ -3,6 +3,7 @@ from select import select
 from server import handlerJSON
 from server.Authentification import checkRSA_PrivateKey, WrongRSA_Key
 from server.encryptionDES import WrongDES_Key, checkDES_Key
+import datetime
 
 HOST, PORT = 'localhost', 9999
 # HOST, PORT = "25.79.246.93", 9090
@@ -50,13 +51,20 @@ def client(client_socket):
         if not request:
             break
         else:
-            print("------------\nClient address: {}:{}\nRequest: {}".format(*client_socket.getpeername(),
-                                                                            request.decode()))
+            print("--------- Start of transmission ----------"
+                  f"------------\nClient address: {client_socket.getpeername()[0]}:"
+                  f"{client_socket.getpeername()[1]}\n"
+                  f"[----- S <- C -----] {datetime.datetime.now().isoformat('|', 'microseconds')}\n"
+                  f"Data transmission from client to server: \n\t{request.decode()}")
+
             response = handlerJSON.loadMessage(request.decode())  # block process
             msg = str(response).encode()
             yield ('write', client_socket)
-            print("Responce: {}".format(msg.decode()))
+            # print("Responce: {}".format())
             client_socket.send(msg)
+            print(f"[----- S -> C -----] {datetime.datetime.now().isoformat('|', 'microseconds')}\n"
+                  f"Data transmission from client to server: \n\t{msg.decode()}\n"
+                  "---------- End of transmission -----------\n")
     client_socket.close()
 
 
@@ -64,8 +72,8 @@ def event_loop():
     while any([tasks, to_read, to_write]):
 
         while not tasks:
-            print(f'Количество клиентов: {len(to_read) + len(to_write) - 1}')
-            # print(len(tasks), len(to_read), len(to_write)) #показывает колличество клиентов
+            # print(f'Количество клиентов: {len(to_read) + len(to_write) - 1}')
+            print(f"t|r|w -- {len(tasks)}|{len(to_read)}|{len(to_write)}")  # показывает колличество клиентов
             ready_to_read, ready_to_write, _ = select(to_read, to_write, [])
             # print(ready_to_read,ready_to_write)
             for sock in ready_to_read:
