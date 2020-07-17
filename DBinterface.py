@@ -172,25 +172,7 @@ class UserDB(BaseDBinterface):
         #    else:
         #        print("Incorrect login or password")
         return result_message
-
-        # # print('login:', login,
-        # #      '\npassword: ', password)
-        # encoded = encDES.coding(password)
-        # try:
-        #     asd = self.db.get_collection("users").find({"name": login, "password": encoded})[0]["name"]
-        #     # asd = self.db.users.find({"name": login, "password": encoded})[0]["name"]
-        #     # asd =
-        #     if login == asd:
-        #         result_message = "Successful authentification"
-        #     else:
-        #         result_message = "Incorrect login or password"
-        # except IndexError:
-        #     result_message = "None"
-        # # except:
-        # #     print("Error")
-        # # TODO handle another except
-        # return result_message
-
+    
     # метод возвращает password коллекции физического объекта на вход его id
     def getPasswordOfCollection(self, objectId):
         return self.db.users.find({"id": objectId})[0]["password"]
