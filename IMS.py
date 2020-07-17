@@ -19,4 +19,4 @@ while True:
     }
     print(objectId, objectData)
     iDB.writeOne(collectionName, objectData)  # добавляем одну запись в базу данных
-    time.sleep(0.1)
+    time.sleep(1)
