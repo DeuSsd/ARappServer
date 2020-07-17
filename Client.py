@@ -1,14 +1,20 @@
+
 import socket
 import rsa
 import time
+#для шифровки пароля
+#pubkey = rsa.PublicKey.load_pkcs1_openssl_pem(open('publickey.pem', 'rb').read())
+#message = 'onelove1'.encode('utf8')
+#crypto = rsa.encrypt(message, pubkey)
+#print(crypto)
 
 # для тестов
 msg1 = {
     "method": "get",
     "parametrs": {
-        "collectionName": "radiator",
+        "collectionName": "users",
         "filter": {
-            "Temperature": {'$gt': 95}
+            "name": "Denis"
         }
     }
 }
@@ -42,14 +48,73 @@ msg4 = {
         }
     }
 }
+
+from Crypto.Cipher import PKCS1_OAEP
+from Crypto.PublicKey import RSA
+
+import base64
+
+messages = b'qwerty12'
+key = RSA.importKey(open('publickey.pem').read())
+print()
+cipher = PKCS1_OAEP.new(key)
+ciphertext = cipher.encrypt(messages)
+
 msg6 = {
     "method": "logIn",
     "parametrs": {
         "collectionName": "users",
-        "name": "Vova",
-        "password": b'\x15\xa2\x8a\xbb\xb5q\xb8w\x8fy\xe0\xb1\xb1\xb6\xc3\xf1\x9b\xb19\xa3\xac[\xcf\x15%\xaeh\x06\xa0\xde|\xfe\xa4xw\xe6\x94\xefE\x9b79&\xf7\x01\x1d\xb2"QVr\xa9\x97\x0b,L\x1e\xbb\xeb\x97\xf5\xa6J#\xff\x10m\xe78[q\xa2\xcac\xd0z\x04j\xc1\x1a\xdb2{\x92\x03n\xff\x1a\xac\x04\x9b\xad\xfa\xb6\xc8XtR}\x15?\x0e\xc4\xd1n\x90\xbbER\xd22&\xa0\x0b\x9d P\xdeG\xfc\x82ol\x88\x9d\xd0{\t*U\xc5\xb9g\x9d\xef3\xe8\x90\xa2r\xba\xb7\x8eqH\xb2C\x9e \xeb\xa0e\xd0\x17\xde$\xd0\x86m\xb6\xb8/+\x963g+\x10(zHqY\x1d\n\xf3U\xeb\xfc#\x0eu#L\xfdBu\x1d-\xf45\xb7\x03\x04\x95\xa4z\rY\xfeg\\kCa\xa8]\xd7\xd5T\xe2\xe0\x03>\xaa\xea\xf1~\xf7\x1e%@W\xdc)\x02\x96E\xa0\t\xb0\xef\xb0\x82]\xa7b\xe0\xfc\xb6\xba\xae|\xcd\xf6\t\xe6L\xf5\x8a\x9f\x85\xaa5\xfew'
+        "name": "Roman",
+        "password": base64.b64encode(ciphertext).decode()
+        # "password": ciphertext
+        # "password": "BKxpVOz40cf+AvStNcgNEmpBUCq2NGBMYtHvI+W8h6QJ3KDy4WryD+/c8pouLikq3Qa3CNPlrMPIGxK+o4uO6O8kqFN/LARoNVDMRamG+JI1bdnZ0fUsCaNQZ4tlBxY21u0tL+K9ImQuN1t4GMd0hFb2NyTE2s1Ki2Sh9lHCFEwMl6MtiswOLt2mqLnqrQLJvBfIghRd+5WZc5Du9t8VDiRtHC4hjcHjnrz3shRkjj6NhFyURGyZ7uR/M/S0V3fnw5XLXCdELUv25+fs4jUI1NkidjJalOUdUMB1OijGfMjO0m0LH4HoOu+ZDAMgxjP+1KVCOVU2YhdI7gg4QknpRq3adaU4JE/VQd+QZBqShb6/t7An8JpzHo/9UY/8pBmkI2XrMAeW"
     }
 }
+msg8 = {
+    "method": "getPublicKey"
+}
+
+
+
+msg7 = {
+    "method" : "getLast",
+    "parametrs": {
+        "ObjectID": 1
+    }
+}
+
+msg9 = {
+    "method" : "getWarning",
+    "parametrs": {
+        "ObjectID": 1
+    }
+}
+
+def getLength(Socket):
+    length = 0
+    while not length:
+        length = int(Socket.recv(1024).decode())
+    Socket.sendall(bytes(length))
+    return length
+
+def setLength(Socket,msg):
+    Socket.sendall(bytes(len(msg)))
+    length = int(Socket.recv(1024).decode())
+    while not len(msg) == length:
+        length = int(Socket.recv(1024).decode())
+
+    return length
+msg = [
+    # msg1,
+    # ,msg2,msg3,msg4,msg5,
+    msg6,
+    msg7,
+    # msg8
+    msg9
+]
+
+# HOST, PORT = "25.79.246.93", 50000
+# HOST, PORT = "192.168.1.100", 50000
 
 
 def getLocalExternalIP():
@@ -61,18 +126,17 @@ def getLocalExternalIP():
     return HOST
 
 
-# msg = [msg1, msg2, msg3, msg4, msg5]
-msg = [msg6]
-HOST, PORT = getLocalExternalIP(), 50000
+# HOST, PORT = getLocalExternalIP(), 50000
+HOST, PORT = "localhost", 9999
 # Create a socket (SOCK_STREAM means a TCP socket)
 for dataMsg in msg:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         # Connect to server and send data
         sock.connect((HOST, PORT))
-        data = str(dataMsg).encode('utf8')
+        data = str(dataMsg).encode('utf-8')
         sock.sendall(data)
         lenght = 10240
-        received = sock.recv(lenght).decode('utf8')
+        received = sock.recv(lenght).decode('utf-8')
         print("Sent:     {}".format(data))
         print("Received: {}".format(received))
         print("------")
