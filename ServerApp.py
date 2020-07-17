@@ -1,7 +1,8 @@
 import socket
 from select import select
 from server import handlerJSON
-from server.Authentification import checkKeys, WrongDES_Key, WrongRSA_Key
+from server.Authentification import checkRSA_PrivateKey, WrongRSA_Key
+from server.encryptionDES import WrongDES_Key, checkDES_Key
 
 HOST, PORT = 'localhost', 9999
 # HOST, PORT = "25.79.246.93", 9090
@@ -11,7 +12,8 @@ tasks = []  # тут должен использоваться модуль
 to_read = {}
 to_write = {}
 
-#просто пауза
+
+# просто пауза
 def pause():
     input("\nPress the <ENTER> key to continue...")
 
@@ -72,7 +74,6 @@ def event_loop():
             for sock in ready_to_write:
                 tasks.append(to_write.pop(sock))
 
-
         try:
             task = tasks.pop(0)
             reason, sock = next(task)
@@ -92,7 +93,8 @@ if __name__ == '__main__':
               # "Lockal ip: {}\n"
               "------------ Connection start ------------")
         # print(HOST)
-        checkKeys() #проверка на наличие ключей
+        checkDES_Key()
+        checkRSA_PrivateKey()  # проверка на наличие ключей
         tasks.append(server())
         event_loop()
     except WrongDES_Key as exDES:
