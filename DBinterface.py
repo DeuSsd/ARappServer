@@ -167,12 +167,8 @@ class UserDB(BaseDBinterface):
             result_message = "Successful authentification"
         else:
             result_message = "Incorrect login or password"
-        #    if a == "true":
-        #       print("Successful login and password")
-        #    else:
-        #        print("Incorrect login or password")
         return result_message
-    
+
     # метод возвращает password коллекции физического объекта на вход его id
     def getPasswordOfCollection(self, objectId):
         return self.db.users.find({"id": objectId})[0]["password"]
@@ -186,7 +182,7 @@ User_DB = UserDB(DB_USERS)
 
 # print(getOne("radiator",{"Temperature": {'$gt':80}}))
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 # collection_names = "radiator"
 # # while True:
 # aa = getMany(collection_names, {}, 110)
