@@ -154,20 +154,19 @@ class UserDB(BaseDBinterface):
     # проверка логина и пароля пользователя
     def getNamefromlogin(self, login, password):
         # print('login:', login,
-        #      '\npassword: ', password)
-        encoded = encDES.coding(password)
+        #       '\npassword: ', password)
         try:
-            asd = self.db.users.find({"name": login, "password": encoded})[0]["name"]
-            # asd =
-            if login == asd:
-                result_message = "Successful authentification"
-            else:
-                result_message = "Incorrect login or password"
+            result_message = self.db.users.find({"name": login, "password": encDES.coding(password)})[0]["name"]
         except IndexError:
             result_message = "None"
         # except:
-        #     print("Error")
-        # TODO handle another except
+        #         #     print("Error")
+        #         # TODO handle another except
+
+        if result_message == login:
+            result_message = "Successful authentification"
+        else:
+            result_message = "Incorrect login or password"
         return result_message
 
     # метод возвращает password коллекции физического объекта на вход его id
@@ -197,7 +196,7 @@ User_DB = UserDB(DB_USERS)
 # print(ArDB("ARdb").getMany("radiator",query={"Temperature": {'$lt': 100}}))
 # print(DB1.getLastId('users'))
 # print(bool(get_db("ARdb")))
-# print(UserDB(DB_USERS).getNamefromlogin("TEST", "TEST0912375981237059812730"))
+# print(UserDB(DB_USERS).getNamefromlogin("T/EST", "TEST0912375981237059812730"))
 
 # print(AR_DB("ARdb").get_db())
 # print(MongoClient().ARdb)
