@@ -105,6 +105,11 @@ def loadMessage(msg):
             result = FA.authen(login, password)
             resultData = result
 
+        elif methodJSON == "getPublicKey":
+            f = open('publickey.xml')
+            #print(f.read())
+            resultData = f
+
         elif methodJSON == "getLast":
             parametrsMsg = msg["parametrs"]
             collectionId = int(parametrsMsg["ObjectID"])

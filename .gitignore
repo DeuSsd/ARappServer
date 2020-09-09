@@ -257,7 +257,8 @@ paket-files/
 *.bin
 *.cs
 /*/
+test.py
 Test.py
 __pycache__/
-
+*.xml
 
