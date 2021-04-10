@@ -1,0 +1,4 @@
+<message><method>response</method><data>
+	<Temperature type="float">71.998</Temperature>
+	<Date type="str">2021-04-10 11:51:14.050002+00:00</Date>
+</data></message>

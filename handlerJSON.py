@@ -1,8 +1,8 @@
-from server import DBinterface as iDB
+from ARappServer import DBinterface as iDB
 import datetime
 from datetime import timezone
 import ast
-from server import Authentification as FA
+from ARappServer import Authentification as FA
 import base64
 from Crypto.PublicKey import RSA
 

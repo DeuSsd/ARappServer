@@ -2,7 +2,7 @@
 from pymongo import MongoClient, results, cursor
 import pymongo
 
-import server.encryptionDES as encDES
+import ARappServer.encryptionDES as encDES
 
 # подключаемся к базе данных MongoDB
 client = MongoClient(port=27017)
@@ -182,7 +182,7 @@ User_DB = UserDB(DB_USERS)
 
 # print(getOne("radiator",{"Temperature": {'$gt':80}}))
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
 # collection_names = "radiator"
 # # while True:
 # aa = getMany(collection_names, {}, 110)
@@ -197,6 +197,8 @@ User_DB = UserDB(DB_USERS)
 # print(DB1.getLastId('users'))
 # print(bool(get_db("ARdb")))
 # print(UserDB(DB_USERS).getNamefromlogin("T/EST", "TEST0912375981237059812730"))
-
+    print(AR_db.createNewObject("radiator"))
+    print(User_DB.writeOnewithshifr(1,"Roman","qwer1ty12","one"))
 # print(AR_DB("ARdb").get_db())
 # print(MongoClient().ARdb)
+

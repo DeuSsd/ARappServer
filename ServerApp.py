@@ -1,8 +1,8 @@
 import socket
 from select import select
-from server import handlerJSON
-from server.Authentification import checkRSA_PrivateKey, WrongRSA_Key
-from server.encryptionDES import WrongDES_Key, checkDES_Key
+from ARappServer import handlerJSON
+from ARappServer.Authentification import checkRSA_PrivateKey, WrongRSA_Key
+from ARappServer.encryptionDES import WrongDES_Key, checkDES_Key
 import datetime
 
 HOST, PORT = 'localhost', 9999

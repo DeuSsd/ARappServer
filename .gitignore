@@ -252,6 +252,7 @@ paket-files/
 *.jpeg
 *.TXT
 *.txt
+!requirements.txt
 *.ico
 *.pem
 *.bin

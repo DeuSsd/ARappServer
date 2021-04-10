@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<message>
+  <method>getLast</method>
+  <parametrs>
+    <ObjectID> 1 </ObjectID>
+  </parametrs>
+</message>
