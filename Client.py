@@ -90,6 +90,16 @@ msg9 = {
     }
 }
 
+
+xml_msg_7 = b'''<?xml version="1.0" encoding="utf-8"?>
+<message>
+  <method>getLast</method>
+  <parametrs>
+    <ObjectID> 1 </ObjectID>
+  </parametrs>
+</message>'''
+
+
 def getLength(Socket):
     length = 0
     while not length:
@@ -107,10 +117,11 @@ def setLength(Socket,msg):
 msg = [
     # msg1,
     # ,msg2,msg3,msg4,msg5,
-    msg6,
-    msg7,
+    # msg6,
+    # msg7,
     # msg8
-    msg9
+    # msg9
+    xml_msg_7
 ]
 
 # HOST, PORT = "25.79.246.93", 50000
@@ -133,7 +144,7 @@ for dataMsg in msg:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         # Connect to server and send data
         sock.connect((HOST, PORT))
-        data = str(dataMsg).encode('utf-8')
+        data = dataMsg #str(dataMsg).encode('utf-8')
         sock.sendall(data)
         lenght = 10240
         received = sock.recv(lenght).decode('utf-8')

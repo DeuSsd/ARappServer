@@ -5,7 +5,10 @@ import ast
 from ARappServer import Authentification as FA
 import base64
 from Crypto.PublicKey import RSA
-
+import xml.etree.ElementTree as ET
+from json2xml import json2xml
+from json2xml.utils import readfromurl, readfromstring, readfromjson
+from io import BytesIO
 
 
 def loadMessage(msg):
@@ -54,87 +57,109 @@ def loadMessage(msg):
             на результат выполнения запроса.
     """
     try:
-        msg = ast.literal_eval(msg)
-        methodJSON = msg["method"]
-        if methodJSON == "get":
-            parametrsMsg = msg["parametrs"]
-            collectionName = parametrsMsg["collectionName"]
-            filterJSON = parametrsMsg["filter"]
-            result = iDB.AR_db.getMany(collectionName, filterJSON)
-            # print(result)
-            resultData = result
-        elif methodJSON == "delete":
-            parametrsMsg = msg["parametrs"]
-            collectionName = parametrsMsg["collectionName"]
-            filterJSON = parametrsMsg["filter"]
-            result = iDB.AR_db.deleteMany(collectionName, filterJSON)
-            # print(result)
-            resultData = result["n"]
-
-        elif methodJSON == "put":
-            parametrsMsg = msg["parametrs"]
-            collectionName = parametrsMsg["collectionName"]
-            dataJSON = parametrsMsg["data"]
-            dataJSON["id"] = iDB.AR_db.getLastId(collectionName) + 1
-            dataJSON["Date"] = datetime.datetime.now(timezone.utc).isoformat(sep=" ")
-            result = iDB.AR_db.writeOne(collectionName, dataJSON).inserted_id
-            # print(result)
-            resultData = "ОК"
-
-
-        elif methodJSON == "getLast":
-            parametrsMsg = msg["parametrs"]
-            collectionId = int(parametrsMsg["ObjectID"])
-            result = iDB.AR_db.getLastOne(iDB.AR_db.getNameOfCollection(collectionId))
-            resultData = result
-
-
-        # elif methodJSON == "getLastData":
-        #     collectionId = int(msg["ObjectID"])
-        #     result = iDB.getLastOne(iDB.getNameOfCollection(collectionId))
+        # old
+        # msg = ast.literal_eval(msg)
+        # methodJSON = msg["method"]
+        # if methodJSON == "get":
+        #     parametrsMsg = msg["parametrs"]
+        #     collectionName = parametrsMsg["collectionName"]
+        #     filterJSON = parametrsMsg["filter"]
+        #     result = iDB.AR_db.getMany(collectionName, filterJSON)
+        #     # print(result)
         #     resultData = result
-
-        elif methodJSON == "logIn":
-            # print(msg)
-            parametrsMsg = msg["parametrs"]
-            # collectionName = parametrsMsg["collectionName"]
-            collectionName = "users"
-            login = parametrsMsg["name"]
-            password_b64 = parametrsMsg["password"]
-            password = base64.b64decode(password_b64)
-            result = FA.authen(login, password)
-            resultData = result
-
-        elif methodJSON == "getLast":
-            parametrsMsg = msg["parametrs"]
-            collectionId = int(parametrsMsg["ObjectID"])
-            result = iDB.AR_db.getLastOne(iDB.AR_db.getNameOfCollection(collectionId))
-            resultData = result
-
-        elif methodJSON == "getWarning":
-            parametrsMsg = msg["parametrs"]
-            collectionId = int(parametrsMsg["ObjectID"])
-            if collectionId == 1:
-                result = str("Only the temperature sensor works!")
-            else:
-                result = str("Empty")
-            resultData = result
-
-        # elif methodJSON == "getLastData":
-        #     collectionId = int(msg["ObjectID"])
-        #     result = iDB.getLastOne(iDB.getNameOfCollection(collectionId))
+        # new
+        msgXML = ET.fromstring(msg)
+        method_msg = msgXML.find("method").text
+        parametrs_msg = msgXML.find("parametrs")
+        # elif methodJSON == "getLast":
+        #     parametrsMsg = msg["parametrs"]
+        #     collectionId = int(parametrsMsg["ObjectID"])
+        #     result = iDB.AR_db.getLastOne(iDB.AR_db.getNameOfCollection(collectionId))
         #     resultData = result
-
-        elif methodJSON == "getPublicKey":
-            key = RSA.importKey(open('publickey.pem').read())
-            key.export_key()
-            resultData= str(key.export_key())
-
-        else:
-            resultData = "Wrong Method"
+        #
+        if method_msg == "getLast":
+            collectionId = int(parametrs_msg.find("ObjectID").text)
+            result = iDB.AR_db.getLastOne(iDB.AR_db.getNameOfCollection(collectionId))
+            print(result)
+            result = json2xml.Json2xml(result).to_xml()  # JSON -> XML string
+            print(result)
+            resultData = ET.fromstring(result)    # XML string -> XML
+            print(resultData)
+        # elif methodJSON == "delete":
+        #     parametrsMsg = msg["parametrs"]
+        #     collectionName = parametrsMsg["collectionName"]
+        #     filterJSON = parametrsMsg["filter"]
+        #     result = iDB.AR_db.deleteMany(collectionName, filterJSON)
+        #     # print(result)
+        #     resultData = result["n"]
+        #
+        # elif methodJSON == "put":
+        #     parametrsMsg = msg["parametrs"]
+        #     collectionName = parametrsMsg["collectionName"]
+        #     dataJSON = parametrsMsg["data"]
+        #     dataJSON["id"] = iDB.AR_db.getLastId(collectionName) + 1
+        #     dataJSON["Date"] = datetime.datetime.now(timezone.utc).isoformat(sep=" ")
+        #     result = iDB.AR_db.writeOne(collectionName, dataJSON).inserted_id
+        #     # print(result)
+        #     resultData = "ОК"
+        #
+        #
+        # elif methodJSON == "getLast":
+        #     parametrsMsg = msg["parametrs"]
+        #     collectionId = int(parametrsMsg["ObjectID"])
+        #     result = iDB.AR_db.getLastOne(iDB.AR_db.getNameOfCollection(collectionId))
+        #     resultData = result
+        #
+        #
+        # # elif methodJSON == "getLastData":
+        # #     collectionId = int(msg["ObjectID"])
+        # #     result = iDB.getLastOne(iDB.getNameOfCollection(collectionId))
+        # #     resultData = result
+        #
+        # elif methodJSON == "logIn":
+        #     # print(msg)
+        #     parametrsMsg = msg["parametrs"]
+        #     # collectionName = parametrsMsg["collectionName"]
+        #     collectionName = "users"
+        #     login = parametrsMsg["name"]
+        #     password_b64 = parametrsMsg["password"]
+        #     password = base64.b64decode(password_b64)
+        #     result = FA.authen(login, password)
+        #     resultData = result
+        #
+        # elif methodJSON == "getLast":
+        #     parametrsMsg = msg["parametrs"]
+        #     collectionId = int(parametrsMsg["ObjectID"])
+        #     result = iDB.AR_db.getLastOne(iDB.AR_db.getNameOfCollection(collectionId))
+        #     resultData = result
+        #
+        # elif methodJSON == "getWarning":
+        #     parametrsMsg = msg["parametrs"]
+        #     collectionId = int(parametrsMsg["ObjectID"])
+        #     if collectionId == 1:
+        #         result = str("Only the temperature sensor works!")
+        #     else:
+        #         result = str("Empty")
+        #     resultData = result
+        #
+        # # elif methodJSON == "getLastData":
+        # #     collectionId = int(msg["ObjectID"])
+        # #     result = iDB.getLastOne(iDB.getNameOfCollection(collectionId))
+        # #     resultData = result
+        #
+        # elif methodJSON == "getPublicKey":
+        #     key = RSA.importKey(open('publickey.pem').read())
+        #     key.export_key()
+        #     resultData= str(key.export_key())
+        #
+        # else:
+        #     resultData = "Wrong Method"
         return responseJSON(resultData)
     except StopIteration:
-        resultData = "Wrong Request"
+        # pass
+        # old
+        # resultData = "Wrong Request"
+        resultData =""
         return responseJSON(resultData)
 
 
@@ -146,10 +171,24 @@ def responseJSON(data):
     :param data: принимает на вхлд двнные, которые нужно передать тип str с JSON объектом внутри
     :return: сформированное сообщение, готовое к отправке клиенту
     """
-    msg = {}
-    msg["method"] = "response"
-    msg["data"] = data
-    return msg
+    # ------
+    # old
+    # msg = {}
+    # msg["method"] = "response"
+    # msg["data"] = data
+    # ------
+    # new
+    msg = ET.Element("message")
+    method = ET.SubElement(msg, "method")
+    method.text = "response"
+    data.tag = "data"
+    msg.append(data)
+    msg = ET.ElementTree(msg)
+    # msg = ET.tostring(msg)
+
+    file_msg = BytesIO()
+    msg.write(file_msg, encoding='utf-8', xml_declaration=True)
+    return file_msg.getvalue()
 
 # /////////////////test/////////////////
 # msg1 = {
