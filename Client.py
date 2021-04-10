@@ -63,16 +63,32 @@ ciphertext = cipher.encrypt(messages)
 msg6 = {
     "method": "logIn",
     "parametrs": {
-        "collectionName": "users",
+        # "collectionName": "users",
         "name": "Roman",
         "password": base64.b64encode(ciphertext).decode()
         # "password": ciphertext
         # "password": "BKxpVOz40cf+AvStNcgNEmpBUCq2NG   BMYtHvI+W8h6QJ3KDy4WryD+/c8pouLikq3Qa3CNPlrMPIGxK+o4uO6O8kqFN/LARoNVDMRamG+JI1bdnZ0fUsCaNQZ4tlBxY21u0tL+K9ImQuN1t4GMd0hFb2NyTE2s1Ki2Sh9lHCFEwMl6MtiswOLt2mqLnqrQLJvBfIghRd+5WZc5Du9t8VDiRtHC4hjcHjnrz3shRkjj6NhFyURGyZ7uR/M/S0V3fnw5XLXCdELUv25+fs4jUI1NkidjJalOUdUMB1OijGfMjO0m0LH4HoOu+ZDAMgxjP+1KVCOVU2YhdI7gg4QknpRq3adaU4JE/VQd+QZBqShb6/t7An8JpzHo/9UY/8pBmkI2XrMAeW"
     }
 }
+xml_msg_6 = '''<?xml version="1.0" encoding="utf-8"?>
+<message>
+  <method>logIn</method>
+  <parametrs>
+    <name> Roman </name>
+    <password>'''+base64.b64encode(ciphertext).decode()+'''</password>
+  </parametrs>
+</message>'''
+
+xml_msg_6 = xml_msg_6.encode("utf-8")
+
+
 msg8 = {
     "method": "getPublicKey"
 }
+xml_msg_8 = b'''<?xml version="1.0" encoding="utf-8"?>
+<message>
+  <method>getPublicKey</method>
+</message>'''
 
 
 
@@ -89,6 +105,13 @@ msg9 = {
         "ObjectID": 1
     }
 }
+xml_msg_9 = b'''<?xml version="1.0" encoding="utf-8"?>
+<message>
+  <method>getWarning</method>
+  <parametrs>
+    <ObjectID> 1 </ObjectID>
+  </parametrs>
+</message>'''
 
 
 xml_msg_7 = b'''<?xml version="1.0" encoding="utf-8"?>
@@ -121,7 +144,10 @@ msg = [
     # msg7,
     # msg8
     # msg9
-    xml_msg_7
+    xml_msg_6,
+    xml_msg_7,
+    xml_msg_8,
+    xml_msg_9
 ]
 
 # HOST, PORT = "25.79.246.93", 50000

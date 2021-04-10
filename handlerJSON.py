@@ -67,24 +67,14 @@ def loadMessage(msg):
         #     result = iDB.AR_db.getMany(collectionName, filterJSON)
         #     # print(result)
         #     resultData = result
-        # new
-        msgXML = ET.fromstring(msg)
-        method_msg = msgXML.find("method").text
-        parametrs_msg = msgXML.find("parametrs")
+
         # elif methodJSON == "getLast":
         #     parametrsMsg = msg["parametrs"]
         #     collectionId = int(parametrsMsg["ObjectID"])
         #     result = iDB.AR_db.getLastOne(iDB.AR_db.getNameOfCollection(collectionId))
         #     resultData = result
         #
-        if method_msg == "getLast":
-            collectionId = int(parametrs_msg.find("ObjectID").text)
-            result = iDB.AR_db.getLastOne(iDB.AR_db.getNameOfCollection(collectionId))
-            print(result)
-            result = json2xml.Json2xml(result).to_xml()  # JSON -> XML string
-            print(result)
-            resultData = ET.fromstring(result)    # XML string -> XML
-            print(resultData)
+
         # elif methodJSON == "delete":
         #     parametrsMsg = msg["parametrs"]
         #     collectionName = parametrsMsg["collectionName"]
@@ -154,14 +144,113 @@ def loadMessage(msg):
         #
         # else:
         #     resultData = "Wrong Method"
+
+        # new
+        msgXML = ET.fromstring(msg)
+        method_msg = msgXML.find("method").text
+        parametrs_msg = msgXML.find("parametrs")
+
+        if method_msg == "getLast":
+            collectionId = int(parametrs_msg.find("ObjectID").text)
+            result = iDB.AR_db.getLastOne(iDB.AR_db.getNameOfCollection(collectionId))
+            print(result)
+            result = json2xml.Json2xml(result).to_xml()  # JSON -> XML string
+            print(result)
+            resultData = ET.fromstring(result)  # XML string -> XML
+            print(resultData)
+
+        # if methodJSON == "get":
+        #     parametrsMsg = msg["parametrs"]
+        #     collectionName = parametrsMsg["collectionName"]
+        #     filterJSON = parametrsMsg["filter"]
+        #     result = iDB.AR_db.getMany(collectionName, filterJSON)
+        #     # print(result)
+        #     resultData = result
+
+        # elif methodJSON == "delete":
+        #     parametrsMsg = msg["parametrs"]
+        #     collectionName = parametrsMsg["collectionName"]
+        #     filterJSON = parametrsMsg["filter"]
+        #     result = iDB.AR_db.deleteMany(collectionName, filterJSON)
+        #     # print(result)
+        #     resultData = result["n"]
+        #
+        # elif methodJSON == "put":
+        #     parametrsMsg = msg["parametrs"]
+        #     collectionName = parametrsMsg["collectionName"]
+        #     dataJSON = parametrsMsg["data"]
+        #     dataJSON["id"] = iDB.AR_db.getLastId(collectionName) + 1
+        #     dataJSON["Date"] = datetime.datetime.now(timezone.utc).isoformat(sep=" ")
+        #     result = iDB.AR_db.writeOne(collectionName, dataJSON).inserted_id
+        #     # print(result)
+        #     resultData = "ОК"
+        #
+        #
+        # elif methodJSON == "getLast":
+        #     parametrsMsg = msg["parametrs"]
+        #     collectionId = int(parametrsMsg["ObjectID"])
+        #     result = iDB.AR_db.getLastOne(iDB.AR_db.getNameOfCollection(collectionId))
+        #     resultData = result
+        #
+        #
+        # # elif methodJSON == "getLastData":
+        # #     collectionId = int(msg["ObjectID"])
+        # #     result = iDB.getLastOne(iDB.getNameOfCollection(collectionId))
+        # #     resultData = result
+
+        elif method_msg == "logIn":
+            # collectionName = "users"
+            login = parametrs_msg.find("name").text
+            password_b64 = parametrs_msg.find("password").text
+            password = base64.b64decode(password_b64)
+            result = ET.Element('result')
+            result.text = FA.authen(login, password)
+            resultData = result
+        #
+        # elif methodJSON == "getLast":
+        #     parametrsMsg = msg["parametrs"]
+        #     collectionId = int(parametrsMsg["ObjectID"])
+        #     result = iDB.AR_db.getLastOne(iDB.AR_db.getNameOfCollection(collectionId))
+        #     resultData = result
+        #
+        elif method_msg == "getWarning":
+
+            collectionId = int(parametrs_msg.find("ObjectID").text)
+            if collectionId == 1:
+                result_str = str("Only the temperature sensor works!")
+            else:
+                result_str = str("Empty")
+            result = ET.Element('result')
+            result.text = result_str
+            resultData = result
+        #
+        # # elif methodJSON == "getLastData":
+        # #     collectionId = int(msg["ObjectID"])
+        # #     result = iDB.getLastOne(iDB.getNameOfCollection(collectionId))
+        # #     resultData = result
+        #
+        elif method_msg == "getPublicKey":
+            key = RSA.importKey(open('publickey.pem').read())
+            key.export_key()
+            resultData= str(key.export_key())
+            result = ET.Element('result')
+            result.text = resultData
+            resultData = result
+
+        else:
+            resultData = "Wrong Method"
+            result = ET.Element('result')
+            result.text = resultData
+            resultData = result
+
         return responseJSON(resultData)
     except StopIteration:
-        # pass
         # old
-        # resultData = "Wrong Request"
-        resultData =""
-        return responseJSON(resultData)
-
+        resultData = "Wrong Request"
+        # resultData = ""
+        result = ET.Element('result')
+        result.text = resultData
+        return responseJSON(result)
 
 
 # ответ на запрос
@@ -239,4 +328,3 @@ def responseJSON(data):
 # loadMessage(msg2)
 # loadMessage(msg3)
 # print(loadMessage(str(msg5)))
-
