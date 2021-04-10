@@ -2,7 +2,7 @@
 from pymongo import MongoClient, results, cursor
 import pymongo
 
-import server.encryptionDES as encDES
+import ARappServer.encryptionDES as encDES
 
 # подключаемся к базе данных MongoDB
 client = MongoClient(port=27017)
@@ -141,6 +141,7 @@ class ArDB(BaseDBinterface):
 
     # метод возвращает Name коллекции физического объекта на вход его id
     def getNameOfCollection(self, objectId):
+        #TODO при ошибочном id объекта возвращается ошибка
         return self.db.listOfObjects.find({"id": objectId}, projection={'_id': False})[0]["Name"]
 
 
@@ -178,10 +179,12 @@ AR_db = ArDB(DB_DATA)
 User_DB = UserDB(DB_USERS)
 
 # ////////////////////////////testing///////////////////////////////
+if __name__ == "__main__":
+
 # writeOne("radiator",{"Name": "sds","DatTime":datetime.now()})
 
 # print(getOne("radiator",{"Temperature": {'$gt':80}}))
-
+    print(AR_db.createNewObject("radiator"))
 # if __name__ == '__main__':
 # collection_names = "radiator"
 # # while True:

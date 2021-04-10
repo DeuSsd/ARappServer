@@ -1,7 +1,7 @@
 from Crypto.Cipher import PKCS1_OAEP
 from Crypto.PublicKey import RSA
 # from server.encryptionDES import checkDES_Key
-import server.DBinterface as DBi
+import ARappServer.DBinterface as DBi
 
 RSA_PRIVATE_KEY = 'privatekey.pem'
 

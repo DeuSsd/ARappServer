@@ -1,6 +1,6 @@
-from Cryptodome.Cipher import DES
+from Crypto.Cipher import DES
 from Crypto.Util.Padding import pad, unpad
-import server.DBinterface as DBi
+import ARappServer.DBinterface as DBi
 
 BLOCK_SIZE = 16
 DES_KEY_FILE = 'key.txt'

@@ -18,28 +18,25 @@ msg1 = {
         }
     }
 }
+# msg2 = {
+#     "method": "delete",
+#     "parametrs": {
+#         "collectionName": "radiator",
+#         "filter": {
+#             "Temperature": {'$lt': 10}
+#         }
+#     }
+# }
+# msg3 = {
+#     "method": "put",
+#     "parametrs": {
+#         "collectionName": "radiator",
+#         "data": {
+#             "Temperature": 150.256
+#         }
+#     }
+# }
 msg2 = {
-    "method": "delete",
-    "parametrs": {
-        "collectionName": "radiator",
-        "filter": {
-            "Temperature": {'$lt': 10}
-        }
-    }
-}
-msg3 = {
-    "method": "put",
-    "parametrs": {
-        "collectionName": "radiator",
-        "data": {
-            "Temperature": 150.256
-        }
-    }
-}
-msg5 = {
-    "method": "put"
-}
-msg4 = {
     "method": "get",
     "parametrs": {
         "collectionName": "radiator",
@@ -60,34 +57,38 @@ print()
 cipher = PKCS1_OAEP.new(key)
 ciphertext = cipher.encrypt(messages)
 
-msg6 = {
+msg3 = {
     "method": "logIn",
     "parametrs": {
         "collectionName": "users",
         "name": "Roman",
         "password": base64.b64encode(ciphertext).decode()
         # "password": ciphertext
-        # "password": "BKxpVOz40cf+AvStNcgNEmpBUCq2NGBMYtHvI+W8h6QJ3KDy4WryD+/c8pouLikq3Qa3CNPlrMPIGxK+o4uO6O8kqFN/LARoNVDMRamG+JI1bdnZ0fUsCaNQZ4tlBxY21u0tL+K9ImQuN1t4GMd0hFb2NyTE2s1Ki2Sh9lHCFEwMl6MtiswOLt2mqLnqrQLJvBfIghRd+5WZc5Du9t8VDiRtHC4hjcHjnrz3shRkjj6NhFyURGyZ7uR/M/S0V3fnw5XLXCdELUv25+fs4jUI1NkidjJalOUdUMB1OijGfMjO0m0LH4HoOu+ZDAMgxjP+1KVCOVU2YhdI7gg4QknpRq3adaU4JE/VQd+QZBqShb6/t7An8JpzHo/9UY/8pBmkI2XrMAeW"
+        # "password": "BKxpVOz40cf+AvStNcgNEmpBUCq2NG   BMYtHvI+W8h6QJ3KDy4WryD+/c8pouLikq3Qa3CNPlrMPIGxK+o4uO6O8kqFN/LARoNVDMRamG+JI1bdnZ0fUsCaNQZ4tlBxY21u0tL+K9ImQuN1t4GMd0hFb2NyTE2s1Ki2Sh9lHCFEwMl6MtiswOLt2mqLnqrQLJvBfIghRd+5WZc5Du9t8VDiRtHC4hjcHjnrz3shRkjj6NhFyURGyZ7uR/M/S0V3fnw5XLXCdELUv25+fs4jUI1NkidjJalOUdUMB1OijGfMjO0m0LH4HoOu+ZDAMgxjP+1KVCOVU2YhdI7gg4QknpRq3adaU4JE/VQd+QZBqShb6/t7An8JpzHo/9UY/8pBmkI2XrMAeW"
     }
 }
-msg8 = {
-    "method": "getPublicKey"
-}
+# msg4 = {
+#     "method": "getPublicKey"
+# }
+#
+#
 
-
-
-msg7 = {
+msg4 = {
     "method" : "getLast",
     "parametrs": {
         "ObjectID": 1
     }
 }
 
-msg9 = {
+msg5 = {
     "method" : "getWarning",
     "parametrs": {
         "ObjectID": 1
     }
+}
+
+msg = {
+    "method" : "c"
 }
 
 def getLength(Socket):
@@ -104,14 +105,7 @@ def setLength(Socket,msg):
         length = int(Socket.recv(1024).decode())
 
     return length
-msg = [
-    # msg1,
-    # ,msg2,msg3,msg4,msg5,
-    msg6,
-    msg7,
-    # msg8
-    msg9
-]
+msg = [msg1,msg2,msg3,msg4,msg5]
 
 # HOST, PORT = "25.79.246.93", 50000
 # HOST, PORT = "192.168.1.100", 50000
@@ -126,8 +120,8 @@ def getLocalExternalIP():
     return HOST
 
 
-HOST, PORT = getLocalExternalIP(), 50000
-# HOST, PORT = "localhost", 9999
+# HOST, PORT = getLocalExternalIP(), 50000
+HOST, PORT = "localhost", 9999
 # Create a socket (SOCK_STREAM means a TCP socket)
 for dataMsg in msg:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
