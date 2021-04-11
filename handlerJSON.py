@@ -153,11 +153,11 @@ def loadMessage(msg):
         if method_msg == "getLast":
             collectionId = int(parametrs_msg.find("ObjectID").text)
             result = iDB.AR_db.getLastOne(iDB.AR_db.getNameOfCollection(collectionId))
-            print(result)
+            # print(result)
             result = json2xml.Json2xml(result).to_xml()  # JSON -> XML string
-            print(result)
+            # print(result)
             resultData = ET.fromstring(result)  # XML string -> XML
-            print(resultData)
+            # print(resultData)
 
         # if methodJSON == "get":
         #     parametrsMsg = msg["parametrs"]
@@ -237,11 +237,21 @@ def loadMessage(msg):
             result.text = resultData
             resultData = result
 
+
+        elif method_msg == "getPrognose":
+            collectionId = int(parametrs_msg.find("ObjectID").text)
+            result = iDB.AR_db.getLastOne(iDB.AR_db.getNameOfCollection(collectionId))
+            # print(result)
+            result = json2xml.Json2xml(result).to_xml()  # JSON -> XML string
+            # print(result)
+            resultData = ET.fromstring(result)  # XML string -> XML
+
         else:
             resultData = "Wrong Method"
             result = ET.Element('result')
             result.text = resultData
             resultData = result
+
 
         return responseJSON(resultData)
     except StopIteration:

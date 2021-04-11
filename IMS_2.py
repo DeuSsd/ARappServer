@@ -69,5 +69,9 @@ def ims(
         writer = csv.writer(csv_file)
         writer.writerows(data)
         print("\033[91mДанные подготовлены\033[36m")
-    return None
     csv_file.close()
+    return None
+
+
+
+import DBinterface

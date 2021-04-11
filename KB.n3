@@ -16,7 +16,7 @@ MyBase:status_of_oil a rdfs:Class .
 
 NN:NN_Model a rdfs:Class ;
     NN:base_model_name "Model_" ;
-    NN:path "U:\\7 семестр\\pythonProject\\Models" ;
+    NN:path "U:\\ВКР\\ARappServer\\Models" ;
     rdfs:domain NN:model_name .
 
 NN:nn_model a rdfs:Class ;
@@ -32,6 +32,14 @@ formulas:formula a rdfs:Class ;
         formulas:numparam .
 
 MyBase:Primary_Rectification a MyBase:process .
+
+MyBase:Radiator a MyBase:hardware ;
+    MyBase:formula formulas:radiatorFormula ;
+    MyBase:max_pressure 0.2 ;
+    MyBase:max_temp 75 ;
+    MyBase:min_pressure 0.15 ;
+    MyBase:min_temp 50 ;
+    MyBase:name "Радиатор" .
 
 MyBase:Secondary_Rectification a MyBase:process .
 
@@ -72,37 +80,8 @@ NN:Predicate_Model_1 a NN:NN_Model ;
     NN:model_name "Model_1" .
 
 NN:Predicate_Model_2 a NN:NN_Model ;
-    NN:active false ;
+    NN:active true ;
     NN:model_name "Model_2" .
-
-NN:Predicate_Model_3 a NN:NN_Model ;
-    NN:active false ;
-    NN:model_name "Model_3" .
-
-NN:Predicate_Model_4 a NN:NN_Model ;
-    NN:active false ;
-    NN:model_name "Model_4" .
-
-NN:Predicate_Model_5 a NN:NN_Model ;
-    NN:active false ;
-    NN:model_name "Model_5" .
-
-NN:Predicate_Model_6 a NN:NN_Model ;
-    NN:active false ;
-    NN:model_name "Model_6" .
-
-NN:Predicate_Model_7 a NN:NN_Model ;
-    NN:active false ;
-    NN:model_name "Model_7" .
-
-NN:Predicate_Model_8 a NN:NN_Model ;
-    NN:active false ;
-    NN:model_name "Model_8" .
-
-NN:Predicate_Model_9 a NN:NN_Model ;
-    NN:active false,
-        true ;
-    NN:model_name "Model_9" .
 
 NN:active a rdf:Property .
 

@@ -43,7 +43,7 @@ def test_nn(
         max = df.max()
 
         for column in df.columns:
-            values = df[column] / max[column]
+            values = df[column] #/ max[column]
 
             result[column] = values
         return result

@@ -1,7 +1,7 @@
 from rdflib import *
 from NN_tools import *
 from NN_tools_execute import execute
-from IMS_2 import ims
+from IMS_3 import ims
 import os
 
 ACCURACY = 0.0005
@@ -17,16 +17,15 @@ for subj, pred, obj in g:
 
 print("\n\033[36mГраф имеет {} триплетов!\033[36m".format(len(g)))
 
-
 # извлекаем путь к нейросетевым моделям
 path_nn = ''
 q = g.query(
     '''
     PREFIX NN: <file:///U:/7%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/pythonProject/MyBase/NN/#>
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    
+
     SELECT ?path_model
-    
+
     WHERE
     {
         NN:NN_Model NN:path ?path_model .
@@ -42,8 +41,9 @@ def convert_dict_to_ilst(dict_parametrs):
     l = len(dict_parametrs)
     list_parametrs = []
     for i in range(l):
-        list_parametrs.append(dict_parametrs[i+1])
+        list_parametrs.append(dict_parametrs[i + 1])
     return list_parametrs
+
 
 def add_new_nn_to_KB(new_name):
     NN = Namespace('file:///U:/7%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/pythonProject/MyBase/NN/#')
@@ -91,135 +91,26 @@ def change_status(new_name):
     file.write(g.serialize(format="n3"))
     file.close()
 
+
 while True:
     # # ////////////////////////////////////////////////////////////////////////////////
-    # Выводим список объектов
-    q = g.query('''
-                PREFIX MyBase: <file:///U:/7%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/pythonProject/MyBase/#>
-                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-
-                SELECT ?Object ?Name
-                WHERE
-                {
-                    ?Object a MyBase:hardware.
-                    ?Object MyBase:name ?Name.
-                }
-    ''')
-
-    hardware_list = {}
-    num = 1
-    for item,name in q:
-        hardware_list[num] = (item.split("#")[-1],str(name))
-        num+=1
-    num-=1
-    print(hardware_list)
-
-    file = open("KB.n3", mode="wb")
-    file.write(g.serialize(format="n3"))
-    file.close()
-    # Выбор объекта
-    print("\033[95mКоличество подключенного оборудования - ",num, ":")
-    for i in range(num):
-        print("["+str(i+1)+"] - "+hardware_list[i+1][-1])
-    number_of_picked_system = int(input("Выберите для наблюдения систему под номером: \033[36m"))
-    picked_system = hardware_list[number_of_picked_system][0]
-    # ////////////////////////////////////////////////////////////////////////////////
-
     q = g.query(
         '''
         PREFIX MyBase: <file:///U:/7%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/pythonProject/MyBase/#>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    
+
         SELECT ?param_formula
         WHERE
         {
-            MyBase:'''+picked_system+''' MyBase:formula ?param_formula .
-        }
-    ''')
-
-    formula_item = ""
-    for item in q:
-        formula_item = item[0].split("#")[-1]
-
-    # print(formula_item)
-    q = g.query('''
-            PREFIX FORMULA: <file:///U:/7%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/pythonProject/MyBase/formulas/#>
-            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-            SELECT ?formula_name
-            WHERE
-            {
-                FORMULA:''' + formula_item + ''' FORMULA:formula_name ?formula_name .
-            }
-    ''')
-    formula_name = ""
-    for item in q:
-        formula_name = item[0]
-    print("Используемая формула - ", formula_name)
-    # Получаем количество параметров функции
-    q = g.query(
-        '''
-        PREFIX FORMULA: <file:///U:/7%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/pythonProject/MyBase/formulas/#>
-        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    
-        SELECT ?num
-        WHERE
-        {
-            FORMULA:''' + formula_item + ''' FORMULA:numparam ?num .
-        }
-    ''')
-
-    number_of_parametrs = 0
-    for i in q:
-        number_of_parametrs = i[0]
-        # print(i[0])
-
-    # Получаем параметры функции
-    parametrs_of_function = {}
-    for i in range(int(number_of_parametrs) + 1):
-        q = g.query('''
-                PREFIX FORMULA: <file:///U:/7%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/pythonProject/MyBase/formulas/#>
-                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    
-                SELECT ?param
-                WHERE
-                {
-                    FORMULA:''' + formula_item + ''' rdf:_''' + str(i) + ''' ?param .
+            MyBase:Radiator MyBase:formula ?param_formula .
                 }
-        ''')
-        for item in q:
-            parametrs_of_function[i] = str(item[0])
-    # print(parametrs_of_function)
-
-    # Получаем название выхода функции
-    q = g.query('''
-                PREFIX FORMULA: <file:///U:/7%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/pythonProject/MyBase/formulas/#>
-                PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    
-                SELECT ?param
-                WHERE
-                {
-                    FORMULA:''' + formula_item + ''' FORMULA:exit_param ?param .
-                }
-    ''')
-    exit_parametr = ""
-    for item in q:
-        exit_parametr = item[0].split("#")[-1]
-    # print(exit_parametr)
-
-    input_names = convert_dict_to_ilst(parametrs_of_function)  # список входных параметров
-    output_names = [exit_parametr]  # список выходных параметров
-    print("Входные и выходные параметры формулы - ",input_names,output_names)
+            ''')
     # ////////////////////////////////////////////////////////////////////////////////
-
-    ims(
-        formula_name,
-        'data.csv',
-        input_names,
-        output_names
-    )
-
-
-
+    #  formula
+    # ////////////////////////////////////////////////////////////////////////////////
+    input_names = ["Date"]
+    output_names = ["Temperature"]
+    ims()
 
     # ////////////////////////////////////////////////////////////////////////////////
     # узнаём базовые параметры для обучения
@@ -241,11 +132,11 @@ while True:
         number_of_layer = int(item[1])
 
     print("\033[95mКоличество внутренних слоёв - {}\n"
-          "Количество нейронов в каждом внутреннем слое - {}\033[36m".format(number_of_layer,number_of_neurons ))
+          "Количество нейронов в каждом внутреннем слое - {}\033[36m".format(number_of_layer, number_of_neurons))
 
-# ////////////////////////////////////////////////////////////////////////////////
+    # ////////////////////////////////////////////////////////////////////////////////
 
-# while True:
+    # while True:
     # узнаём есть ли нейросетевые модели в базе и если есть забираем последнюю
     q = g.query(
         '''
@@ -273,14 +164,14 @@ while True:
     # Удаление лишних знаний
     if len(q) != 0 and len(os.listdir(path_nn)) == 0:
         print("\033[36mГраф имеет {} триплетов!\n"
-        "Удаление лишних знаний".format(len(g)))
+              "Удаление лишних знаний".format(len(g)))
         q = g.query(
             '''
             PREFIX NN: <file:///U:/7%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/pythonProject/MyBase/NN/#>
             PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-            
+
             SELECT ?instance ?status
-            
+
             WHERE
             {
                 ?instance a NN:NN_Model;
@@ -312,7 +203,6 @@ while True:
     for _, action, name in q:
         NN_tools[name] = action
 
-
     # Запрос готовых нейросетевых моделей
     q = g.query(
         '''
@@ -326,7 +216,6 @@ while True:
             ?instance NN:active true .
         }
     ''')
-
 
     if len(q) == 0:
 
@@ -364,7 +253,7 @@ while True:
             #     number_of_layer
             # )
             execute("learn_nn", [
-                nn_model_name,
+                [nn_model_name],
                 input_names,
                 output_names,
                 ["data.csv"],
@@ -373,12 +262,12 @@ while True:
             ])
 
             accuracy = execute(
-                "test_nn",[
-                [nn_model_name],
-                input_names,
-                output_names,
-                ["data.csv"]
-            ])
+                "test_nn", [
+                    [nn_model_name],
+                    input_names,
+                    output_names,
+                    ["data.csv"]
+                ])
             # accuracy = test_nn(
             #     nn_model_name,
             #     input_names,
@@ -392,7 +281,7 @@ while True:
                                                                                 accuracy))
 
             if number_of_neurons < 0:
-                number_of_neurons+=1
+                number_of_neurons += 1
             elif number_of_layer < 0:
                 number_of_layer += 1
             else:
@@ -428,7 +317,6 @@ while True:
         full_path_nn_model = os.path.join(path_nn, nn_model_name + ".h5")
         # print(full_path_nn_model)
 
-
         # accuracy = test_nn(
         #             full_path_nn_model,
         #             input_names,
@@ -436,17 +324,18 @@ while True:
         #             "data.csv"
         #         )
         accuracy = execute(
-            "test_nn",[
+            "test_nn", [
                 [full_path_nn_model],
                 input_names,
                 output_names,
-                [ "data.csv"]
+                ["data.csv"]
             ])
         #         #проверка нейросети
 
         print("\033[95mКолличество внутренних слоёв - {}\n"
               "Количество нейронов в каждом внутреннем слое - {}\n"
-              "Текущая точность прогностической модели - {}\033[36m".format(number_of_layer, number_of_neurons,accuracy))
+              "Текущая точность прогностической модели - {}\033[36m".format(number_of_layer, number_of_neurons,
+                                                                            accuracy))
 
         if accuracy < ACCURACY:
             # relearn_nn.relearn_nn(
@@ -461,7 +350,7 @@ while True:
                     input_names,
                     output_names,
                     ["data.csv"]
-            ])
+                ])
             # accuracy = test_nn(
             #     full_path_nn_model,
             #     input_names,
@@ -481,8 +370,8 @@ while True:
                   "Текущая точность прогностической модели - {}\033[36m".format(number_of_layer, number_of_neurons,
                                                                                 accuracy))
             if accuracy < ACCURACY:
-                name,i_num = nn_model_name.split("_")
-                name += "_{}".format(int(i_num)+1)
+                name, i_num = nn_model_name.split("_")
+                name += "_{}".format(int(i_num) + 1)
                 nn_model_name = os.path.join(path_nn, name + ".h5")
                 # обучение нейросети
                 accuracy = 0
@@ -535,7 +424,6 @@ while True:
             else:
                 # print(1)
                 change_status(nn_model_name)
-
 
     # q = g.query('''
     #             PREFIX MyBase: <file:///U:/7%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/pythonProject/MyBase/#>

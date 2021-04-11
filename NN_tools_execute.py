@@ -12,13 +12,13 @@ def parametrs_to_string(param):
 
 
 
-def execute(formula_name,parametrs):
+def execute(NN_name,parametrs):
     # try:
     results = []
     parametrs_s = parametrs_to_string(parametrs)
     exec("reload(NN_tools)")
-    exec("reload(NN_tools.{})".format(formula_name))
-    exec("results.append(NN_tools.{}.{}({}))".format(formula_name,formula_name,parametrs_s))
+    exec("reload(NN_tools.{})".format(NN_name))
+    exec("results.append(NN_tools.{}.{}({}))".format(NN_name,NN_name,parametrs_s))
     return results[0]
     # except:
     #     return None
