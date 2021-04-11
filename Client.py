@@ -123,6 +123,15 @@ xml_msg_7 = b'''<?xml version="1.0" encoding="utf-8"?>
 </message>'''
 
 
+xml_msg_10 = b'''<?xml version="1.0" encoding="utf-8"?>
+<message>
+  <method>getPrognose</method>
+  <parametrs>
+    <ObjectID type="int"> 1 </ObjectID>
+  </parametrs>
+</message>'''
+
+
 def getLength(Socket):
     length = 0
     while not length:
@@ -147,7 +156,8 @@ msg = [
     xml_msg_6,
     xml_msg_7,
     xml_msg_8,
-    xml_msg_9
+    xml_msg_9,
+    xml_msg_10
 ]
 
 # HOST, PORT = "25.79.246.93", 50000

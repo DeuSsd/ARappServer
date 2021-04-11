@@ -19,4 +19,4 @@ while True:
     }
     print(objectId, objectData)
     iDB.AR_db.writeOne(collectionName, objectData)  # добавляем одну запись в базу данных
-    time.sleep(1)
+    time.sleep(0.1)

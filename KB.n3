@@ -80,20 +80,40 @@ NN:Predicate_Model_1 a NN:NN_Model ;
     NN:model_name "Model_1" .
 
 NN:Predicate_Model_2 a NN:NN_Model ;
-    NN:active true ;
+    NN:active false ;
     NN:model_name "Model_2" .
+
+NN:Predicate_Model_3 a NN:NN_Model ;
+    NN:active false ;
+    NN:model_name "Model_3" .
+
+NN:Predicate_Model_4 a NN:NN_Model ;
+    NN:active false ;
+    NN:model_name "Model_4" .
+
+NN:Predicate_Model_5 a NN:NN_Model ;
+    NN:active false ;
+    NN:model_name "Model_5" .
+
+NN:Predicate_Model_6 a NN:NN_Model ;
+    NN:active false ;
+    NN:model_name "Model_6" .
+
+NN:Predicate_Model_7 a NN:NN_Model ;
+    NN:active true ;
+    NN:model_name "Model_7" .
 
 NN:active a rdf:Property .
 
 NN:base_model_name a rdf:Property .
 
 NN:base_parametrs_nn_model a NN:NN_Model ;
-    NN:number_of_layer 4 ;
-    NN:number_of_neurons 20 .
+    NN:number_of_layer 2 ;
+    NN:number_of_neurons 4 .
 
 NN:best_parametrs_nn_model a NN:NN_Model ;
     NN:number_of_layer 2 ;
-    NN:number_of_neurons 10 .
+    NN:number_of_neurons 4 .
 
 NN:path a rdf:Property .
 

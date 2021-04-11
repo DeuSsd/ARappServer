@@ -10,6 +10,7 @@ from json2xml import json2xml
 from json2xml.utils import readfromurl, readfromstring, readfromjson
 from io import BytesIO
 
+from ARappServer.GetPrognose import prognos
 
 def loadMessage(msg):
     """
@@ -240,7 +241,7 @@ def loadMessage(msg):
 
         elif method_msg == "getPrognose":
             collectionId = int(parametrs_msg.find("ObjectID").text)
-            result = iDB.AR_db.getLastOne(iDB.AR_db.getNameOfCollection(collectionId))
+            result = {"data":float(prognos(collectionId)[0])}
             # print(result)
             result = json2xml.Json2xml(result).to_xml()  # JSON -> XML string
             # print(result)
