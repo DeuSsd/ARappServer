@@ -1,4 +1,53 @@
-<message><method>response</method><data>
-	<Temperature type="float">71.998</Temperature>
+<?xml version="1.0" encoding="utf-8"?>
+
+<?xml version="1.0" encoding="utf-8"?>
+
+<?xml version="1.0" encoding="utf-8"?>
+<message>
+  <method>
+	  getLast
+  </method>
+  <parametrs>
+    <ObjectID type="int">
+		1
+	</ObjectID>
+  </parametrs>
+  <id type="int">
+	  0
+  </id>
+</message>
+
+<message>
+	<method>
+		response
+	</method>
+	<data>
+		<Temperature type="float">
+			71.998
+		</Temperature>
+		<Date type="str">
+			2021-04-10 11:51:14.050002+00:00
+		</Date>
+	</data>
+	<id type="int">
+		0
+	</id>
+</message>
+
+
+<message>
+	<method>
+		Request method
+	</method>
+	<parametrs>
+		Data
+	</parametrs>
+	<id type="int">
+		0
+	</id>
+</message>
+
+<ObjectId type="float">
+		71.998
+	</ObjectId>
 	<Date type="str">2021-04-10 11:51:14.050002+00:00</Date>
-</data></message>

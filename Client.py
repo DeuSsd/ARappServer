@@ -74,7 +74,7 @@ xml_msg_6 = '''<?xml version="1.0" encoding="utf-8"?>
 <message>
   <method>logIn</method>
   <parametrs>
-    <name> Roman </name>
+    <name> Denis </name>
     <password>'''+base64.b64encode(ciphertext).decode()+'''</password>
   </parametrs>
 </message>'''
@@ -109,7 +109,7 @@ xml_msg_9 = b'''<?xml version="1.0" encoding="utf-8"?>
 <message>
   <method>getWarning</method>
   <parametrs>
-    <ObjectID> 1 </ObjectID>
+    <ObjectID type="int"> 1 </ObjectID>
   </parametrs>
 </message>'''
 
@@ -118,7 +118,7 @@ xml_msg_7 = b'''<?xml version="1.0" encoding="utf-8"?>
 <message>
   <method>getLast</method>
   <parametrs>
-    <ObjectID> 1 </ObjectID>
+    <ObjectID type="int"> 1 </ObjectID>
   </parametrs>
 </message>'''
 

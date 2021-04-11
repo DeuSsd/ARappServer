@@ -257,6 +257,12 @@ paket-files/
 *.pem
 *.bin
 *.cs
+*.h5
+
+!**/Models/
+!**/formula/
+!**/NN_tools/
+
 /*/
 Test.py
 __pycache__/
