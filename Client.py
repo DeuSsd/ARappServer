@@ -132,6 +132,15 @@ xml_msg_10 = b'''<?xml version="1.0" encoding="utf-8"?>
 </message>'''
 
 
+xml_msg_11 = b'''<?xml version="1.0" encoding="utf-8"?>
+<message>
+  <method>getBuildSettings</method>
+  <parameters>
+    <ObjectID type="int"> 1 </ObjectID>
+  </parameters>
+</message>'''
+
+
 def getLength(Socket):
     length = 0
     while not length:
@@ -153,16 +162,18 @@ msg = [
     # msg7,
     # msg8
     # msg9
-    xml_msg_6,
-    xml_msg_7,
-    xml_msg_8,
-    xml_msg_9,
-    xml_msg_10
+    # xml_msg_6,
+    # xml_msg_7,
+    # xml_msg_8,
+    # xml_msg_9,
+    # xml_msg_10,
+    xml_msg_11
 ]
 
 # HOST, PORT = "25.79.246.93", 50000
-# HOST, PORT = "192.168.1.100", 50000
+HOST, PORT = "192.168.0.108", 50000
 
+# HOST, PORT = "localhost", 9090
 
 def getLocalExternalIP():
     # getlockal ip
@@ -174,7 +185,7 @@ def getLocalExternalIP():
 
 
 # HOST, PORT = getLocalExternalIP(), 50000
-HOST, PORT = "localhost", 9999
+# HOST, PORT = "localhost", 9999
 # Create a socket (SOCK_STREAM means a TCP socket)
 for dataMsg in msg:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:

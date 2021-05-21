@@ -57,6 +57,8 @@ class BaseDBinterface:
         return this_collection.find_one(query, projection={'_id': False})[0]
 
     # метод возвращает все объекты коллекции collection_name по фильтру filter
+
+    # метод возвращает все объекты коллекции collection_name
     def getMany(self, collection_name, query=None, limit=0):
         this_collection = self.db.get_collection(collection_name)
         result = []

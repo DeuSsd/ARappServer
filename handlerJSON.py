@@ -149,8 +149,7 @@ def loadMessage(msg):
         # new
         msgXML = ET.fromstring(msg)
         method_msg = msgXML.find("method").text
-        parametrs_msg = msgXML.find("parametrs")
-
+        parametrs_msg = msgXML.find("parameters")
         if method_msg == "getLast":
             collectionId = int(parametrs_msg.find("ObjectID").text)
             result = iDB.AR_db.getLastOne(iDB.AR_db.getNameOfCollection(collectionId))
@@ -200,13 +199,23 @@ def loadMessage(msg):
         # #     resultData = result
 
         elif method_msg == "logIn":
+            print(method_msg)
             # collectionName = "users"
-            login = parametrs_msg.find("name").text
+            login = parametrs_msg.find("login").text
+            print(parametrs_msg,login)
             password_b64 = parametrs_msg.find("password").text
             password = base64.b64decode(password_b64)
             result = ET.Element('result')
             result.text = FA.authen(login, password)
             resultData = result
+
+
+        elif method_msg == "getBuildSettings":
+            ObjectId = parametrs_msg.find("ObjectId")
+            tree = ET.parse('BuildSettings.xml')
+            root = tree.getroot()
+            resultData = root
+
         #
         # elif methodJSON == "getLast":
         #     parametrsMsg = msg["parametrs"]
@@ -242,6 +251,7 @@ def loadMessage(msg):
         elif method_msg == "getPrognose":
             collectionId = int(parametrs_msg.find("ObjectID").text)
             result = {"data":float(prognos(collectionId)[0])}
+            result = {"data": float(78.58682)}
             # print(result)
             result = json2xml.Json2xml(result).to_xml()  # JSON -> XML string
             # print(result)
@@ -255,7 +265,7 @@ def loadMessage(msg):
 
 
         return responseJSON(resultData)
-    except StopIteration:
+    except ImportError:
         # old
         resultData = "Wrong Request"
         # resultData = ""

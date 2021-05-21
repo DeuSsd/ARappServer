@@ -5,8 +5,8 @@ from ARappServer.Authentification import checkRSA_PrivateKey, WrongRSA_Key
 from ARappServer.encryptionDES import WrongDES_Key, checkDES_Key
 import datetime
 
-HOST, PORT = 'localhost', 9999
-# HOST, PORT = "25.79.246.93", 9090
+# HOST, PORT = 'localhost', 9090
+HOST, PORT = "25.36.227.49", 9090
 
 tasks = []  # тут должен использоваться модуль
 
@@ -58,7 +58,8 @@ def client(client_socket):
                   f"Data transmission from client to server: \n\t{request.decode()}")
 
             response = handlerJSON.loadMessage(request.decode())  # block process
-            msg = str(response).encode()
+            # msg = str(response).encode()
+            msg = response
             yield ('write', client_socket)
             # print("Responce: {}".format())
             client_socket.send(msg)
