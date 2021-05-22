@@ -141,6 +141,8 @@ xml_msg_11 = b'''<?xml version="1.0" encoding="utf-8"?>
 </message>'''
 
 
+xml_msg_12 = '''<?xml version="1.0" encoding="utf-8"?><message><method>setBuildSettings</method><parameters><ObjectID>1</ObjectID><objectsSettings><object1><name>button</name><x>-300</x><y>200</y><z>0</z><scale>1</scale></object1><object2><name>lamp</name><x>100</x><y>200</y><z>0</z><scale>1</scale></object2><object3><name>sensor</name><x>0</x><y>-100</y><z>0</z><scale>1</scale></object3></objectsSettings><initialdata>ТУТ ИНФА</initialdata></parameters></message>'''
+xml_msg_12 = xml_msg_12.encode()
 def getLength(Socket):
     length = 0
     while not length:
@@ -167,7 +169,8 @@ msg = [
     # xml_msg_8,
     # xml_msg_9,
     # xml_msg_10,
-    xml_msg_11
+    xml_msg_11,
+    # xml_msg_12
 ]
 
 # HOST, PORT = "25.79.246.93", 50000

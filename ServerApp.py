@@ -5,7 +5,7 @@ from ARappServer.Authentification import checkRSA_PrivateKey, WrongRSA_Key
 from ARappServer.encryptionDES import WrongDES_Key, checkDES_Key
 import datetime
 
-# HOST, PORT = 'localhost', 9090
+# HOST, PORT = 'localhost', 50000
 HOST, PORT = "25.36.227.49", 9090
 
 tasks = []  # тут должен использоваться модуль

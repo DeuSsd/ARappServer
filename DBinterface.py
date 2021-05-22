@@ -46,7 +46,7 @@ class BaseDBinterface:
         else:
             return None
 
-    # метод добавляет одну запись в коллекцию collection_name
+    # метод добавляет одну запись в коллекцию collection_name, шаблон data = {признак: свойство, и т.д.}
     def writeOne(self, collection_name, data):
         this_collection = self.db.get_collection(collection_name)
         return this_collection.insert_one(data)
@@ -145,6 +145,26 @@ class ArDB(BaseDBinterface):
     def getNameOfCollection(self, objectId):
         return self.db.listOfObjects.find({"id": objectId}, projection={'_id': False})[0]["Name"]
 
+    # data шаблон data = {признак: свойство, и т.д.}
+    def setNewObjectBuildSettings(self, data):
+# TODO сделать проверку на существование данных
+        return self.writeOne("ObjectBuildSettings", data)
+
+    def getObjectBuildSettings(self, objectId):
+        '''
+        :param objectId: id объекта
+        :return: [{'name': 'button', 'x': '0', 'y': '0', 'z': '0', 'scale': '0'},....]
+            может быть пустым
+        '''
+        # TODO сделать проверку на существование данных
+        result = []
+        ObjectBuildSettings =self.db.ObjectBuildSettings.find(
+            {"ObjectId": objectId}, projection={'_id': False,'ObjectId': False}
+        )
+        for item in ObjectBuildSettings:
+            result.append(item)
+        return result
+
 
 class UserDB(BaseDBinterface):
 
@@ -199,8 +219,9 @@ if __name__ == '__main__':
 # print(DB1.getLastId('users'))
 # print(bool(get_db("ARdb")))
 # print(UserDB(DB_USERS).getNamefromlogin("T/EST", "TEST0912375981237059812730"))
-    print(AR_db.createNewObject("radiator"))
-    print(User_DB.writeOnewithshifr(1,"Roman","qwer1ty12","one"))
+#     print(AR_db.createNewObject("radiator"))
+#     print(User_DB.writeOnewithshifr(1,"Roman","qwer1ty12","one"))
 # print(AR_DB("ARdb").get_db())
 # print(MongoClient().ARdb)
+    print([i for i in AR_db.getObjectBuildSettings(1)])
 

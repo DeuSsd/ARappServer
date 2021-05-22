@@ -5,12 +5,17 @@ import ast
 from ARappServer import Authentification as FA
 import base64
 from Crypto.PublicKey import RSA
+
 import xml.etree.ElementTree as ET
 from json2xml import json2xml
+import xmltodict
+
 from json2xml.utils import readfromurl, readfromstring, readfromjson
 from io import BytesIO
 
 from ARappServer.GetPrognose import prognos
+
+
 
 def loadMessage(msg):
     """
@@ -150,6 +155,7 @@ def loadMessage(msg):
         msgXML = ET.fromstring(msg)
         method_msg = msgXML.find("method").text
         parametrs_msg = msgXML.find("parameters")
+        print(method_msg)
         if method_msg == "getLast":
             collectionId = int(parametrs_msg.find("ObjectID").text)
             result = iDB.AR_db.getLastOne(iDB.AR_db.getNameOfCollection(collectionId))
@@ -209,14 +215,42 @@ def loadMessage(msg):
             result.text = FA.authen(login, password)
             resultData = result
 
-
         elif method_msg == "getBuildSettings":
-            ObjectId = parametrs_msg.find("ObjectId")
-            tree = ET.parse('BuildSettings.xml')
-            root = tree.getroot()
-            resultData = root
+            ObjectId = int(parametrs_msg.find("ObjectID").text)
+            objectsBuildSettings = iDB.AR_db.getObjectBuildSettings(ObjectId)
 
-        #
+            objectsSettings = {}
+            index = 1
+            for item in objectsBuildSettings:
+                objectsSettings["object"+str(index)] = item
+                index+=1
+            objectsSettings = json2xml.Json2xml(objectsSettings).to_xml()  # JSON -> XML string
+            objectsSettings = ET.fromstring(objectsSettings)
+            objectsSettings.tag = "objectsSettings"
+            data = ET.Element("data")
+            data.append(objectsSettings)
+            initialData = ET.SubElement(data,"initialData")
+            initialData.text = "ВРЕМЕННАЯ ИНФОЗАГЛУШКА"
+            resultData = data  # XML string -> XML
+            # tree = ET.parse('BuildSettings.xml')
+            # root = tree.getroot()
+            # resultData = root
+
+
+        elif method_msg == "setBuildSettings":
+            ObjectId = int(parametrs_msg.find("ObjectID").text)
+            objectsSettings = parametrs_msg.find("objectsSettings")
+            objects = xmltodict.parse(ET.tostring(objectsSettings))["objectsSettings"]
+            for key in objects.keys():
+                data = dict(objects[key])
+                data["ObjectId"] = ObjectId
+                iDB.AR_db.setNewObjectBuildSettings(data)
+                print(data)
+            result = ET.Element('result')
+            result.text = "OK"
+            resultData = result
+
+
         # elif methodJSON == "getLast":
         #     parametrsMsg = msg["parametrs"]
         #     collectionId = int(parametrsMsg["ObjectID"])
@@ -255,6 +289,8 @@ def loadMessage(msg):
             # print(result)
             result = json2xml.Json2xml(result).to_xml()  # JSON -> XML string
             # print(result)
+            ET.Element("objectsSettings")
+
             resultData = ET.fromstring(result)  # XML string -> XML
 
         else:
