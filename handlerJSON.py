@@ -160,7 +160,7 @@ def loadMessage(msg):
             collectionId = int(parametrs_msg.find("ObjectID").text)
             result = iDB.AR_db.getLastOne(iDB.AR_db.getNameOfCollection(collectionId))
             # print(result)
-            result = json2xml.Json2xml(result).to_xml()  # JSON -> XML string
+            result = json2xml.Json2xml(result,attr_type=False).to_xml()  # JSON -> XML string
             # print(result)
             resultData = ET.fromstring(result)  # XML string -> XML
             # print(resultData)
@@ -224,13 +224,18 @@ def loadMessage(msg):
             for item in objectsBuildSettings:
                 objectsSettings["object"+str(index)] = item
                 index+=1
-            objectsSettings = json2xml.Json2xml(objectsSettings).to_xml()  # JSON -> XML string
+            objectsSettings = json2xml.Json2xml(objectsSettings,attr_type=False).to_xml()  # JSON -> XML string
             objectsSettings = ET.fromstring(objectsSettings)
             objectsSettings.tag = "objectsSettings"
             data = ET.Element("data")
             data.append(objectsSettings)
-            initialData = ET.SubElement(data,"initialData")
-            initialData.text = "ВРЕМЕННАЯ ИНФОЗАГЛУШКА"
+            initialData = iDB.AR_db.getLastOne(iDB.AR_db.getNameOfCollection(ObjectId))
+            # print(result)
+            initialData = json2xml.Json2xml(initialData, attr_type=False).to_xml()  # JSON -> XML string
+            # print(result)
+            initialData = ET.fromstring(initialData)
+            initialData.tag = "initialData"
+            data.append(initialData)
             resultData = data  # XML string -> XML
             # tree = ET.parse('BuildSettings.xml')
             # root = tree.getroot()

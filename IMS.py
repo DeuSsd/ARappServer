@@ -14,7 +14,8 @@ while True:
     objectId+=1
     objectData = {
         "id": objectId,
-        "Temperature": round(float(f.read()), 3),
+        "temp1": round(float(f.read()), 3),
+        "powerStatus": True,
         "Date": datetime.now(timezone.utc).isoformat(sep=" ")
     }
     print(objectId, objectData)
