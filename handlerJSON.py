@@ -236,13 +236,23 @@ def loadMessage(msg):
             initialData = ET.fromstring(initialData)
             initialData.tag = "initialData"
             data.append(initialData)
-            resultData = data  # XML string -> XML
-            # tree = ET.parse('BuildSettings.xml')
-            # root = tree.getroot()
-            # resultData = root
+            resultData = data
 
 
         elif method_msg == "setBuildSettings":
+            ObjectId = int(parametrs_msg.find("ObjectID").text)
+            objectsSettings = parametrs_msg.find("objectsSettings")
+            objects = xmltodict.parse(ET.tostring(objectsSettings))["objectsSettings"]
+            for key in objects.keys():
+                data = dict(objects[key])
+                data["ObjectId"] = ObjectId
+                iDB.AR_db.setNewObjectBuildSettings(data)
+                print(data)
+            result = ET.Element('result')
+            result.text = "OK"
+            resultData = result
+
+        elif method_msg == "set":
             ObjectId = int(parametrs_msg.find("ObjectID").text)
             objectsSettings = parametrs_msg.find("objectsSettings")
             objects = xmltodict.parse(ET.tostring(objectsSettings))["objectsSettings"]
@@ -295,8 +305,25 @@ def loadMessage(msg):
             result = json2xml.Json2xml(result).to_xml()  # JSON -> XML string
             # print(result)
             ET.Element("objectsSettings")
-
             resultData = ET.fromstring(result)  # XML string -> XML
+
+
+        elif method_msg == "setNewStatus":
+            f = open('power.txt', 'r')
+            powerStatus = f.read()
+            f.close()
+            print(powerStatus)
+            if powerStatus.strip() == "True":
+                powerStatus = "False"
+            else:
+                powerStatus = "True"
+            f = open('power.txt', 'w')
+            f.write(powerStatus)
+            f.close()
+            resultData = "Change status on "+powerStatus
+            result = ET.Element('result')
+            result.text = resultData
+            resultData = result  # XML string -> XML
 
         else:
             resultData = "Wrong Method"

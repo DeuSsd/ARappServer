@@ -127,7 +127,6 @@ class BaseDBinterface:
 
 
 class ArDB(BaseDBinterface):
-
     # создание новой коллекции (добавление объекта )
     def createNewObject(self, object_name):
         if self.create_new_collection(object_name):
@@ -144,6 +143,10 @@ class ArDB(BaseDBinterface):
     # метод возвращает Name коллекции физического объекта на вход его id
     def getNameOfCollection(self, objectId):
         return self.db.listOfObjects.find({"id": objectId}, projection={'_id': False})[0]["Name"]
+
+    # метод извлечения n записей ObjectID
+    def getManyByID(self, objectId, query=None, limit=0):
+        return self.getMany(self.getNameOfCollection(objectId),query,limit)
 
     # data шаблон data = {признак: свойство, и т.д.}
     def setNewObjectBuildSettings(self, data):
@@ -223,5 +226,5 @@ if __name__ == '__main__':
 #     print(User_DB.writeOnewithshifr(1,"Roman","qwer1ty12","one"))
 # print(AR_DB("ARdb").get_db())
 # print(MongoClient().ARdb)
-    print([i for i in AR_db.getObjectBuildSettings(1)])
+    print(AR_db.getManyByID(1,limit=10))
 

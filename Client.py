@@ -117,9 +117,9 @@ xml_msg_9 = b'''<?xml version="1.0" encoding="utf-8"?>
 xml_msg_7 = b'''<?xml version="1.0" encoding="utf-8"?>
 <message>
   <method>getLast</method>
-  <parametrs>
+  <parameters>
     <ObjectID type="int"> 1 </ObjectID>
-  </parametrs>
+  </parameters>
 </message>'''
 
 
@@ -141,8 +141,21 @@ xml_msg_11 = b'''<?xml version="1.0" encoding="utf-8"?>
 </message>'''
 
 
-xml_msg_12 = '''<?xml version="1.0" encoding="utf-8"?><message><method>setBuildSettings</method><parameters><ObjectID>1</ObjectID><objectsSettings><object1><name>button</name><x>-300</x><y>200</y><z>0</z><scale>1</scale></object1><object2><name>lamp</name><x>100</x><y>200</y><z>0</z><scale>1</scale></object2><object3><name>sensor</name><x>0</x><y>-100</y><z>0</z><scale>1</scale></object3></objectsSettings><initialdata>ТУТ ИНФА</initialdata></parameters></message>'''
-xml_msg_12 = xml_msg_12.encode()
+xml_msg_12 = b'''<?xml version="1.0" encoding="utf-8"?>
+<message>
+  <method>setNewStatus</method>
+  <parameters>
+    <powerStatus>False</powerStatus>
+  </parameters>
+</message>'''
+
+# import xml.etree.ElementTree as ET
+# tree = ET.parse('data.xml')
+# root = tree.getroot()
+# xml_msg_12 = ET.tostring(root)
+# xml_msg_12 = '''<?xml version="1.0" encoding="utf-8"?><message><method>setBuildSettings</method><parameters><ObjectID>1</ObjectID><objectsSettings><object1><name>button1</name><type>Button</type><x>-300</x><y>200</y><z>0</z><scale>1</scale></object1><object2><name>lamp1</name><type>Lamp</type><x>100</x><y>200</y><z>0</z><scale>1</scale></object2><object3><name>sensor1</name><type>Sensor</type><x>0</x><y>-100</y><z>0</z><scale>1</scale></object3></objectsSettings></parameters></message>'''
+# xml_msg_12 = '''<?xml version="1.0" encoding="utf-8"?><message><method>setBuildSettings</method><parameters><ObjectID>1</ObjectID><objectsSettings><object1><name>button</name><x>-300</x><y>200</y><z>0</z><scale>1</scale></object1><object2><name>lamp</name><x>100</x><y>200</y><z>0</z><scale>1</scale></object2><object3><name>sensor</name><x>0</x><y>-100</y><z>0</z><scale>1</scale></object3></objectsSettings><initialdata>ТУТ ИНФА</initialdata></parameters></message>'''
+# xml_msg_12 = xml_msg_12.encode()
 def getLength(Socket):
     length = 0
     while not length:
@@ -165,12 +178,12 @@ msg = [
     # msg8
     # msg9
     # xml_msg_6,
-    # xml_msg_7,
+    xml_msg_7,
     # xml_msg_8,
     # xml_msg_9,
     # xml_msg_10,
-    xml_msg_11,
-    # xml_msg_12
+    # xml_msg_11,
+    xml_msg_12
 ]
 
 # HOST, PORT = "25.79.246.93", 50000
