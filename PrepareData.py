@@ -76,4 +76,5 @@ def prepareDataForPredict(ObjectID,window = 10):
     return data
 
 if __name__ == "__main__":
-    print(prepareDataForPredict(1))
+    x,y = prepareDataForTrain(1,5000)
+    print(y.shape)

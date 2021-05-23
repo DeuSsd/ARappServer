@@ -3,7 +3,7 @@ from Crypto.Util.Padding import pad, unpad
 import ARappServer.DBinterface as DBi
 
 BLOCK_SIZE = 16
-DES_KEY_FILE = 'key.txt'
+DES_KEY_FILE = 'U:\ВКР\ARappServer\Key.txt'
 TEST_LOGIN = "TEST"
 TEST_PASSWORD = "TEST0912375981237059812730"
 
