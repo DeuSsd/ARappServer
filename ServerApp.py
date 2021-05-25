@@ -7,6 +7,7 @@ import datetime
 
 # HOST, PORT = 'localhost', 50000
 HOST, PORT = "25.36.227.49", 9090
+# HOST, PORT = "192.168.43.1", 50000
 
 tasks = []  # тут должен использоваться модуль
 

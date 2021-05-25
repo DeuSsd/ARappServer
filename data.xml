@@ -1,7 +1,74 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <message>
-  <method>getLast</method>
+  <method>
+    setBuildSettings
+  </method>
   <parametrs>
-    <ObjectID> 1 </ObjectID>
+    <ObjectID>
+      1
+    </ObjectID>
+    <objectsSettings>
+      <object1>
+        <name>
+          button1
+        </name>
+        <type>
+          Button
+        </type>
+        <x>
+          -300
+        </x>
+        <y>
+          200
+        </y>
+        <z>
+          0
+        </z>
+        <scale>
+          1
+        </scale>
+      </object1>
+      <object2>
+        <name>
+          lamp1
+        </name>
+        <type>
+          Lamp
+        </type>
+        <x>
+          100
+        </x>
+        <y>
+          200
+        </y>
+        <z>
+          0
+        </z>
+        <scale>
+          1
+        </scale>
+      </object2>
+      <object3>
+          <name>
+            sensor1
+          </name>
+          <type>
+          Sensor
+        </type>
+          <x>
+            0
+          </x>
+          <y>
+            -100
+          </y>
+          <z>
+            0
+          </z>
+          <scale>
+            1
+          </scale>
+      </object3>
+	</objectsSettings>
   </parametrs>
 </message>
+

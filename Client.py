@@ -187,7 +187,7 @@ msg = [
 ]
 
 # HOST, PORT = "25.79.246.93", 50000
-HOST, PORT = "192.168.0.108", 50000
+HOST, PORT = "192.168.43.1", 50000
 
 # HOST, PORT = "localhost", 9090
 

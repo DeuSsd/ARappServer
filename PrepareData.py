@@ -72,9 +72,9 @@ def prepareDataForPredict(ObjectID,window = 10):
     :return: массива типа NumPy с последними историческими данными
     '''
     dataFrame = _prepareData(ObjectID, window)
-    data = np.array(dataFrame)
+    data = np.array([dataFrame])
     return data
 
 if __name__ == "__main__":
-    x,y = prepareDataForTrain(1,5000)
-    print(y.shape)
+    x = prepareDataForPredict(1)
+    print(x.shape)
