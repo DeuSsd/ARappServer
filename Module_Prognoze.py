@@ -1,14 +1,16 @@
 from rdflib import *
-from ARappServer.NN_tools import *
-from ARappServer.NN_tools_execute import execute
+from ARappServer.NN_tools.relearn_nn import relearn_nn
+from ARappServer.NN_tools.test_nn import test_nn
+from ARappServer.NN_tools.learn_nn import learn_nn
 
 import os
+import time
 
 ACCEPTABLE_ERROR = 0.05
 objectID = 1
-sizeDataSet = 1000,
-epochs = 100,
-window = 15,
+sizeDataSet = 1000
+epochs = 100
+window = 15
 num_blocks_LSTM = 30
 
 
@@ -225,18 +227,9 @@ while True:
         base_nn_model_name += "1"
         nn_model_name = os.path.join(path_nn, base_nn_model_name + ".h5")
         # обучение нейросети
-        accuracy = 0
-        while accuracy < ACCEPTABLE_ERROR:
-
-            # learn_nn.learn_nn(
-            #     nn_model_name,
-            #     input_names,
-            #     output_names,
-            #     "data.csv",
-            #     number_of_neurons,
-            #     number_of_layer
-            # )
-            execute("learn_nn", [
+        error = 10000000
+        while error > ACCEPTABLE_ERROR:
+            learn_nn(
                 [nn_model_name],
                 objectID,
                 number_of_neurons,
@@ -245,27 +238,19 @@ while True:
                 epochs,
                 window,
                 num_blocks_LSTM
-            ])
+            )
 
-            accuracy = execute(
-                "test_nn", [
-                    [nn_model_name],
-                    objectID,
-                    sizeDataSet,
-                    window
-                ])
-
-            # accuracy = test_nn(
-            #     nn_model_name,
-            #     input_names,
-            #     output_names,
-            #     "data.csv"
-            # )
+            error = test_nn(
+                [nn_model_name],
+                objectID,
+                sizeDataSet,
+                window
+            )
 
             print("\033[95mКоличество внутренних слоёв - {}\n"
                   "Количество нейронов в каждом внутреннем слое - {}\n"
-                  "Текущая точность прогностической модели - {}\033[36m".format(number_of_layer, number_of_neurons,
-                                                                                accuracy))
+                  "Текущая ошибка прогностической модели - {}\033[36m".format(number_of_layer, number_of_neurons,
+                                                                                error))
 
             # if number_of_neurons < 0:
             #     number_of_neurons += 1
@@ -304,77 +289,49 @@ while True:
         full_path_nn_model = os.path.join(path_nn, nn_model_name + ".h5")
         # print(full_path_nn_model)
 
-        # accuracy = test_nn(
-        #             full_path_nn_model,
-        #             input_names,
-        #             output_names,
-        #             "data.csv"
-        #         )
-        accuracy = execute(
-            "test_nn", [
+        error = test_nn(
+            [full_path_nn_model],
+            objectID,
+            sizeDataSet,
+            window
+        )
+        #проверка нейросети
+
+        print("\033[95mКолличество внутренних слоёв - {}\n"
+              "Количество нейронов в каждом внутреннем слое - {}\n"
+              "Текущая ошибка прогностической модели - {}\033[36m".format(number_of_layer, number_of_neurons,
+                                                                            error))
+
+        if error > ACCEPTABLE_ERROR:
+            relearn_nn(
+                [full_path_nn_model],
+                objectID,
+                sizeDataSet,
+                epochs,
+                window,
+                num_blocks_LSTM
+            )
+
+            error = test_nn(
                 [full_path_nn_model],
                 objectID,
                 sizeDataSet,
                 window
-            ])
-        #         #проверка нейросети
-
-        print("\033[95mКолличество внутренних слоёв - {}\n"
-              "Количество нейронов в каждом внутреннем слое - {}\n"
-              "Текущая точность прогностической модели - {}\033[36m".format(number_of_layer, number_of_neurons,
-                                                                            accuracy))
-
-        if accuracy < ACCEPTABLE_ERROR:
-            # relearn_nn.relearn_nn(
-            #     full_path_nn_model,
-            #     input_names,
-            #     output_names,
-            #     "data.csv"
-            # )
-            execute(
-                "relearn_nn", [
-                    [full_path_nn_model],
-                    objectID,
-                    sizeDataSet,
-                    epochs,
-                    window,
-                    num_blocks_LSTM
-                ])
-            # accuracy = test_nn(
-            #     full_path_nn_model,
-            #     input_names,
-            #     output_names,
-            #     "data.csv"
-            # )  # проверка нейросети
-            accuracy = execute(
-                "test_nn", [
-                    [full_path_nn_model],
-                    objectID,
-                    sizeDataSet,
-                    window
-                ])
+            )  # проверка нейросети
 
             print("\033[95mКолличество внутренних слоёв - {}\n"
                   "Колличество нейронов в каждом внутреннем слое - {}\n"
-                  "Текущая точность прогностической модели - {}\033[36m".format(number_of_layer, number_of_neurons,
-                                                                                accuracy))
-            if accuracy < ACCEPTABLE_ERROR:
+                  "Текущая ошибка прогностической модели - {}\033[36m".format(number_of_layer, number_of_neurons,
+                                                                                error))
+            if error > ACCEPTABLE_ERROR:
                 name, i_num = nn_model_name.split("_")
                 name += "_{}".format(int(i_num) + 1)
                 nn_model_name = os.path.join(path_nn, name + ".h5")
                 # обучение нейросети
-                accuracy = 0
-                while accuracy < ACCEPTABLE_ERROR:
+                error = 10000000
+                while error > ACCEPTABLE_ERROR:
 
-                    # learn_nn.learn_nn(
-                    #     nn_model_name,
-                    #     input_names,
-                    #     output_names,
-                    #     "data.csv",
-                    #     number_of_neurons,
-                    #     number_of_layer
-                    # )
-                    execute("learn_nn", [
+                    learn_nn(
                         [nn_model_name],
                         objectID,
                         number_of_neurons,
@@ -383,24 +340,19 @@ while True:
                         epochs,
                         window,
                         num_blocks_LSTM
-                    ])
-                    #
-                    # accuracy = test_nn(
-                    #     nn_model_name,
-                    #     input_names,
-                    #     output_names,
-                    #     "data.csv"
-                    # )
-                    accuracy = execute(
-                        "test_nn", [
-                            objectID,
-                            sizeDataSet,
-                            window
-                        ])
+                    )
+
+                    error = test_nn(
+                        [nn_model_name],
+                        objectID,
+                        sizeDataSet,
+                        window
+                    )
+
                     print("\033[95mКоличество внутренних слоёв - {}\n"
                           "Количество нейронов в каждом внутреннем слое - {}\n"
-                          "Текущая точность прогностической модели - {}\033[36m".format(number_of_layer,
-                                                                                        number_of_neurons, accuracy))
+                          "Текущая ошибка прогностической модели - {}\033[36m".format(number_of_layer,
+                                                                                        number_of_neurons, error))
 
                     if number_of_neurons < 25:
                         number_of_neurons += 1
@@ -414,3 +366,5 @@ while True:
             else:
                 # print(1)
                 change_status(nn_model_name)
+        print("system of for working with neural networks is waiting...")
+        time.sleep(5)

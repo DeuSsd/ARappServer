@@ -9,10 +9,12 @@ def test_nn(
         sizeDataSet = 300,
         window = 10
 ):
+    nn_name = nn_name[0]
     if sizeDataSet <= window:
         sizeDataSet = 2*window
+
     _,pastDataSet = prepareDataForTrain(objectID,sizeDataSet,window=window)
-    predictDataSet = forecast_nn(["test.h5"],objectID,num_future=sizeDataSet,window=window)
+    predictDataSet = forecast_nn([nn_name],objectID,num_future=sizeDataSet,window=window)
 
     # error = np.sum(abs(predictDataSet - pastDataSet)) / len(pastDataSet)
     error = np.sum(abs(predictDataSet - pastDataSet)/pastDataSet) / len(pastDataSet)
