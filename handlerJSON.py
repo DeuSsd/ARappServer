@@ -20,28 +20,35 @@ from ARappServer.GetPrognose import prognos
 def loadMessage(msg):
     """
     Данный метод принимает на вход сообщение (msg) типа str, которое
-    является запросом, содержит JSON файл,
-    в случае языка Python не работаем с типом JSON  непосредственно,
-    т.к. имеется встроенный тип dict отлично подходит для его замены.
-    (Далее JSON == dict)
+    является запросом, содержит XML файл,
+
     После процедуры парсинга, извлкекаем хранящяяся параметры
     и вызываем нужный обработчик в зависимоти от параметра 'method'
 
-    Вид JSON запроса:
-    {
-        "method": "вид метода",
-        "parametrs": {
-            "collectionName": "Имя необходимой коллекции",
-            "filter": {}
-        }
-    }
+    Вид XML запроса:
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <message>
+        <method>
+            methodName
+        </method>
+        <parameters>
+            ...
+        </parameters>
+    </message>
 
     Вид JSON ответа:
-    {
-        "method": "response",
-        "data": {}
-        }
-    }
+    <?xml version='1.0' encoding='utf-8'?>
+    <message>
+        <method>
+            response
+        </method>
+        <data>
+            ...
+        </data>
+    </message>
+
+    *пересмотреть*
     Доступные методы:
         'get':
             запрос на получение данных из коллекции "collectionName",
@@ -159,11 +166,8 @@ def loadMessage(msg):
         if method_msg == "getLast":
             collectionId = int(parametrs_msg.find("ObjectID").text)
             result = iDB.AR_db.getLastOne(iDB.AR_db.getNameOfCollection(collectionId))
-            # print(result)
             result = json2xml.Json2xml(result,attr_type=False).to_xml()  # JSON -> XML string
-            # print(result)
             resultData = ET.fromstring(result)  # XML string -> XML
-            # print(resultData)
 
         # if methodJSON == "get":
         #     parametrsMsg = msg["parametrs"]
@@ -265,13 +269,6 @@ def loadMessage(msg):
             result.text = "OK"
             resultData = result
 
-
-        # elif methodJSON == "getLast":
-        #     parametrsMsg = msg["parametrs"]
-        #     collectionId = int(parametrsMsg["ObjectID"])
-        #     result = iDB.AR_db.getLastOne(iDB.AR_db.getNameOfCollection(collectionId))
-        #     resultData = result
-        #
         elif method_msg == "getWarning":
 
             collectionId = int(parametrs_msg.find("ObjectID").text)
@@ -282,12 +279,7 @@ def loadMessage(msg):
             result = ET.Element('result')
             result.text = result_str
             resultData = result
-        #
-        # # elif methodJSON == "getLastData":
-        # #     collectionId = int(msg["ObjectID"])
-        # #     result = iDB.getLastOne(iDB.getNameOfCollection(collectionId))
-        # #     resultData = result
-        #
+
         elif method_msg == "getPublicKey":
             key = RSA.importKey(open('publickey.pem').read())
             key.export_key()
@@ -299,8 +291,8 @@ def loadMessage(msg):
 
         elif method_msg == "getPrognose":
             collectionId = int(parametrs_msg.find("ObjectID").text)
-            result = {"data":float(prognos(collectionId)[0])}
-            result = {"data": float(78.58682)}
+            result = {"data": prognos(collectionId,num_future = 200,window = 20)}
+            # result = {"data": float(78.58682)}
             # print(result)
             result = json2xml.Json2xml(result).to_xml()  # JSON -> XML string
             # print(result)
@@ -333,7 +325,7 @@ def loadMessage(msg):
 
 
         return responseJSON(resultData)
-    except ImportError:
+    except:
         # old
         resultData = "Wrong Request"
         # resultData = ""
@@ -367,53 +359,3 @@ def responseJSON(data):
     file_msg = BytesIO()
     msg.write(file_msg, encoding='utf-8', xml_declaration=True)
     return file_msg.getvalue()
-
-# /////////////////test/////////////////
-# msg1 = {
-#     "method": "get",
-#     "parametrs": {
-#         "collectionName": "radiator",
-#         "filter": {
-#             "Temperature": {'$gt': 90}
-#         }
-#     }
-# }
-#
-# msg2 = {
-#     "method": "delete",
-#     "parametrs": {
-#         "collectionName": "radiator",
-#         "filter": {
-#             "Temperature": {'$lt': 0}
-#         }
-#     }
-# }
-#
-# msg3 = {
-#     "method": "put",
-#     "parametrs": {
-#         "collectionName": "radiator",
-#         "data": {
-#             "Temperature": 150.256
-#         }
-#     }
-# }
-#
-# msg4 = {
-#     "method": "get",
-#     "parametrs": {
-#         "collectionName": "radiator",
-#         "filter": {
-#             "Temperature": {'$gt': 150}
-#         }
-#     }
-# }
-#
-# msg5 = {
-#     "method" : "getLastData",
-#     "ObjectID": 1
-# }
-# loadMessage(msg1)
-# loadMessage(msg2)
-# loadMessage(msg3)
-# print(loadMessage(str(msg5)))

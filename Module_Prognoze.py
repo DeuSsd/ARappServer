@@ -1,10 +1,16 @@
 from rdflib import *
-from NN_tools import *
-from NN_tools_execute import execute
-from IMS_3 import ims
+from ARappServer.NN_tools import *
+from ARappServer.NN_tools_execute import execute
+
 import os
 
-ACCURACY = 0.0005
+ACCEPTABLE_ERROR = 0.05
+objectID = 1
+sizeDataSet = 1000,
+epochs = 100,
+window = 15,
+num_blocks_LSTM = 30
+
 
 g = Graph()
 file = open("KB.n3", "rb")
@@ -93,25 +99,6 @@ def change_status(new_name):
 
 
 while True:
-    # # ////////////////////////////////////////////////////////////////////////////////
-    q = g.query(
-        '''
-        PREFIX MyBase: <file:///U:/7%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/pythonProject/MyBase/#>
-        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-
-        SELECT ?param_formula
-        WHERE
-        {
-            MyBase:Radiator MyBase:formula ?param_formula .
-                }
-            ''')
-    # ////////////////////////////////////////////////////////////////////////////////
-    #  formula
-    # ////////////////////////////////////////////////////////////////////////////////
-    input_names = ["Date"]
-    output_names = ["Temperature"]
-    ims()
-
     # ////////////////////////////////////////////////////////////////////////////////
     # узнаём базовые параметры для обучения
     q = g.query('''
@@ -235,14 +222,11 @@ while True:
             # print(item)
             # name = item[0].split("#")[1]
             base_nn_model_name = item[0]
-            # print(name)
         base_nn_model_name += "1"
-        # print(base_nn_model_name)
         nn_model_name = os.path.join(path_nn, base_nn_model_name + ".h5")
-        # print(nn_model_name)
         # обучение нейросети
         accuracy = 0
-        while accuracy < ACCURACY:
+        while accuracy < ACCEPTABLE_ERROR:
 
             # learn_nn.learn_nn(
             #     nn_model_name,
@@ -254,20 +238,23 @@ while True:
             # )
             execute("learn_nn", [
                 [nn_model_name],
-                input_names,
-                output_names,
-                ["data.csv"],
+                objectID,
                 number_of_neurons,
-                number_of_layer
+                number_of_layer,
+                sizeDataSet,
+                epochs,
+                window,
+                num_blocks_LSTM
             ])
 
             accuracy = execute(
                 "test_nn", [
                     [nn_model_name],
-                    input_names,
-                    output_names,
-                    ["data.csv"]
+                    objectID,
+                    sizeDataSet,
+                    window
                 ])
+
             # accuracy = test_nn(
             #     nn_model_name,
             #     input_names,
@@ -280,12 +267,12 @@ while True:
                   "Текущая точность прогностической модели - {}\033[36m".format(number_of_layer, number_of_neurons,
                                                                                 accuracy))
 
-            if number_of_neurons < 0:
-                number_of_neurons += 1
-            elif number_of_layer < 0:
-                number_of_layer += 1
-            else:
-                break
+            # if number_of_neurons < 0:
+            #     number_of_neurons += 1
+            # elif number_of_layer < 0:
+            #     number_of_layer += 1
+            # else:
+            break
 
         print("\033[95mПрогностическая модель - {}\033[36m".format(base_nn_model_name))
         # add_new_nn_to_KB(nn_model_name)
@@ -326,9 +313,9 @@ while True:
         accuracy = execute(
             "test_nn", [
                 [full_path_nn_model],
-                input_names,
-                output_names,
-                ["data.csv"]
+                objectID,
+                sizeDataSet,
+                window
             ])
         #         #проверка нейросети
 
@@ -337,7 +324,7 @@ while True:
               "Текущая точность прогностической модели - {}\033[36m".format(number_of_layer, number_of_neurons,
                                                                             accuracy))
 
-        if accuracy < ACCURACY:
+        if accuracy < ACCEPTABLE_ERROR:
             # relearn_nn.relearn_nn(
             #     full_path_nn_model,
             #     input_names,
@@ -347,9 +334,11 @@ while True:
             execute(
                 "relearn_nn", [
                     [full_path_nn_model],
-                    input_names,
-                    output_names,
-                    ["data.csv"]
+                    objectID,
+                    sizeDataSet,
+                    epochs,
+                    window,
+                    num_blocks_LSTM
                 ])
             # accuracy = test_nn(
             #     full_path_nn_model,
@@ -360,22 +349,22 @@ while True:
             accuracy = execute(
                 "test_nn", [
                     [full_path_nn_model],
-                    input_names,
-                    output_names,
-                    ["data.csv"]
+                    objectID,
+                    sizeDataSet,
+                    window
                 ])
 
             print("\033[95mКолличество внутренних слоёв - {}\n"
                   "Колличество нейронов в каждом внутреннем слое - {}\n"
                   "Текущая точность прогностической модели - {}\033[36m".format(number_of_layer, number_of_neurons,
                                                                                 accuracy))
-            if accuracy < ACCURACY:
+            if accuracy < ACCEPTABLE_ERROR:
                 name, i_num = nn_model_name.split("_")
                 name += "_{}".format(int(i_num) + 1)
                 nn_model_name = os.path.join(path_nn, name + ".h5")
                 # обучение нейросети
                 accuracy = 0
-                while accuracy < ACCURACY:
+                while accuracy < ACCEPTABLE_ERROR:
 
                     # learn_nn.learn_nn(
                     #     nn_model_name,
@@ -387,11 +376,13 @@ while True:
                     # )
                     execute("learn_nn", [
                         [nn_model_name],
-                        input_names,
-                        output_names,
-                        ["data.csv"],
+                        objectID,
                         number_of_neurons,
-                        number_of_layer
+                        number_of_layer,
+                        sizeDataSet,
+                        epochs,
+                        window,
+                        num_blocks_LSTM
                     ])
                     #
                     # accuracy = test_nn(
@@ -402,10 +393,9 @@ while True:
                     # )
                     accuracy = execute(
                         "test_nn", [
-                            [nn_model_name],
-                            input_names,
-                            output_names,
-                            ["data.csv"]
+                            objectID,
+                            sizeDataSet,
+                            window
                         ])
                     print("\033[95mКоличество внутренних слоёв - {}\n"
                           "Количество нейронов в каждом внутреннем слое - {}\n"
@@ -424,31 +414,3 @@ while True:
             else:
                 # print(1)
                 change_status(nn_model_name)
-
-    # q = g.query('''
-    #             PREFIX MyBase: <file:///U:/7%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/pythonProject/MyBase/#>
-    #             PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    #
-    #             SELECT ?p ?s
-    #             WHERE
-    #             {
-    #                 MyBase:''' + picked_system + ''' ?p ?s.
-    #             }
-    # ''')
-    #
-    # for p, s in q:
-    #     print(p.split("#")[-1], s)
-
-    # if input():
-    #     break
-
-    # print("\033[36mГраф имеет {} триплетов!".format(len(g)))
-    # # print("\033[35m {} !".format([i formula i in g.namespaces()]))
-    # break
-
-# ################################
-
-
-
-
-

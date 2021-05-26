@@ -18,6 +18,7 @@ def test_nn(
     error = np.sum(abs(predictDataSet - pastDataSet)/pastDataSet) / len(pastDataSet)
     print("error {}".format(error))
     return error
+
 if __name__ == "__main__":
     test_nn(
         ["test.h5"],

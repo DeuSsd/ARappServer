@@ -9,6 +9,7 @@ from ARappServer.PrepareData import prepareDataForTrain
 '''
 
 def learn_nn(nn_name,  # имя нейросетевой модели
+        objectID,
         number_of_neurons,  # количество нейронов в LSTM слое
         number_of_layer,  # количество LSTM слоёв в нейросетевой модели
         trainSize=2000,
@@ -37,8 +38,8 @@ def learn_nn(nn_name,  # имя нейросетевой модели
     model.add(Dropout(dropout))
     model.add(Dense(units=outputNum))
     model.compile(
-        optimizer='adam',
-        # optimizer='RMSProp',
+        # optimizer='adam',
+        optimizer='RMSProp',
         # optimizer='sgd',
         loss='mean_squared_error',
         metrics = 'mse'
@@ -55,6 +56,7 @@ def learn_nn(nn_name,  # имя нейросетевой модели
         batch_size=num_blocks_LSTM,
         verbose=1,
         callbacks=callback,
+        validation_split=0.2,   #add
         shuffle=True
     )
 
@@ -64,8 +66,9 @@ if __name__ == "__main__":
     learn_nn(["test.h5"],
              1,
              1,
-             trainSize=2500,
+             1,
+             trainSize=1000,
              epochs=100,
-             window=20,
-             num_blocks_LSTM=50
+             window=15,
+             num_blocks_LSTM=5
     )

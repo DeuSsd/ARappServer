@@ -11,7 +11,7 @@ power = open('power.txt', "r")
 # function of simulate signal
 def signal(x):
     # y = (10 * (sin(3 * x) * cos(1.4 * x) + cos(x)) + 8 * sin(x) - 9 * cos(2 * x)) + 70
-    y = sin(x)+50
+    y = sin(x*2)+50
     # err = r.random() * 10 // 5
     # if err == 1:
     #     y *= 0.998

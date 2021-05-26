@@ -1,3 +1,9 @@
+## AR-Project
+There is the server module on this repository. This module is a part of AR-Project.
+The server solve some tasks:
+1. The main task is create connection with client and transsmit a data;
+2. Also server can process requests and send response to clients/  
+
 **Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
 
 When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.

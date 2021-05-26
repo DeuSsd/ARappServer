@@ -1,9 +1,13 @@
 from rdflib import *
-import keras as k
-import datetime as dt
+from ARappServer.NN_tools.predict_nn import predict_nn,forecast_nn
+
 import os
 
-def prognos(CollectionId):
+def prognos(
+        CollectionId,
+        num_future = 100,
+        window = 10
+):
     g = Graph()
     file = open("KB.n3", "rb")
     result = g.parse(source="KB.n3", format="n3")
@@ -68,13 +72,14 @@ def prognos(CollectionId):
 
         full_path_nn_model = os.path.join(path_nn, nn_model_name + ".h5")
 
-        # print(full_path_nn_model)
-        model = k.models.load_model(full_path_nn_model)
+        predict = forecast_nn([full_path_nn_model],CollectionId,num_future=num_future,window=window)
 
-        test = [dt.datetime.now().timestamp()]
-
-        predict = model.predict(test)
-
-        return predict[0]
+        return predict.reshape((predict.shape[-2]))
     else:
-        return -1
+
+        # means nothing
+        return -100
+
+
+if __name__ == '__main__':
+    print(prognos(1, num_future = 200,window = 20))

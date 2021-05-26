@@ -3,6 +3,7 @@ from pymongo import MongoClient
 from datetime import datetime, timezone
 import time
 from ARappServer import DBinterface as iDB
+
 power = open("power.txt", "r")
 client = MongoClient(port=27017)
 db = client.ARdb
@@ -22,3 +23,4 @@ while True:
     print(objectId, objectData)
     iDB.AR_db.writeOne(collectionName, objectData)  # добавляем одну запись в базу данных
     time.sleep(0.05)
+

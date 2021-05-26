@@ -1,0 +1,369 @@
+@prefix MyBase: <file:///U:/7%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/pythonProject/MyBase/#> .
+@prefix NN: <file:///U:/7%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/pythonProject/MyBase/NN/#> .
+@prefix NN_tools: <file:///U:/7%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/pythonProject/MyBase/NN/NN_tools/#> .
+@prefix formulas: <file:///U:/7%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/pythonProject/MyBase/formulas/#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+MyBase:hardware a rdfs:Class .
+
+MyBase:oil_product a rdfs:Class .
+
+MyBase:process a rdfs:Class .
+
+MyBase:status_of_oil a rdfs:Class .
+
+NN:NN_Model a rdfs:Class ;
+    NN:base_model_name "Model_" ;
+    NN:path "U:\\ВКР\\ARappServer\\Models" ;
+    rdfs:domain NN:model_name .
+
+NN:nn_model a rdfs:Class ;
+    rdfs:domain NN:number_of_layers,
+        NN:number_of_neurons .
+
+NN_tools:algorithm a rdfs:Class ;
+    NN:path "U:\\ВКР\\ARappServer\\NN_tools" .
+
+formulas:formula a rdfs:Class ;
+    rdfs:domain formulas:exit_param,
+        formulas:formula_name,
+        formulas:numparam .
+
+MyBase:Primary_Rectification a MyBase:process .
+
+MyBase:Radiator a MyBase:hardware ;
+    MyBase:formula formulas:radiatorFormula ;
+    MyBase:max_pressure 0.2 ;
+    MyBase:max_temp 75 ;
+    MyBase:min_pressure 0.15 ;
+    MyBase:min_temp 50 ;
+    MyBase:name "Радиатор" .
+
+MyBase:Secondary_Rectification a MyBase:process .
+
+MyBase:clearing a MyBase:process .
+
+MyBase:condensation a MyBase:process .
+
+MyBase:formula a rdf:Property .
+
+MyBase:heating a MyBase:process .
+
+MyBase:max_pressure a rdf:Property .
+
+MyBase:max_temp a rdf:Property .
+
+MyBase:min_pressure a rdf:Property .
+
+MyBase:min_temp a rdf:Property .
+
+MyBase:name a rdf:Property .
+
+MyBase:purpose a rdf:Property .
+
+MyBase:raw_material a rdf:Property .
+
+MyBase:result a rdf:Property .
+
+MyBase:source a rdf:Property .
+
+MyBase:storage_object a MyBase:process,
+        rdf:Property .
+
+MyBase:transfer a MyBase:process,
+        rdf:Property .
+
+NN:Predicate_Model_1 a NN:NN_Model ;
+    NN:active false ;
+    NN:model_name "Model_1" .
+
+NN:Predicate_Model_10 a NN:NN_Model ;
+    NN:active true ;
+    NN:model_name "Model_10" .
+
+NN:Predicate_Model_2 a NN:NN_Model ;
+    NN:active false ;
+    NN:model_name "Model_2" .
+
+NN:Predicate_Model_3 a NN:NN_Model ;
+    NN:active false ;
+    NN:model_name "Model_3" .
+
+NN:Predicate_Model_4 a NN:NN_Model ;
+    NN:active false ;
+    NN:model_name "Model_4" .
+
+NN:Predicate_Model_5 a NN:NN_Model ;
+    NN:active false ;
+    NN:model_name "Model_5" .
+
+NN:Predicate_Model_6 a NN:NN_Model ;
+    NN:active false ;
+    NN:model_name "Model_6" .
+
+NN:Predicate_Model_7 a NN:NN_Model ;
+    NN:active false ;
+    NN:model_name "Model_7" .
+
+NN:Predicate_Model_8 a NN:NN_Model ;
+    NN:active false ;
+    NN:model_name "Model_8" .
+
+NN:Predicate_Model_9 a NN:NN_Model ;
+    NN:active false ;
+    NN:model_name "Model_9" .
+
+NN:active a rdf:Property .
+
+NN:base_model_name a rdf:Property .
+
+NN:base_parametrs_nn_model a NN:NN_Model ;
+    NN:number_of_layer 1 ;
+    NN:number_of_neurons 1 .
+
+NN:best_parametrs_nn_model a NN:NN_Model ;
+    NN:number_of_layer 1 ;
+    NN:number_of_neurons 1 .
+
+NN:path a rdf:Property .
+
+NN_tools:NN_learn a NN_tools:algorithm ;
+    NN_tools:action "create" ;
+    NN_tools:name "learn_nn" .
+
+NN_tools:NN_relearn a NN_tools:algorithm ;
+    NN_tools:action "update" ;
+    NN_tools:name "relearn_nn" .
+
+NN_tools:NN_test a NN_tools:algorithm ;
+    NN_tools:action "test" ;
+    NN_tools:name "test_nn" .
+
+NN_tools:action a rdf:Property .
+
+NN_tools:name a rdf:Property .
+
+NN_tools:path a rdf:Property .
+
+formulas:linear_formula a formulas:formula ;
+    formulas:exit_param "y" ;
+    formulas:formula_name "linear" ;
+    formulas:numparam 3 ;
+    rdf:_1 "x" ;
+    rdf:_2 "b" ;
+    rdf:_3 "c" .
+
+formulas:plus_formula a formulas:formula ;
+    formulas:exit_param "result" ;
+    formulas:formula_name "plus" ;
+    formulas:numparam 2 ;
+    rdf:_1 "x" ;
+    rdf:_2 "y" .
+
+MyBase:Diesel_Fuel a MyBase:oil_product .
+
+MyBase:Heated_Crude_Oil a MyBase:status_of_oil .
+
+MyBase:Kerosene a MyBase:oil_product .
+
+MyBase:LightWeight_Сolumn a MyBase:hardware ;
+    MyBase:condensation MyBase:Petrol_Fraction ;
+    MyBase:formula formulas:temperatureAfterHeatExchange_OnСolumn_formula ;
+    MyBase:max_temp 180 ;
+    MyBase:min_temp 30 ;
+    MyBase:name "Легкофракционная колонна" ;
+    MyBase:purpose MyBase:The_output_of_gasoline,
+        MyBase:The_output_of_hydrocarbon_gases ;
+    MyBase:raw_material MyBase:Light_Fraction_Vapors ;
+    MyBase:result MyBase:Hydrocarbon_Gases,
+        MyBase:Petrol_Fraction ;
+    MyBase:source MyBase:Atmospheric_Pipe_Heater .
+
+MyBase:Masut a MyBase:oil_product .
+
+MyBase:Petrol_Сolumn a MyBase:hardware ;
+    MyBase:condensation MyBase:Petrol_Fraction ;
+    MyBase:formula formulas:temperatureAfterHeatExchange_OnСolumn_formula ;
+    MyBase:max_temp 180 ;
+    MyBase:min_temp 30 ;
+    MyBase:name "Бензиновая колонна" ;
+    MyBase:purpose MyBase:The_output_of_gasoline,
+        MyBase:The_output_of_hydrocarbon_gases ;
+    MyBase:raw_material MyBase:Gasoline_Vapors ;
+    MyBase:result MyBase:Hydrocarbon_Gases,
+        MyBase:Petrol_Fraction ;
+    MyBase:source MyBase:Topping_Сolumn .
+
+MyBase:Pump_1 a MyBase:hardware ;
+    MyBase:formula formulas:hydraulicPowerOfThePump_formula ;
+    MyBase:name "Насос 1" ;
+    MyBase:purpose MyBase:Heat_Exchanger_1 ;
+    MyBase:raw_material MyBase:Crude_Oil ;
+    MyBase:source MyBase:Storage ;
+    MyBase:transfer MyBase:Crude_Oil .
+
+NN:model_name a rdf:Property .
+
+NN:number_of_layers a rdf:Property .
+
+NN:number_of_neurons a rdf:Property .
+
+formulas:desalination_formula a formulas:formula ;
+    formulas:exit_param "n_after" ;
+    formulas:formula_name "desalination" ;
+    formulas:numparam 2 ;
+    rdf:_1 "n_before" ;
+    rdf:_2 "N" .
+
+formulas:exit_param a rdf:Property .
+
+formulas:formula_name a rdf:Property .
+
+formulas:numparam a rdf:Property .
+
+formulas:temperatureAfterHeatExchange_OnBake_formula a formulas:formula ;
+    formulas:exit_param "t_after" ;
+    formulas:formula_name "temperatureAfterHeatExchange_OnBake" ;
+    formulas:numparam 2 ;
+    rdf:_1 "Q" ;
+    rdf:_2 "t_before" .
+
+formulas:volume_oil_formula a formulas:formula ;
+    formulas:exit_param "V" ;
+    formulas:formula_name "volume_oil" ;
+    formulas:numparam 2 ;
+    rdf:_1 "Q" ;
+    rdf:_2 "t" .
+
+MyBase:Atmospheric_Pipe_Heater a MyBase:hardware ;
+    MyBase:Secondary_Rectification MyBase:Heated_Topped_Oil ;
+    MyBase:formula formulas:temperatureAfterHeatExchange_OnСolumn_formula ;
+    MyBase:max_pressure 0.2 ;
+    MyBase:max_temp 355 ;
+    MyBase:min_pressure 0.15 ;
+    MyBase:min_temp 340 ;
+    MyBase:name "Атмосферный трубчатый нагреватель" ;
+    MyBase:purpose MyBase:LightWeight_Сolumn,
+        MyBase:The_output_of_diesel,
+        MyBase:The_output_of_kerosene,
+        MyBase:The_output_of_masut ;
+    MyBase:raw_material MyBase:Heated_Topped_Oil,
+        MyBase:Petrol_Fraction ;
+    MyBase:result MyBase:Diesel_Fuel,
+        MyBase:Kerosene,
+        MyBase:Light_Fraction_Vapors,
+        MyBase:Masut ;
+    MyBase:source MyBase:Bake .
+
+MyBase:Bake a MyBase:hardware ;
+    MyBase:formula formulas:temperatureAfterHeatExchange_OnBake_formula ;
+    MyBase:heating MyBase:Topped_Oil ;
+    MyBase:max_temp 350 ;
+    MyBase:min_temp 340 ;
+    MyBase:name "Печь" ;
+    MyBase:purpose MyBase:Atmospheric_Pipe_Heater ;
+    MyBase:raw_material MyBase:Topped_Oil ;
+    MyBase:result MyBase:Heated_Topped_Oil ;
+    MyBase:source MyBase:Pump_2 .
+
+MyBase:ELDP a MyBase:hardware ;
+    MyBase:clearing MyBase:Crude_Oil ;
+    MyBase:formula formulas:desalination_formula ;
+    MyBase:max_temp 5 ;
+    MyBase:min_temp 3 ;
+    MyBase:name "(ЭЛОУ) электрообессоливающая установка" ;
+    MyBase:purpose MyBase:Heat_Exchanger_2 ;
+    MyBase:raw_material MyBase:Crude_Oil ;
+    MyBase:result MyBase:Desalted_Crude_Oil ;
+    MyBase:source MyBase:Heat_Exchanger_1 .
+
+MyBase:Heat_Exchanger_1 a MyBase:hardware ;
+    MyBase:formula formulas:temperatureAfterHeatExchange_OnHeatExchanger_formula ;
+    MyBase:heating MyBase:Crude_Oil ;
+    MyBase:max_temp 50 ;
+    MyBase:min_temp 30 ;
+    MyBase:name "Теплообменник 1" ;
+    MyBase:purpose MyBase:ELDP ;
+    MyBase:raw_material MyBase:Crude_Oil ;
+    MyBase:result MyBase:Heated_Crude_Oil ;
+    MyBase:source MyBase:Pump_1 .
+
+MyBase:Heat_Exchanger_2 a MyBase:hardware ;
+    MyBase:formula formulas:temperatureAfterHeatExchange_OnHeatExchanger_formula ;
+    MyBase:heating MyBase:Desalted_Crude_Oil ;
+    MyBase:max_temp 220 ;
+    MyBase:min_temp 200 ;
+    MyBase:name "Теплообменник 2" ;
+    MyBase:purpose MyBase:Topping_Сolumn ;
+    MyBase:raw_material MyBase:Desalted_Crude_Oil ;
+    MyBase:result MyBase:Heated_Desalted_Crude_Oil ;
+    MyBase:source MyBase:ELDP .
+
+MyBase:Hydrocarbon_Gases a MyBase:oil_product .
+
+MyBase:Light_Fraction_Vapors a MyBase:oil_product .
+
+MyBase:Pump_2 a MyBase:hardware ;
+    MyBase:formula formulas:hydraulicPowerOfThePump_formula ;
+    MyBase:name "Насос 2" ;
+    MyBase:purpose MyBase:Bake ;
+    MyBase:raw_material MyBase:Topped_Oil ;
+    MyBase:source MyBase:Topping_Сolumn ;
+    MyBase:transfer MyBase:Topped_Oil .
+
+MyBase:Storage a MyBase:hardware ;
+    MyBase:formula formulas:volume_oil_formula ;
+    MyBase:name "Хранилище" ;
+    MyBase:raw_material MyBase:Crude_Oil ;
+    MyBase:storage_object MyBase:Crude_Oil .
+
+formulas:hydraulicPowerOfThePump_formula a formulas:formula ;
+    formulas:exit_param "P" ;
+    formulas:formula_name "hydraulicPowerOfThePump" ;
+    formulas:numparam 2 ;
+    rdf:_1 "Q" ;
+    rdf:_2 "H" .
+
+formulas:temperatureAfterHeatExchange_OnHeatExchanger_formula a formulas:formula ;
+    formulas:exit_param "t_after" ;
+    formulas:formula_name "temperatureAfterHeatExchange_OnHeatExchanger" ;
+    formulas:numparam 2 ;
+    rdf:_1 "Q" ;
+    rdf:_2 "t_before" .
+
+MyBase:Heated_Topped_Oil a MyBase:status_of_oil .
+
+MyBase:Topping_Сolumn a MyBase:hardware ;
+    MyBase:Primary_Rectification MyBase:Heated_Desalted_Crude_Oil ;
+    MyBase:formula formulas:temperatureAfterHeatExchange_OnСolumn_formula ;
+    MyBase:max_pressure 0.5 ;
+    MyBase:max_temp 260 ;
+    MyBase:min_pressure 0.4 ;
+    MyBase:min_temp 240 ;
+    MyBase:name "Отбензиннивающая колонна" ;
+    MyBase:purpose MyBase:Petrol_Сolumn,
+        MyBase:Pump_2 ;
+    MyBase:raw_material MyBase:Desalted_Crude_Oil,
+        MyBase:Petrol_Fraction ;
+    MyBase:result MyBase:Gasoline_Vapors,
+        MyBase:Topped_Oil ;
+    MyBase:source MyBase:Heat_Exchanger_2 .
+
+MyBase:Desalted_Crude_Oil a MyBase:status_of_oil .
+
+formulas:temperatureAfterHeatExchange_OnСolumn_formula a formulas:formula ;
+    formulas:exit_param "t_after" ;
+    formulas:formula_name "temperatureAfterHeatExchange_OnHeatExchanger" ;
+    formulas:numparam 2 ;
+    rdf:_1 "Q" ;
+    rdf:_2 "t_before" .
+
+MyBase:Topped_Oil a MyBase:status_of_oil .
+
+MyBase:Petrol_Fraction a MyBase:oil_product .
+
+MyBase:Crude_Oil a MyBase:status_of_oil ;
+    MyBase:source MyBase:Storage .
+

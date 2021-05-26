@@ -1,100 +1,59 @@
-import keras as k
-from sklearn.utils import shuffle
-import pandas as pd
-import numpy as np
+from keras.models import Sequential
+from keras.layers import Dense,LSTM,Dropout
+from keras import callbacks
+from keras.models import load_model
+
+from ARappServer.PrepareData import prepareDataForTrain
+
+'''
+метод переобучения нейронной сети
+'''
 
 # переобучение готовой нейросети
 def relearn_nn(nn_name,  # имя нейросетевой модели
-             input_names,  # список входных параметров
-             output_names,  # список выходных параметров
-             dataset_name,  # название датасета .csv
-             ):
+        objectID,
+        trainSize=2000,
+        epochs = 200,
+        window = 25,
+        num_blocks_LSTM = 10,
+        ):
     nn_name = nn_name[0]
-    dataset_name = dataset_name[0]
-    # print(nn_name)
-    model = k.models.load_model(nn_name)
 
-    epochs = 10
+    model = load_model(nn_name)
 
-    data_frame = pd.read_csv(dataset_name)
+    # dataFrame = pd.DataFrame(pd.read_csv(dataset_name)["X"],columns=["X"])
+    # print(dataFrame,dataFrame.shape)
 
-    columns = data_frame.shape[0]
-    data_frame = shuffle(data_frame)
-    # input_names = ["A","k","w","x"]
-    # input_names = ["k","w","x"]
-    # input_names = ["x"]
-    # output_names = ["f"]
-    # input_names = ["a", "b"]
-    # output_names = ["c"]
+    nn_name = nn_name[0]
+    # Set window of past points for LSTM model
 
-    def dataframe_to_dict(df):
-        result = dict()
-        max = df.max()
+    # извлекаем данные для обучения
+    xin, next_X = prepareDataForTrain(objectID, trainSize, window=window)
 
-        for column in df.columns:
-            values = df[column] / max[column]
-
-            result[column] = values
-        return result
-
-    def make_supervised(df):
-        raw_in_data = df[input_names]
-        raw_out_data = df[output_names]
-        return {"in": dataframe_to_dict(raw_in_data),
-                "out": dataframe_to_dict(raw_out_data)}
-
-    def encode(data):
-        vectors = []
-        for data_name, data_values in data.items():
-            vectors.append(list(data_values))
-
-        formatted = []
-
-        for vector_raw in list(zip(*vectors)):
-            formatted.append(list(vector_raw))
-
-        return formatted
-
-    supervised = make_supervised(data_frame)
-
-    in_data = np.array(encode(supervised["in"]))
-    out_data = np.array(encode(supervised["out"]))
-
-    # print(round(columns * 0.8))
-
-    train_x = in_data[:round(columns * 0.8)]
-    train_y = out_data[:round(columns * 0.8)]
-
-    test_x = in_data[round(columns * 0.8):]
-    test_y = out_data[round(columns * 0.8):]
-
-    # early_stopping_patience = 10
-    # Add early stopping
-    # early_stopping = k.callbacks.EarlyStopping(
-    #     monitor="val_loss", patience=early_stopping_patience, restore_best_weights=True
-    # )
-
-    # callback = k.callbacks.EarlyStopping(
-    #     monitor='loss', patience=3, restore_best_weights=True, min_delta= 0.01
-    # )
-    #
-
-    fit_results = model.fit(
-        x=train_x,
-        y=train_y,
-        epochs=epochs,
-        validation_split=0.2,
-        # callbacks=[early_stopping
-        #            ],
-        batch_size=32,
+    callback = callbacks.EarlyStopping(
+        monitor='loss', patience=10, restore_best_weights=True, min_delta=0.01
     )
-    model.save(nn_name)#сохранение полученной нейросетевой модели
+    # Fit LSTM model
+    model.fit(
+        xin,
+        next_X,
+        epochs=epochs,
+        batch_size=num_blocks_LSTM,
+        verbose=1,
+        validation_split=0.2,   #add
+        callbacks=callback,
+        shuffle=True
+    )
 
-    # predict = model.predict(test_x)
-    #
-    # print()
-    # eps = sum / len(predict)
-    # print("\033[36m", sum, eps)
-    # print("\033[35mEvaluate")
-    # result = model.evaluate(test_x, test_y)
-    # dict(zip(model.metrics_names, result))
+    model.save(nn_name)
+    #сохранение полученной нейросетевой модели
+
+if __name__ == "__main__":
+    relearn_nn(["test.h5"],
+               1,
+               1,
+               1,
+                trainSize=2500,
+                epochs=100,
+                window=20
+               )

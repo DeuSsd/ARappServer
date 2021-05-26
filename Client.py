@@ -11,7 +11,7 @@ import time
 # для тестов
 msg1 = {
     "method": "get",
-    "parametrs": {
+    "parameters": {
         "collectionName": "users",
         "filter": {
             "name": "Denis"
@@ -20,7 +20,7 @@ msg1 = {
 }
 msg2 = {
     "method": "delete",
-    "parametrs": {
+    "parameters": {
         "collectionName": "radiator",
         "filter": {
             "Temperature": {'$lt': 10}
@@ -29,7 +29,7 @@ msg2 = {
 }
 msg3 = {
     "method": "put",
-    "parametrs": {
+    "parameters": {
         "collectionName": "radiator",
         "data": {
             "Temperature": 150.256
@@ -41,7 +41,7 @@ msg5 = {
 }
 msg4 = {
     "method": "get",
-    "parametrs": {
+    "parameters": {
         "collectionName": "radiator",
         "filter": {
             "Temperature": {'$gt': 150}
@@ -62,7 +62,7 @@ ciphertext = cipher.encrypt(messages)
 
 msg6 = {
     "method": "logIn",
-    "parametrs": {
+    "parameters": {
         # "collectionName": "users",
         "name": "Roman",
         "password": base64.b64encode(ciphertext).decode()
@@ -73,10 +73,10 @@ msg6 = {
 xml_msg_6 = '''<?xml version="1.0" encoding="utf-8"?>
 <message>
   <method>logIn</method>
-  <parametrs>
+  <parameters>
     <name> Denis </name>
     <password>'''+base64.b64encode(ciphertext).decode()+'''</password>
-  </parametrs>
+  </parameters>
 </message>'''
 
 xml_msg_6 = xml_msg_6.encode("utf-8")
@@ -94,23 +94,23 @@ xml_msg_8 = b'''<?xml version="1.0" encoding="utf-8"?>
 
 msg7 = {
     "method" : "getLast",
-    "parametrs": {
+    "parameters": {
         "ObjectID": 1
     }
 }
 
 msg9 = {
     "method" : "getWarning",
-    "parametrs": {
+    "parameters": {
         "ObjectID": 1
     }
 }
 xml_msg_9 = b'''<?xml version="1.0" encoding="utf-8"?>
 <message>
   <method>getWarning</method>
-  <parametrs>
+  <parameters>
     <ObjectID type="int"> 1 </ObjectID>
-  </parametrs>
+  </parameters>
 </message>'''
 
 
@@ -126,9 +126,9 @@ xml_msg_7 = b'''<?xml version="1.0" encoding="utf-8"?>
 xml_msg_10 = b'''<?xml version="1.0" encoding="utf-8"?>
 <message>
   <method>getPrognose</method>
-  <parametrs>
+  <parameters>
     <ObjectID type="int"> 1 </ObjectID>
-  </parametrs>
+  </parameters>
 </message>'''
 
 
@@ -181,13 +181,13 @@ msg = [
     xml_msg_7,
     # xml_msg_8,
     # xml_msg_9,
-    # xml_msg_10,
+    xml_msg_10,
     # xml_msg_11,
-    xml_msg_12
+    # xml_msg_12
 ]
 
-# HOST, PORT = "25.79.246.93", 50000
-HOST, PORT = "192.168.43.1", 50000
+HOST, PORT = "25.36.227.49", 9090
+# HOST, PORT = "192.168.43.1", 50000
 
 # HOST, PORT = "localhost", 9090
 
