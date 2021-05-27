@@ -16,6 +16,8 @@ from io import BytesIO
 from ARappServer.GetPrognose import prognos
 
 
+from ARappServer.NN_tools.predict_nn import predict_nn_for_num
+
 
 def loadMessage(msg):
     """
@@ -37,7 +39,7 @@ def loadMessage(msg):
         </parameters>
     </message>
 
-    Вид JSON ответа:
+    Вид XML ответа:
     <?xml version='1.0' encoding='utf-8'?>
     <message>
         <method>
@@ -299,6 +301,19 @@ def loadMessage(msg):
             ET.Element("objectsSettings")
             resultData = ET.fromstring(result)  # XML string -> XML
 
+        elif method_msg == "getPrognoseForNum":
+
+            numfeature = int(parametrs_msg.find("numfeature").text)
+            window =  int(parametrs_msg.find("window").text)
+            data = parametrs_msg.find("data")
+            item = []
+            for i in data:
+                item.append(float(i.text))
+            result = {"data": predict_nn_for_num(item,num_future = numfeature, window=window)}
+            result = json2xml.Json2xml(result).to_xml()  # JSON -> XML string
+            # print(result)
+            ET.Element("objectsSettings")
+            resultData = ET.fromstring(result)  # XML string -> XML
 
         elif method_msg == "setNewStatus":
             f = open('power.txt', 'r')
@@ -325,7 +340,7 @@ def loadMessage(msg):
 
 
         return responseJSON(resultData)
-    except:
+    except ImportError:
         # old
         resultData = "Wrong Request"
         # resultData = ""

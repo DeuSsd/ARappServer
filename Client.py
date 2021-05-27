@@ -149,6 +149,23 @@ xml_msg_12 = b'''<?xml version="1.0" encoding="utf-8"?>
   </parameters>
 </message>'''
 
+
+xml_msg_13 = b'''<?xml version="1.0" encoding="utf-8"?>
+<message>
+  <method>getPrognoseForNum</method>
+  <parameters>
+    <numfeature>3</numfeature>
+    <window>4</window>
+    <data>
+        <item>2</item>
+        <item>4</item>
+        <item>2</item>
+        <item>2</item>
+    </data>
+  </parameters>
+</message>'''
+
+
 # import xml.etree.ElementTree as ET
 # tree = ET.parse('data.xml')
 # root = tree.getroot()
@@ -178,10 +195,10 @@ msg = [
     # msg8
     # msg9
     # xml_msg_6,
-    xml_msg_7,
+    # xml_msg_7,
     # xml_msg_8,
     # xml_msg_9,
-    xml_msg_10,
+    xml_msg_13,
     # xml_msg_11,
     # xml_msg_12
 ]
