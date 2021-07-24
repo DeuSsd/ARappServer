@@ -13,10 +13,12 @@ import xmltodict
 from json2xml.utils import readfromurl, readfromstring, readfromjson
 from io import BytesIO
 
-from ARappServer.GetPrognose import prognos
+from ARappServer.GetPrognose import prognosis
 
 
 from ARappServer.NN_tools.predict_nn import predict_nn_for_num
+
+
 
 
 def loadMessage(msg):
@@ -72,7 +74,8 @@ def loadMessage(msg):
             на результат выполнения запроса.
     """
     try:
-        # old
+        # old based JSON-container
+
         # msg = ast.literal_eval(msg)
         # methodJSON = msg["method"]
         # if methodJSON == "get":
@@ -293,7 +296,7 @@ def loadMessage(msg):
 
         elif method_msg == "getPrognose":
             collectionId = int(parametrs_msg.find("ObjectID").text)
-            result = {"data": prognos(collectionId,num_future = 200,window = 20)}
+            result = {"data": prognosos(collectionId,num_future = 10,window = 2)}
             # result = {"data": float(78.58682)}
             # print(result)
             result = json2xml.Json2xml(result).to_xml()  # JSON -> XML string
@@ -319,7 +322,7 @@ def loadMessage(msg):
             f = open('power.txt', 'r')
             powerStatus = f.read()
             f.close()
-            print(powerStatus)
+            # print(powerStatus)
             if powerStatus.strip() == "True":
                 powerStatus = "False"
             else:
@@ -347,6 +350,8 @@ def loadMessage(msg):
         result = ET.Element('result')
         result.text = resultData
         return responseJSON(result)
+
+
 
 
 # ответ на запрос

@@ -1,32 +1,25 @@
 # Тут будут храниться методы для работы с БД
-from pymongo import MongoClient, results, cursor
-import pymongo
 
 import ARappServer.encryptionDES as encDES
 
+from pymongo import MongoClient, results, cursor
+import pymongo
 # подключаемся к базе данных MongoDB
 client = MongoClient(port=27017)
 
 # используем БД: ARdb, UserDB
-# db_data = MongoClient.ARdb
-# db = MongoClient.UserDB
-
 DB_DATA = "ARdb"
 DB_USERS = "UserDB"
+
+
+# db_data = MongoClient.ARdb
+# db = MongoClient.UserDB
 
 
 class BaseDBinterface:
     def __init__(self, DBname):
         """Constructor"""
         self.db = self._get_db_object(DBname)
-
-    # def __get_db(self):
-    #     return self._db
-
-    # @property
-    # def get_db(self):
-    #     #TODO fix this, becouse we already have self.__get_db()
-    #     return self.__get_db()
 
     def _get_list_db_names(self):
         # TODO modify
@@ -46,25 +39,16 @@ class BaseDBinterface:
         else:
             return None
 
-    # метод добавляет одну запись в коллекцию collection_name, шаблон data = {признак: свойство, и т.д.}
-    def writeOne(self, collection_name, data):
-        this_collection = self.db.get_collection(collection_name)
-        return this_collection.insert_one(data)
-
-    # метод возвращает объект коллекции collection_name по фильтру filter
+    # метод возвращает объект коллекции collection_name по фильтру query
     def getOne(self, collection_name, query=None):
         this_collection = self.db.get_collection(collection_name)
         return this_collection.find_one(query, projection={'_id': False})[0]
 
-    # метод возвращает все объекты коллекции collection_name по фильтру filter
-
-    # метод возвращает все объекты коллекции collection_name
+    # метод возвращает все объекты(или в кол-ве limit) коллекции collection_name по фильтру query
     def getMany(self, collection_name, query=None, limit=0):
         this_collection = self.db.get_collection(collection_name)
         result = []
         if limit:
-            # limit is not good atribut
-            # if limit > count(cursor)
             temporary_result = []
             for item in this_collection.find(query, projection={'_id': False}).sort('id', pymongo.DESCENDING).limit(
                     limit):
@@ -77,6 +61,23 @@ class BaseDBinterface:
             for item in this_collection.find(query, projection={'_id': False}):
                 result.append(item)
         return result
+
+
+
+    # метод добавляет одну запись в коллекцию collection_name, шаблон data = {признак: свойство, и т.д.}
+    def writeOne(self, collection_name, data):
+        this_collection = self.db.get_collection(collection_name)
+        return this_collection.insert_one(data)
+
+
+
+    # def __get_db(self):
+    #     return self._db
+
+    # @property
+    # def get_db(self):
+    #     #TODO fix this, becouse we already have self.__get_db()
+    #     return self.__get_db()
 
     # # метод возвращает  объект коллекции collection_name по фильтру filter
     # def getOne(self, collection_name, query=None):

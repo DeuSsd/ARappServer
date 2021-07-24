@@ -3,7 +3,7 @@ from ARappServer.NN_tools.predict_nn import predict_nn,forecast_nn
 
 import os
 
-def prognos(
+def prognosis(
         CollectionId,
         num_future = 100,
         window = 10
@@ -72,9 +72,13 @@ def prognos(
 
         full_path_nn_model = os.path.join(path_nn, nn_model_name + ".h5")
 
-        predict = forecast_nn([full_path_nn_model],CollectionId,num_future=num_future,window=window)
+        # predict = forecast_nn([full_path_nn_model],CollectionId,num_future=num_future,window=window)
+        import numpy as np
+        predict = np.array(predict_nn([full_path_nn_model],CollectionId,num_future=num_future,window=window))
 
-        return predict.reshape((predict.shape[-2]))
+        # return predict.reshape((predict.shape[-2]))
+
+        return  predict
     else:
 
         # means nothing
@@ -82,4 +86,4 @@ def prognos(
 
 
 if __name__ == '__main__':
-    print(prognos(1, num_future = 200,window = 20))
+    print(prognosis(1, num_future = 10,window = 3))

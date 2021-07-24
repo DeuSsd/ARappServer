@@ -11,7 +11,7 @@ NN:NN_Model a rdfs:Class ;
 
 NN:nn_model a rdfs:Class ;
     rdfs:domain NN:number_of_layers,
-        NN:number_of_neurons .
+        NN:window .
 
 NN_tools:algorithm a rdfs:Class ;
     NN:path "U:\\ВКР\\ARappServer\\NN_tools" .
@@ -25,12 +25,12 @@ NN:active a rdf:Property .
 NN:base_model_name a rdf:Property .
 
 NN:base_parametrs_nn_model a NN:NN_Model ;
-    NN:number_of_layer 1 ;
-    NN:number_of_neurons 1 .
+    NN:num_blocks_LSTM 50 ;
+    NN:window 20 .
 
 NN:best_parametrs_nn_model a NN:NN_Model ;
-    NN:number_of_layer 1 ;
-    NN:number_of_neurons 1 .
+    NN:num_blocks_LSTM 50 ;
+    NN:window 20 .
 
 NN:path a rdf:Property .
 
@@ -58,5 +58,5 @@ NN:model_name a rdf:Property .
 
 NN:number_of_layers a rdf:Property .
 
-NN:number_of_neurons a rdf:Property .
+NN:window a rdf:Property .
 

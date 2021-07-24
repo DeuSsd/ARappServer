@@ -1,13 +1,14 @@
 import socket
 from select import select
-from ARappServer import handlerJSON
+from ARappServer import HandlerRequest
 from ARappServer.Authentification import checkRSA_PrivateKey, WrongRSA_Key
 from ARappServer.encryptionDES import WrongDES_Key, checkDES_Key
 import datetime
 
-# HOST, PORT = 'localhost', 50000
-HOST, PORT = "25.36.227.49", 9090
-# HOST, PORT = "192.168.43.1", 50000
+HOST, PORT = 'localhost', 50000
+# HOST, PORT = '25.36.227.49', 9090
+#HOST, PORT = '25.47.76.161', 9090
+# HOST, PORT = "192.168.43.2", 50000
 
 tasks = []  # тут должен использоваться модуль
 
@@ -58,7 +59,7 @@ def client(client_socket):
                   f"[----- S <- C -----] {datetime.datetime.now().isoformat('|', 'microseconds')}\n"
                   f"Data transmission from client to server: \n\t{request.decode()}")
 
-            response = handlerJSON.loadMessage(request.decode())  # block process
+            response = HandlerRequest.loadMessage(request.decode())  # block process
             # msg = str(response).encode()
             msg = response
             yield ('write', client_socket)

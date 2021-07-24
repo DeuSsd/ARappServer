@@ -2,17 +2,24 @@ from rdflib import *
 from ARappServer.NN_tools.relearn_nn import relearn_nn
 from ARappServer.NN_tools.test_nn import test_nn
 from ARappServer.NN_tools.learn_nn import learn_nn
+#
+# from rdflib import *
+# from NN_tools.relearn_nn import relearn_nn
+# from NN_tools.test_nn import test_nn
+# from NN_tools.learn_nn import learn_nn
+
 
 import os
 import time
 
 ACCEPTABLE_ERROR = 0.05
 objectID = 1
-sizeDataSet = 1000
+sizeDataSet = 2000
+sizeDataSet_test = 200
 epochs = 100
-window = 15
-num_blocks_LSTM = 30
-
+window = 25
+num_blocks_LSTM = 50
+#
 
 g = Graph()
 file = open("KB.n3", "rb")
@@ -23,7 +30,7 @@ for subj, pred, obj in g:
     if (subj, pred, obj) not in g:
         raise Exception("N3 с ошибками!")
 
-print("\n\033[36mГраф имеет {} триплетов!\033[36m".format(len(g)))
+print("\n\033[30mГраф имеет {} триплетов!\033[30m".format(len(g)))
 
 # извлекаем путь к нейросетевым моделям
 path_nn = ''
@@ -59,11 +66,11 @@ def add_new_nn_to_KB(new_name):
     new_name = new_name.split("\\")[-1].split(".")[0]
     new_obj = NN[:-1] + "Predicate_" + new_name
     g.add((new_obj, RDF.type, NN.NN_Model))
-    print("\033[36mГраф имеет {} триплетов!".format(len(g)))
+    print("\033[30mГраф имеет {} триплетов!".format(len(g)))
     g.add((new_obj, NN.model_name, Literal(new_name)))
-    print("\033[36mГраф имеет {} триплетов!".format(len(g)))
+    print("\033[30mГраф имеет {} триплетов!".format(len(g)))
     g.add((new_obj, NN.active, Literal(True)))
-    print("\033[36mГраф имеет {} триплетов!".format(len(g)))
+    print("\033[30mГраф имеет {} триплетов!".format(len(g)))
 
     file = open("KB.n3", mode="wb")
     file.write(g.serialize(format="n3"))
@@ -109,19 +116,19 @@ while True:
             SELECT ?num_n ?num_l
             WHERE
             {
-                NN:base_parametrs_nn_model NN:number_of_neurons ?num_n .
-                NN:base_parametrs_nn_model NN:number_of_layer ?num_l .
+                NN:base_parametrs_nn_model NN:num_blocks_LSTM ?num_n .
+                NN:base_parametrs_nn_model NN:window ?num_l .
             }
     ''')
-    number_of_neurons = 0
-    number_of_layer = 0
+    num_blocks_LSTM = 0
+    window = 0
 
     for item in q:
-        number_of_neurons = int(item[0])
-        number_of_layer = int(item[1])
+        num_blocks_LSTM = int(item[0])
+        window = int(item[1])
 
-    print("\033[95mКоличество внутренних слоёв - {}\n"
-          "Количество нейронов в каждом внутреннем слое - {}\033[36m".format(number_of_layer, number_of_neurons))
+    print("\033[95mКоличество ячеек LSTM - {}\n"
+          "Длина окна - {}\033[30m".format(num_blocks_LSTM, window))
 
     # ////////////////////////////////////////////////////////////////////////////////
 
@@ -152,7 +159,7 @@ while True:
 
     # Удаление лишних знаний
     if len(q) != 0 and len(os.listdir(path_nn)) == 0:
-        print("\033[36mГраф имеет {} триплетов!\n"
+        print("\033[30mГраф имеет {} триплетов!\n"
               "Удаление лишних знаний".format(len(g)))
         q = g.query(
             '''
@@ -170,7 +177,7 @@ while True:
 
         for name, status in q:
             g.remove((name, None, None))
-            print("\033[36mГраф имеет {} триплетов!".format(len(g)))
+            print("\033[30mГраф имеет {} триплетов!".format(len(g)))
 
     # ---
     # Запрос готовых нейросетевых моделей
@@ -208,7 +215,7 @@ while True:
 
     if len(q) == 0:
 
-        print("\033[95mнейросетевой модели нет\033[36m")
+        print("\033[95mнейросетевой модели нет\033[30m")
 
         q = g.query(
             '''
@@ -221,49 +228,46 @@ while True:
             '''
         )
         for item in q:
-            # print(item)
-            # name = item[0].split("#")[1]
             base_nn_model_name = item[0]
         base_nn_model_name += "1"
         nn_model_name = os.path.join(path_nn, base_nn_model_name + ".h5")
         # обучение нейросети
         error = 10000000
         while error > ACCEPTABLE_ERROR:
+            print("Запуск обучения нейросети!")
             learn_nn(
                 [nn_model_name],
                 objectID,
-                number_of_neurons,
-                number_of_layer,
                 sizeDataSet,
                 epochs,
                 window,
                 num_blocks_LSTM
             )
 
+            print("Процесс тестирования нейросетевой модели")
             error = test_nn(
                 [nn_model_name],
                 objectID,
-                sizeDataSet,
+                sizeDataSet_test,
                 window
             )
 
-            print("\033[95mКоличество внутренних слоёв - {}\n"
-                  "Количество нейронов в каждом внутреннем слое - {}\n"
-                  "Текущая ошибка прогностической модели - {}\033[36m".format(number_of_layer, number_of_neurons,
-                                                                                error))
+            print("\033[95mКоличество ячеек LSTM - {}\n"
+                  "Длина окна - {}\n"
+                  "Текущая ошибка прогностической модели - {}\033[30m".format(num_blocks_LSTM, window, error))
 
-            # if number_of_neurons < 0:
-            #     number_of_neurons += 1
-            # elif number_of_layer < 0:
-            #     number_of_layer += 1
-            # else:
-            break
+            if num_blocks_LSTM < 100:
+                num_blocks_LSTM += 1
+            elif window < 40:
+                window += 1
+            else:
+                break
 
-        print("\033[95mПрогностическая модель - {}\033[36m".format(base_nn_model_name))
+        print("\033[95mПрогностическая модель - {}\033[30m".format(base_nn_model_name))
         # add_new_nn_to_KB(nn_model_name)
         change_status(nn_model_name)
     else:
-        print("\033[95mнейросетевая модель есть\033[36m")
+        print("\033[95mнейросетевая модель есть\033[30m")
         # print(len(q))
         for item in q:
             nn_model_name = item[0].split("#")[1]
@@ -284,25 +288,26 @@ while True:
 
         for item in q:
             nn_model_name = item[0]
-            print("\033[95mПрогностическая модель - {}\033[36m".format(nn_model_name))
+            print("\033[95mПрогностическая модель - {}\033[30m".format(nn_model_name))
 
         full_path_nn_model = os.path.join(path_nn, nn_model_name + ".h5")
         # print(full_path_nn_model)
 
+        print("Процесс тестирования нейросетевой модели")
         error = test_nn(
             [full_path_nn_model],
             objectID,
-            sizeDataSet,
+            sizeDataSet_test,
             window
         )
         #проверка нейросети
 
-        print("\033[95mКолличество внутренних слоёв - {}\n"
-              "Количество нейронов в каждом внутреннем слое - {}\n"
-              "Текущая ошибка прогностической модели - {}\033[36m".format(number_of_layer, number_of_neurons,
-                                                                            error))
+        print("\033[95mКолличество ячеек LSTM - {}\n"
+              "Длина окна - {}\n"
+              "Текущая ошибка прогностической модели - {}\033[30m".format(num_blocks_LSTM, window, error))
 
         if error > ACCEPTABLE_ERROR:
+            print("Запуск переобучения нейросети!")
             relearn_nn(
                 [full_path_nn_model],
                 objectID,
@@ -312,17 +317,18 @@ while True:
                 num_blocks_LSTM
             )
 
+            print("Процесс тестирования нейросетевой модели")
             error = test_nn(
                 [full_path_nn_model],
                 objectID,
-                sizeDataSet,
+                sizeDataSet_test,
                 window
             )  # проверка нейросети
 
-            print("\033[95mКолличество внутренних слоёв - {}\n"
-                  "Колличество нейронов в каждом внутреннем слое - {}\n"
-                  "Текущая ошибка прогностической модели - {}\033[36m".format(number_of_layer, number_of_neurons,
-                                                                                error))
+            print("\033[95mКолличество ячеек LSTM - {}\n"
+                  "Длина окна - {}\n"
+                  "Текущая ошибка прогностической модели - {}\033[30m".format(num_blocks_LSTM, window, error))
+
             if error > ACCEPTABLE_ERROR:
                 name, i_num = nn_model_name.split("_")
                 name += "_{}".format(int(i_num) + 1)
@@ -330,39 +336,36 @@ while True:
                 # обучение нейросети
                 error = 10000000
                 while error > ACCEPTABLE_ERROR:
-
+                    print("Запуск обучения нейросети!")
                     learn_nn(
                         [nn_model_name],
                         objectID,
-                        number_of_neurons,
-                        number_of_layer,
                         sizeDataSet,
                         epochs,
                         window,
                         num_blocks_LSTM
                     )
-
+                    print("Процесс тестирования нейросетевой модели")
                     error = test_nn(
                         [nn_model_name],
                         objectID,
-                        sizeDataSet,
+                        sizeDataSet_test,
                         window
                     )
 
-                    print("\033[95mКоличество внутренних слоёв - {}\n"
-                          "Количество нейронов в каждом внутреннем слое - {}\n"
-                          "Текущая ошибка прогностической модели - {}\033[36m".format(number_of_layer,
-                                                                                        number_of_neurons, error))
+                    print("\033[95mКоличество ячеек LSTM - {}\n"
+                          "Длина окна - {}\n"
+                          "Текущая ошибка прогностической модели - {}\033[30m".format(num_blocks_LSTM, window, error))
 
-                    if number_of_neurons < 25:
-                        number_of_neurons += 1
-                    elif number_of_layer < 6:
-                        number_of_layer += 1
+                    if num_blocks_LSTM < 100:
+                        num_blocks_LSTM += 1
+                    elif window < 40:
+                        window += 1
                     else:
                         break
                 # add_new_nn_to_KB(nn_model_name)
                 change_status(nn_model_name)
-                print("\033[95mНовая прогностическая модель - {}\033[36m".format(name))
+                print("\033[95mНовая прогностическая модель - {}\033[30m".format(name))
             else:
                 # print(1)
                 change_status(nn_model_name)

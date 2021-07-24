@@ -10,13 +10,11 @@ from ARappServer.PrepareData import prepareDataForTrain
 
 def learn_nn(nn_name,  # имя нейросетевой модели
         objectID,
-        number_of_neurons,  # количество нейронов в LSTM слое
-        number_of_layer,  # количество LSTM слоёв в нейросетевой модели
         trainSize=2000,
         epochs = 200,
         window = 25,
         num_blocks_LSTM = 10,
-        dropout = 0.30
+        dropout = 0.20
         ):
 
     # dataFrame = pd.DataFrame(pd.read_csv(dataset_name)["X"],columns=["X"])
@@ -26,21 +24,22 @@ def learn_nn(nn_name,  # имя нейросетевой модели
     # Set window of past points for LSTM model
 
     # извлекаем данные для обучения
-    xin,next_X = prepareDataForTrain(1,trainSize,window=window)
+    xin,next_X = prepareDataForTrain(objectID,trainSize,window=window)
     outputNum = next_X.shape[-1]
 
     # Initialize LSTM model
     model = Sequential()
-
-    model.add(LSTM(units=num_blocks_LSTM, return_sequences=True, input_shape=(xin.shape[-2:])))
-    model.add(Dropout(dropout))
-    model.add(LSTM(units=num_blocks_LSTM))
+    model.add(LSTM(units=num_blocks_LSTM,
+                   return_sequences=True,
+                   input_shape=(xin.shape[-2:]
+                   )))
+    model.add(LSTM(units=num_blocks_LSTM,
+                   return_sequences=False
+                   ))
     model.add(Dropout(dropout))
     model.add(Dense(units=outputNum))
     model.compile(
-        # optimizer='adam',
-        optimizer='RMSProp',
-        # optimizer='sgd',
+        optimizer='adam',
         loss='mean_squared_error',
         metrics = 'mse'
     )
@@ -56,19 +55,18 @@ def learn_nn(nn_name,  # имя нейросетевой модели
         batch_size=num_blocks_LSTM,
         verbose=1,
         callbacks=callback,
-        validation_split=0.2,   #add
+        validation_split=0.2,
         shuffle=True
     )
-
     model.save(nn_name)
+
+
 
 if __name__ == "__main__":
     learn_nn(["test.h5"],
              1,
-             1,
-             1,
-             trainSize=1000,
-             epochs=100,
-             window=15,
-             num_blocks_LSTM=5
+             trainSize=2000,
+             epochs=20,
+             window=20,
+             num_blocks_LSTM=50
     )

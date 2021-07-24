@@ -188,23 +188,18 @@ def setLength(Socket,msg):
 
     return length
 msg = [
-    # msg1,
-    # ,msg2,msg3,msg4,msg5,
-    # msg6,
-    # msg7,
-    # msg8
-    # msg9
     # xml_msg_6,
-    # xml_msg_7,
+    xml_msg_7,
     # xml_msg_8,
     # xml_msg_9,
-    xml_msg_13,
+    # xml_msg_10,
     # xml_msg_11,
     # xml_msg_12
 ]
 
-HOST, PORT = "25.36.227.49", 9090
+# HOST, PORT = "25.36.227.49", 9090
 # HOST, PORT = "192.168.43.1", 50000
+HOST, PORT = "localhost", 50000
 
 # HOST, PORT = "localhost", 9090
 
@@ -228,6 +223,6 @@ for dataMsg in msg:
         sock.sendall(data)
         lenght = 10240
         received = sock.recv(lenght).decode('utf-8')
-        print("Sent:     {}".format(data))
+        print("Sent:     {}".format(data.decode()))
         print("Received: {}".format(received))
         print("------")
