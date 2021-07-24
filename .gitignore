@@ -248,7 +248,7 @@ paket-files/
 
 #other
 *.jpg
-*.png
+
 *.jpeg
 *.TXT
 *.txt
@@ -262,10 +262,14 @@ paket-files/
 !**/Models/
 !**/formula/
 !**/NN_tools/
-
+!**/screenshots/Alghoritm_NN_module.png
+!**/screenshots/Schema_NN_model.png
+!**/screenshots/Server_schema.png
 /*/
 Test.py
 __pycache__/
 
 
 /data.csv
+
+*.png
