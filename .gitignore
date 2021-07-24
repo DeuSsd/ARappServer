@@ -258,7 +258,7 @@ paket-files/
 *.bin
 *.cs
 *.h5
-
+*.png
 !**/Models/
 !**/formula/
 !**/NN_tools/
@@ -272,4 +272,3 @@ __pycache__/
 
 /data.csv
 
-*.png
