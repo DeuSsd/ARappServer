@@ -1,0 +1,65 @@
+@prefix MyBase: <file:///U:/7%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/pythonProject/MyBase/#> .
+@prefix NN: <file:///U:/7%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/pythonProject/MyBase/NN/#> .
+@prefix NN_tools: <file:///U:/7%20%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80/pythonProject/MyBase/NN/NN_tools/#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+NN:NN_Model a rdfs:Class ;
+    NN:base_model_name "Model_" ;
+    NN:path "U:\\ВКР\\ARappServer\\Models" ;
+    rdfs:domain NN:model_name .
+
+NN:nn_model a rdfs:Class ;
+    rdfs:domain NN:number_of_layers,
+        NN:number_of_neurons .
+
+NN_tools:algorithm a rdfs:Class ;
+    NN:path "U:\\ВКР\\ARappServer\\NN_tools" .
+
+NN:Predicate_Model_1 a NN:NN_Model ;
+    NN:active true ;
+    NN:model_name "Model_1" .
+
+NN:active a rdf:Property .
+
+NN:base_model_name a rdf:Property .
+
+NN:base_parametrs_nn_model a NN:NN_Model ;
+    NN:number_of_layer 1 ;
+    NN:number_of_neurons 1 .
+
+NN:best_parametrs_nn_model a NN:NN_Model ;
+    NN:number_of_layer 1 ;
+    NN:number_of_neurons 1 .
+
+NN:path a rdf:Property .
+
+NN_tools:NN_learn a NN_tools:algorithm ;
+    NN_tools:action "create" ;
+    NN_tools:name "learn_nn" .
+
+NN_tools:NN_relearn a NN_tools:algorithm ;
+    NN_tools:action "update" ;
+    NN_tools:name "relearn_nn" .
+
+NN_tools:NN_test a NN_tools:algorithm ;
+    NN_tools:action "test" ;
+    NN_tools:name "test_nn" .
+
+NN_tools:NN_test a NN_tools:algorithm ;
+    NN_tools:action "predict" ;
+    NN_tools:name "predict_nn" .
+
+NN_tools:action a rdf:Property .
+
+NN_tools:name a rdf:Property .
+
+NN_tools:path a rdf:Property .
+
+NN:model_name a rdf:Property .
+
+NN:number_of_layers a rdf:Property .
+
+NN:number_of_neurons a rdf:Property .

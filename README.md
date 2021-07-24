@@ -1,45 +1,96 @@
-**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
+## AR-Project
+Это прототип асинхронного серверного модуля входящего в состав проекта "Система сопровождения производственных объектов при помощи дополненной реальности". 
 
-When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
+Данный модуль обеспечивает следующие функции:
+1. Обеспечивает соединение с клиентами (мобильныйми приложениями и не только) и обмен данными по протоколу TCP/IP;
+2. Выполняет приём сообщений представленных в формате XML;
+3. Выполняет распаковку и упаковку XML-контейнеров;
+4. Выполняет обработку запросов и формирует ответ;
+5. Осуществляет прогнозирование показателей объекта на основе исторических данных;
+6. Выполняет аутентификацию/авторизацию пользователей пользователей.
 
-*We recommend that you open this README in another tab as you perform the tasks below. You can [watch our video](https://youtu.be/0ocf7u76WSo) for a full demo of all the steps in this tutorial. Open the video in a new tab to avoid leaving Bitbucket.*
+**Струкутура сервера имеет следующий вид:**
+
+![alt text](screenshots/Server_schema.png "Структура сервера")
+---
+## Прогнозирование
+Модуль прогнозирования использует следующие технологии:
+1. Библиотеку [**RDFlib**](https://pypi.org/project/rdflib/) для работы с базой знаний и хранения в ней сведений об актуальной нейросетевой модели;
+2. Библиотеку [**Keras**](https://keras.io/) для работы с нейросетевыми моделями;
+3. Библиотеку [**PyMongo**](https://pypi.org/project/pymongo/) для работы с базами данных MongoDB и хранимыми в ней данными об объектах, датчиков, пользователях и данными для построения AR-интерфейса на клиентском приложении.
+
+Изучив документацию к данному API PyMongo было принято решение написать ещё один слой интерфейса,
+потому что нативный интерфейс предоставляет лишь основные и базовые методы для работы с СУБД и самой базой данных MongoDB,
+что в контексте данного проекта не очень удобно, итоговый разработанный **интерфейс к API PyMongo** находится в модуле **DBinterface.py**
+
+Серверный модуль прогнозирования испольует в качетсве модели нейросетевую двухслойную модель со слоями LSTM, при создании новой нейросетевой модели параметры для конструирования методами [Keras](https://keras.io/) подгружаются с базы знаний.
+
+![alt text](screenshots/Schema_NN_model.png "Структура нейросетевой модели")
+
+Модуль работы с нейронными сетями выполняет в автоматическом порядке:
+1. Сканирование базы знаний на поиск актуальной нейросетевой модели*;
+2. Провека модели на адекватность **;
+3. Подготовка данных для обученя, переобучения, тестирования модели и генерации прогнозных значений.
+4. Обучение новой нейросетевой прогностической модели;
+5. Переобучение новой нейросетевой прогностической модели;
+6. Генерация предсказаний на основе актуальной нейросетевой прогностической модели;
+<br><i> * актуальная нейросетевая модель  - модель, прогнозы которой по велечинам отклоняются не более чем на 5%.</i>
+<br><i> ** адекватная модель  - модель, прогнозы которой по велечинам отклоняются не более чем на 5%.</i>
+
+Работа прогнозирующего модуля выполняется по следующему алгоритму:
+
+![alt text](screenshots/Alghoritm_NN_module.png "Алгоритм работы модуля с нейронными сетями")
 
 ---
+## Обработка запросов на сервере
+Для обмена данными с сервером клиенту необходимо отвправлять ему запросы, которые помещаются в специальный XML-контейнер.
 
-## Edit a file
+Вид XML запроса:
+```XML
+<?xml version="1.0" encoding="utf-8"?>
+<message>
+   <method>
+      methodName
+   </method>
+   <parameters>
+      ...
+   </parameters>
+</message>
+```
 
-You’ll start by editing this README file to learn how to edit a file in Bitbucket.
+Вид XML ответа:
+```XML
+<?xml version='1.0' encoding='utf-8'?>
+<message>
+    <method>
+        response
+    </method>
+    <data>
+        ...
+    </data>
+</message>
+```
 
-1. Click **Source** on the left side.
-2. Click the README.md link from the list of files.
-3. Click the **Edit** button.
-4. Delete the following text: *Delete this line to make a change to the README from Bitbucket.*
-5. After making your change, click **Commit** and then **Commit** again in the dialog. The commit page will open and you’ll see the change you just made.
-6. Go back to the **Source** page.
+Обработчик запроса на данны момет обрабатывает следующие методы (*methodName*):
+*   **getLast**   - возврат последних значений объекта;
+*	**logIn**	- аутентификация пользователя;
+*	**getBuildSettings** – запрос на настройки для графопостроителя интерфейса AR;
+*	**setBuildSettings** – запись настроек для интерфейса AR;
+*	**getPublicKey** – запрос на публичный ключ для передачи данных в зашифрованном виде (Шифрование производится алгоритмом  **RSA-OAEP**);
+*	**getPrognose** – запрос на прогнозные показания по сопровождаемому в данный момент объекту
+*	**setNewStatus** – включение/выключение объекта управления
 
----
+Добавление обрабатываемых запросов выполняется добавлением соответствующей ветки в обработчике запросов *HandleRequest.py*
 
-## Create a file
+Структура обработчика запросов следующая:
 
-Next, you’ll add a new file to this repository.
+if method == “method_name_1”:
+*блок обработки запроса method_name_1*
 
-1. Click the **New file** button at the top of the **Source** page.
-2. Give the file a filename of **contributors.txt**.
-3. Enter your name in the empty file space.
-4. Click **Commit** and then **Commit** again in the dialog.
-5. Go back to the **Source** page.
+elif method == “method_name_2”:
+*блок обработки запроса method_name_2*
 
-Before you move on, go ahead and explore the repository. You've already seen the **Source** page, but check out the **Commits**, **Branches**, and **Settings** pages.
+...
 
----
-
-## Clone a repository
-
-Use these steps to clone from SourceTree, our client for using the repository command-line free. Cloning allows you to work on your files locally. If you don't yet have SourceTree, [download and install first](https://www.sourcetreeapp.com/). If you prefer to clone from the command line, see [Clone a repository](https://confluence.atlassian.com/x/4whODQ).
-
-1. You’ll see the clone button under the **Source** heading. Click that button.
-2. Now click **Check out in SourceTree**. You may need to create a SourceTree account or log in.
-3. When you see the **Clone New** dialog in SourceTree, update the destination path and name if you’d like to and then click **Clone**.
-4. Open the directory you just created to see your repository’s files.
-
-Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).
+Else:
+*сообщение о неправильном выбранном методе запроса*
